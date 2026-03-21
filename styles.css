@@ -452,3 +452,100 @@ body {
 @keyframes fadeIn {
   to { opacity: 1; }
 }
+
+/* ═══════════════════════════════════════════════════
+   MOBILE RESPONSIVE FIXES
+   ═══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* ── THE MAIN FIX ──────────────────────────────────────────
+     .left-align and .center-align use padding-left: max(5vw, 14rem).
+     14rem = 224px. On a 375px phone, max() picks 224px — leaving
+     only ~150px for content and pushing everything off-screen.
+     The 14rem exists to clear the .persistent-tracker sidebar,
+     which is display:none on mobile. So override to small padding.
+     ──────────────────────────────────────────────────────────── */
+  .left-align {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .center-align {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    text-align: center;
+    align-items: center;
+  }
+  .right-align {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  /* ── Reduce base frame padding ─────────────────────────── */
+  .narrative-frame {
+    padding: 3vh 1.5rem;
+  }
+
+  /* ── Scale down oversized type ──────────────────────────────
+     clamp(4rem, 9vw, 8rem) resolves to 4rem (64px) on mobile
+     because 9vw < 4rem at narrow widths. Redefine the clamp range.
+     ──────────────────────────────────────────────────────────── */
+  .giant-text {
+    font-size: clamp(2rem, 10vw, 4rem);
+    line-height: 1;
+  }
+  .giant-quote {
+    font-size: clamp(1.5rem, 7vw, 3rem);
+    max-width: 100%;
+  }
+  .title {
+    font-size: clamp(1.75rem, 7vw, 3rem);
+  }
+  .blurb {
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    max-width: 100%;
+  }
+  .subtitle {
+    font-size: clamp(1rem, 4vw, 1.4rem);
+    max-width: 100%;
+  }
+
+  /* ── Glass panel: 4rem (64px) per side is too wide on mobile ── */
+  .glass-panel {
+    padding: 2rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  /* ── Metrics row: tighten gap, allow wrapping ─── */
+  .metrics-row {
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .metric-value {
+    font-size: 1.5rem;
+  }
+
+  /* ── Social link buttons: tighten gap ─── */
+  .social-links-row {
+    gap: 0.5rem;
+  }
+
+  /* ── Insights chips: left-align (base is flex-end for right-align frames) ─── */
+  .insights-content {
+    justify-content: flex-start;
+  }
+
+  /* ── CTA buttons: wrap on very small screens ─── */
+  .cta-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ── Header tighten ─── */
+  .header.minimal-header {
+    padding: 0.75rem 1rem;
+  }
+}
