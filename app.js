@@ -1,108 +1,180 @@
 /* ═══════════════════════════════════════════════════
-   BENTO PORTFOLIO — Interactive Logic
+   EDDIE GARCIA — Narrative Scroll Controller
    ═══════════════════════════════════════════════════ */
 
-// ─── Theme Toggle Logic ───
-const themeToggle = document.getElementById('themeToggle');
-const root = document.documentElement;
+const scrollSection = document.getElementById('narrative-scroll');
+const frames = document.querySelectorAll('.narrative-frame');
+const photos = document.querySelectorAll('.photo-layer');
+const overlays = document.querySelectorAll('.overlay-layer');
 
-const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-if (savedTheme === 'light' || (!savedTheme && !systemPrefersDark)) {
-  root.setAttribute('data-theme', 'light');
-}
-
-themeToggle.addEventListener('click', () => {
-  const currentTheme = root.getAttribute('data-theme');
-  if (currentTheme === 'light') {
-    root.removeAttribute('data-theme');
-    localStorage.setItem('theme', 'dark');
-  } else {
-    root.setAttribute('data-theme', 'light');
-    localStorage.setItem('theme', 'light');
-  }
-});
-
-// ─── Live Clock Logic ───
-const clockEl = document.getElementById('clock');
-function updateTime() {
-  const now = new Date();
-  // Formatting to Los Angeles Time
-  const timeString = now.toLocaleTimeString('en-US', {
-    timeZone: 'America/Los_Angeles',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
-  if (clockEl) clockEl.textContent = timeString;
-}
-setInterval(updateTime, 1000);
-updateTime();
-
-// ─── Copy Email Widget ───
+// ─── Email Copy Logic ───
 const copyEmailBtn = document.getElementById('copyEmail');
-const emailBadge = document.getElementById('emailBadge');
-const EmailAddress = "info@eddiegarcia.org";
-
-copyEmailBtn.addEventListener('click', () => {
-  navigator.clipboard.writeText(EmailAddress).then(() => {
-    emailBadge.textContent = "Copied!";
-    emailBadge.style.color = "#4ade80";
-    emailBadge.style.background = "rgba(74, 222, 128, 0.1)";
-    
-    setTimeout(() => {
-      emailBadge.textContent = "Copy Email";
-      emailBadge.style.color = "";
-      emailBadge.style.background = "";
-    }, 2000);
+if (copyEmailBtn) {
+  copyEmailBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText('info@eddiegarcia.org').then(() => {
+      copyEmailBtn.textContent = 'Copied!';
+      copyEmailBtn.style.background = '#4ade80';
+      copyEmailBtn.style.borderColor = '#4ade80';
+      copyEmailBtn.style.color = 'white';
+      
+      setTimeout(() => {
+        copyEmailBtn.textContent = 'Copy Email';
+        copyEmailBtn.style.background = '';
+        copyEmailBtn.style.borderColor = '';
+        copyEmailBtn.style.color = '';
+      }, 2000);
+    });
   });
-});
+}
 
-// ─── Animated Metric Counters ───
+// ─── Metric Couters Logic ───
 const metrics = document.querySelectorAll('.metric-value');
+let metricsAnimated = false; // flag to only animate once
 
-const animateCounters = (entries, observer) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      const counter = entry.target;
-      const target = +counter.getAttribute('data-target');
-      const duration = 2000; // total ms
-      const frameDuration = 1000 / 60; // 60fps
-      const totalFrames = Math.round(duration / frameDuration);
-      let frame = 0;
+const animateMetrics = () => {
+  if (metricsAnimated) return;
+  metricsAnimated = true;
+  
+  metrics.forEach(counter => {
+    const target = +counter.getAttribute('data-target');
+    const duration = 2000;
+    const frameDuration = 1000 / 60;
+    const totalFrames = Math.round(duration / frameDuration);
+    let frame = 0;
+    const increment = target / totalFrames;
 
-      const increment = target / totalFrames;
-
-      const updateCount = () => {
-        frame++;
-        const currentCount = Math.round(increment * frame);
-        
-        if (frame < totalFrames) {
-          counter.innerText = currentCount.toLocaleString();
-          requestAnimationFrame(updateCount);
+    const updateCount = () => {
+      frame++;
+      const currentCount = Math.round(increment * frame);
+      
+      if (frame < totalFrames) {
+        counter.innerText = currentCount.toLocaleString();
+        requestAnimationFrame(updateCount);
+      } else {
+        if (target >= 10000) {
+          counter.innerText = (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
         } else {
-          // Final value format: 42.7K or exact depending on preference.
-          // Let's format it beautifully with a "K" for thousands.
-          if (target >= 10000) {
-            counter.innerText = (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-          } else {
-            counter.innerText = target.toLocaleString();
-          }
+          counter.innerText = target.toLocaleString();
         }
-      };
-
-      updateCount();
-      observer.unobserve(counter); // Only run once
-    }
+      }
+    };
+    updateCount();
   });
 };
 
-const metricsObserver = new IntersectionObserver(animateCounters, {
-  root: null,
-  threshold: 0.5
-});
+// ─── Main Scroll Controller ───
+if (scrollSection && frames.length > 0) {
+  const numFrames = frames.length;
+  let activeFrameIndex = -1;
 
-metrics.forEach(metric => {
-  metricsObserver.observe(metric);
-});
+  const updateScroll = () => {
+    const rect = scrollSection.getBoundingClientRect();
+    const sectionTop = rect.top;
+    const sectionHeight = rect.height;
+    
+    const windowHeight = window.innerHeight;
+    const scrollDistance = sectionHeight - windowHeight;
+    
+    let progress = -sectionTop / scrollDistance;
+    if (progress < 0) progress = 0;
+    if (progress > 1) progress = 1;
+
+    // Calculate current frame (e.g., 0 to 15)
+    let currentFrame = Math.floor(progress * numFrames);
+    if (currentFrame >= numFrames) currentFrame = numFrames - 1;
+
+    if (currentFrame !== activeFrameIndex) {
+      activeFrameIndex = currentFrame;
+
+      // 1. Activate Text Frame
+      frames.forEach((frame, idx) => {
+        if (idx === currentFrame) {
+          frame.classList.add('active');
+        } else {
+          frame.classList.remove('active');
+        }
+      });
+
+      // trigger metric animation if frame 10 (Narrative Engineer) is active
+      if (currentFrame === 10) {
+        animateMetrics();
+      }
+
+      const activeFrameEl = frames[currentFrame];
+
+      // 2. Activate Background Photo
+      const bgId = activeFrameEl.getAttribute('data-bg');
+      if (bgId !== null) {
+        photos.forEach(photo => {
+          if (photo.id === `bg-photo-${bgId}`) {
+            photo.style.opacity = 1;
+          } else {
+            photo.style.opacity = 0;
+          }
+        });
+      }
+
+      // 3. Activate Overlays
+      const overlayId = activeFrameEl.getAttribute('data-overlay');
+      overlays.forEach(overlay => {
+        if (overlayId && overlay.id === overlayId) {
+          overlay.style.opacity = 0.5; // subtle opacity for overlays
+        } else {
+          overlay.style.opacity = 0;
+        }
+      });
+    }
+    // 4. Update Persistent Tracker
+    const trackers = document.querySelectorAll('.tracker-item');
+    let bestTrackerTarget = 0;
+    trackers.forEach(t => {
+      const target = parseInt(t.getAttribute('data-target-frame'), 10);
+      if (currentFrame >= target) bestTrackerTarget = target;
+    });
+    trackers.forEach(t => {
+      if (parseInt(t.getAttribute('data-target-frame'), 10) === bestTrackerTarget) {
+        t.classList.add('active');
+      } else {
+        t.classList.remove('active');
+      }
+    });
+
+    // 5. Scroll Prompt fade-out
+    const scrollPrompt = document.querySelector('.scroll-prompt');
+    if (scrollPrompt) {
+      if (progress > 0.02) scrollPrompt.classList.add('fade-out');
+      else scrollPrompt.classList.remove('fade-out');
+    }
+  };
+
+  window.addEventListener('scroll', () => {
+    requestAnimationFrame(updateScroll);
+  }, { passive: true });
+  
+  // Custom navigation link logic
+  const jumpLinks = document.querySelectorAll('.tracker-item');
+  jumpLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      const targetFrame = parseInt(e.target.getAttribute('data-target-frame'), 10);
+      if (!isNaN(targetFrame)) {
+        const targetProgress = (targetFrame + 0.1) / numFrames; 
+        
+        const rect = scrollSection.getBoundingClientRect();
+        const sectionTopAbsolute = rect.top + window.scrollY;
+        const sectionHeight = scrollSection.clientHeight;
+        const windowHeight = window.innerHeight;
+        const scrollDistance = sectionHeight - windowHeight;
+        
+        const targetScrollY = sectionTopAbsolute + (targetProgress * scrollDistance);
+        
+        window.scrollTo({
+          top: targetScrollY,
+          behavior: 'smooth'
+        });
+      }
+    });
+  });
+
+  // Init
+  updateScroll();
+}

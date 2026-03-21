@@ -3,227 +3,225 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eddie Garcia | Portfolio</title>
+  <title>Eddie Garcia | Operating System</title>
   
-  <!-- SEO & Meta -->
   <meta name="description" content="Personal portfolio and project hub of Eddie Garcia. Strategy, Systems, and Code.">
   
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-  <!-- Vercel Analytics -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
   <script defer src="/_vercel/insights/script.js"></script>
   
-  <!-- Styles -->
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-
-  <!-- Background Ambient Effects -->
-  <div class="ambient-glow glow-1"></div>
-  <div class="ambient-glow glow-2"></div>
-
-  <main class="container">
+<body data-theme="light">
+  
+  <header class="header minimal-header active-header">
+    <div class="logo font-serif">EG.</div>
     
-    <header class="header">
-      <div class="logo">EG.</div>
-      <nav>
-        <button id="themeToggle" class="theme-btn" aria-label="Toggle Theme">
-          <!-- Sun Icon -->
-          <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-          <!-- Moon Icon -->
-          <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        </button>
-      </nav>
-    </header>
+    <!-- Socials & Contact -->
+    <div class="header-socials">
+      <a href="https://linkedin.com/in/" target="_blank" class="social-link">LinkedIn</a>
+      <a href="https://www.youtube.com/EddieG" target="_blank" class="social-link">YouTube</a>
+      <a href="mailto:info@eddiegarcia.org" class="social-link highlight">Contact</a>
+    </div>
+  </header>
 
-    <div class="bento-grid">
+  <section id="narrative-scroll" class="narrative-scroll">
+    <div class="narrative-sticky">
       
-      <!-- 1. IDENT (Span 2x2) -->
-      <a href="#" class="bento-item span-2x2 card-profile group relative">
-        <div class="profile-content">
-          <div class="avatar-ring">
-            <div class="avatar">
-               <img src="./profile.jpg" alt="Eddie Garcia" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+      <!-- Background Asset Layers -->
+      <div class="photo-layer" id="bg-photo-0" style="background-image: url('images/intro-pondering.jpg');"></div>
+      <div class="photo-layer" id="bg-photo-1" style="background-image: url('images/strategist-chess-seated.jpg');"></div>
+      <div class="photo-layer" id="bg-photo-2" style="background-image: url('images/architect-chess-standing.jpg');"></div>
+      <div class="photo-layer" id="bg-photo-3" style="background-image: url('images/entertainer-creator.jpg');"></div>
+      <div class="photo-layer" id="bg-photo-4" style="background-image: url('images/artist-guitar.jpg');"></div>
+
+      <!-- Overlay Animations -->
+      <!-- Subtly activated in specific sections via CSS -->
+      <div class="overlay-layer" id="overlay-grid"></div>
+      <div class="overlay-layer" id="overlay-nodes"></div>
+      <div class="overlay-layer" id="overlay-charts"></div>
+      <div class="overlay-layer" id="overlay-waveforms"></div>
+      <div class="overlay-layer" id="overlay-blueprints"></div>
+      
+      <!-- Gradient for readability -->
+      <div class="bottom-gradient"></div>
+
+      <!-- Persistent Identity Tracker -->
+      <div class="persistent-tracker hidden-mobile">
+         <button class="tracker-item" data-target-frame="0">WHO IS EDDIE GARCIA?</button>
+         <button class="tracker-item" data-target-frame="1">Father</button>
+         <button class="tracker-item" data-target-frame="2">Christ Follower</button>
+         <button class="tracker-item" data-target-frame="4">Philosopher in Practice</button>
+         <button class="tracker-item" data-target-frame="5">Strategic Architect</button>
+         <button class="tracker-item" data-target-frame="6">Systems Builder</button>
+         <button class="tracker-item" data-target-frame="7">Builder of People</button>
+         <button class="tracker-item" data-target-frame="8">Cultural Mirror</button>
+         <button class="tracker-item" data-target-frame="10">Narrative Engineer</button>
+         <button class="tracker-item" data-target-frame="11">Sound Designer</button>
+         <button class="tracker-item" data-target-frame="12">Legacy Builder</button>
+         <button class="tracker-item" data-target-frame="13">The Unifier</button>
+      </div>
+
+      <!-- Scroll Prompt -->
+      <div class="scroll-prompt">
+        <span>SCROLL TO EXPLORE</span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+
+      <!-- Text Narrative Frames Container -->
+      <div class="text-narrative-container">
+        
+        <!-- Frame 0: HERO -->
+        <div class="narrative-frame left-align" data-frame="0" data-bg="0">
+          <h1 class="giant-text font-syne">WHO IS EDDIE GARCIA?</h1>
+          <p class="subtitle fade-delay">It depends on where you catch him.</p>
+        </div>
+
+        <!-- Frame 1: Father -->
+        <div class="narrative-frame left-align" data-frame="1" data-bg="0">
+          <div class="label">SECTION 01</div>
+          <h2 class="title font-syne">Father</h2>
+          <p class="blurb">Shows up. Leads with presence. Builds what matters most.</p>
+        </div>
+
+        <!-- Frame 2: Christ Follower -->
+        <div class="narrative-frame left-align" data-frame="2" data-bg="0">
+          <p class="transition-lead font-serif italic mb-4 text-accent">"What everything else is built on."</p>
+          <div class="label">SECTION 02</div>
+          <h2 class="title font-syne">Christ Follower</h2>
+          <p class="blurb">Grounded in faith. Guided by purpose.</p>
+        </div>
+
+        <!-- Frame 3: TRANSITION -->
+        <div class="narrative-frame center-align" data-frame="3" data-bg="1">
+          <h2 class="giant-quote font-playfair italic glowing-quote">"From that foundation..."</h2>
+        </div>
+
+        <!-- Frame 4: Philosopher in Practice -->
+        <div class="narrative-frame right-align" data-frame="4" data-bg="1" data-overlay="overlay-grid">
+          <div class="label">SECTION 03</div>
+          <h2 class="title font-syne">Philosopher in Practice</h2>
+          <p class="blurb">Seeks meaning. Applies it in the real world.</p>
+          <div class="embedded-content insights-content">
+            <span class="fake-chip">The Strategic Gap</span>
+            <span class="fake-chip">Organizational Leverage</span>
+            <span class="fake-chip">Capability Design</span>
+          </div>
+        </div>
+
+        <!-- Frame 5: Strategic Architect -->
+        <div class="narrative-frame right-align" data-frame="5" data-bg="2" data-overlay="overlay-nodes">
+          <div class="label">SECTION 04</div>
+          <h2 class="title font-syne">Strategic Architect</h2>
+          <p class="blurb">Thinks in systems. Moves before the move exists.</p>
+        </div>
+
+        <!-- Frame 6: Systems Builder -->
+        <div class="narrative-frame right-align" data-frame="6" data-bg="2" data-overlay="overlay-charts">
+          <div class="label">SECTION 05</div>
+          <h2 class="title font-syne">Systems Builder</h2>
+          <p class="blurb">Designs the engines that make organizations run.</p>
+        </div>
+
+        <!-- Frame 7: Builder of People -->
+        <div class="narrative-frame right-align" data-frame="7" data-bg="2" data-overlay="overlay-nodes">
+          <div class="label">SECTION 06</div>
+          <h2 class="title font-syne">Builder of People</h2>
+          <p class="blurb">Develops leaders. Elevates everyone around him.</p>
+        </div>
+
+        <!-- Frame 8: Cultural Mirror -->
+        <div class="narrative-frame left-align" data-frame="8" data-bg="3" data-overlay="overlay-grid">
+          <div class="label">SECTION 07</div>
+          <h2 class="title font-syne">Cultural Mirror</h2>
+          <p class="blurb">Observes the world. Reflects it back with precision.</p>
+          <div class="embedded-content tiburcio-content">
+            <h3 class="grad-text-tiburcio font-syne">ShowDeTiburcio</h3>
+            <p class="text-sm mb-4">Cultural expression & internet gold. 781K+ Reach.</p>
+            <div class="social-links-row">
+               <a href="https://www.youtube.com/@Tiburcio" target="_blank" class="btn btn-outline btn-sm">YouTube</a>
+               <a href="https://www.facebook.com/ShowDeTiburcio" target="_blank" class="btn btn-outline btn-sm">Facebook</a>
+               <a href="https://www.instagram.com/showdetiburcio" target="_blank" class="btn btn-outline btn-sm">Instagram</a>
+               <a href="https://www.tiktok.com/@showdetiburcio" target="_blank" class="btn btn-outline btn-sm">TikTok</a>
             </div>
-            <div class="status-badge">
-              <span class="pulse"></span> Open to Collaboration
+          </div>
+        </div>
+
+        <!-- Frame 9: TRANSITION -->
+        <div class="narrative-frame center-align" data-frame="9" data-bg="3">
+          <h2 class="giant-quote font-playfair italic glowing-quote">"Then there's Eddie G."</h2>
+        </div>
+
+        <!-- Frame 10: Narrative Engineer / Creator -->
+        <div class="narrative-frame left-align" data-frame="10" data-bg="3" data-overlay="overlay-grid">
+          <div class="label">SECTION 08</div>
+          <h2 class="title font-syne">Narrative Engineer</h2>
+          <p class="blurb">Turns ideas into stories people feel.</p>
+          <div class="embedded-content omg-content">
+            <h3 class="grad-text-omg font-syne">OMGitsEddieG</h3>
+            <div class="metrics-row mb-4">
+              <div class="metric"><span class="metric-value font-serif" data-target="294000">0</span> FB</div>
+              <div class="metric"><span class="metric-value font-serif" data-target="42700">0</span> YT</div>
+              <div class="metric"><span class="metric-value font-serif" data-target="35400">0</span> IG</div>
+            </div>
+            <div class="social-links-row">
+               <a href="https://www.youtube.com/EddieG" target="_blank" class="btn btn-outline btn-sm">YouTube</a>
+               <a href="https://www.facebook.com/OMGItsEddieG" target="_blank" class="btn btn-outline btn-sm">Facebook</a>
+               <a href="https://instagram.com/OMGitsEddieG" target="_blank" class="btn btn-outline btn-sm">Instagram</a>
+               <a href="https://tiktok.com/@omgitseddieg" target="_blank" class="btn btn-outline btn-sm">TikTok</a>
             </div>
           </div>
-          <h1>Eddie Garcia</h1>
-          <p class="tagline">Strategic Architect & Creator.</p>
-          <p class="bio">Designing systems, teams, and technology to unlock organizational leverage.</p>
         </div>
-        <div class="card-glow"></div>
-      </a>
 
-      <!-- 2. PROJECT: INSIGHT ENGINE (Span 2x1) -->
-      <a href="./insight/index.html" class="bento-item span-2x1 card-project group">
-        <div class="project-bg" style="background: var(--gradient-brand); opacity: 0.1;"></div>
-        <div class="card-header">
-          <span class="label">Latest Release</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </div>
-        <div class="card-body">
-          <h2>Insight Engine</h2>
-          <p>A strategic clarity application parsing 80+ curated operational insights.</p>
-        </div>
-        <div class="card-glow"></div>
-      </a>
-
-      <!-- 3. ESSAYS / BLOG (Span 2x1) -->
-      <a href="#" class="bento-item span-2x1 card-project group">
-        <div class="card-header">
-          <span class="label">Thought Leadership</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="arrow"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-        </div>
-        <div class="card-body">
-          <h2 class="font-serif italic text-xl">The Strategic Gap</h2>
-          <p>Read essays on organizational leverage, capability design, and systems.</p>
-        </div>
-        <div class="card-glow"></div>
-      </a>
-
-      <!-- 4. EMAIL COPY WIDGET (Span 2x1) -->
-      <button class="bento-item span-2x1 card-email group border-none text-left" id="copyEmail">
-        <div class="card-header">
-          <span class="label">Contact</span>
-          <span class="badge" id="emailBadge">Copy Email</span>
-        </div>
-        <div class="card-body flex items-center gap-4">
-          <div class="icon-circle">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          </div>
-          <div>
-            <h2 class="text-xl">Let's Build Something</h2>
-            <p class="text-secondary">info@eddiegarcia.org</p>
+        <!-- Frame 11: Sound Designer -->
+        <div class="narrative-frame left-align" data-frame="11" data-bg="4" data-overlay="overlay-waveforms">
+          <div class="label">SECTION 09</div>
+          <h2 class="title font-syne">Sound Designer of Emotion</h2>
+          <p class="blurb">Translates life into music.</p>
+          <div class="embedded-content digito-content mt-4">
+             <iframe src="https://open.spotify.com/embed/artist/6DzJumNLmIubmwnBeuoxhC?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);"></iframe>
           </div>
         </div>
-        <div class="card-glow"></div>
-      </button>
 
-      <!-- 5. SOCIAL: LINKEDIN (Span 1x1) -->
-      <a href="https://linkedin.com/in/" target="_blank" class="bento-item span-1x1 card-social group flex-center block w-full h-full relative" style="overflow: hidden;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        <div class="card-glow"></div>
-      </a>
+        <!-- Frame 12: Legacy Builder -->
+        <div class="narrative-frame center-align" data-frame="12" data-bg="0" data-overlay="overlay-blueprints">
+          <div class="label">SECTION 10</div>
+          <h2 class="title font-syne">Legacy Builder</h2>
+          <p class="blurb">Everything he builds is meant to last.</p>
+        </div>
 
-      <!-- 6. NOW (Span 1x1) -->
-      <div class="bento-item span-1x1 card-now group">
-        <div class="card-header">
-          <span class="label">Location</span>
+        <!-- Frame 13: The Unifier -->
+        <div class="narrative-frame center-align" data-frame="13" data-bg="0">
+          <div class="label">FINAL</div>
+          <h2 class="title font-syne">The Unifier</h2>
+          <p class="blurb">Not separate roles. One integrated system.</p>
         </div>
-        <div class="card-body text-center">
-          <div class="text-3xl mb-2">📍</div>
-          <div class="font-bold text-lg clock" id="clock">12:00 PM</div>
-          <div class="text-sm text-secondary">Los Angeles, CA</div>
-        </div>
-        <div class="card-glow"></div>
-      </div>
 
-      <!-- 7. OMGitsEddieG Creator Card (Span 2x1) -->
-      <div class="bento-item span-2x1 card-creator group">
-        <div class="card-header">
-          <span class="label">Video / Comedy</span>
+        <!-- Frame 14: Final Statement -->
+        <div class="narrative-frame center-align" data-frame="14" data-bg="0">
+          <h1 class="giant-text font-syne tight-line">NOT ONE THING.</h1>
+          <h1 class="giant-text font-syne">AN OPERATING SYSTEM.</h1>
+          <p class="subtitle italic font-serif mt-4">Built to think. Built to create. Built to lead.</p>
         </div>
-        <div class="card-body mt-2">
-          <h2 class="text-xl inline-block" style="background: linear-gradient(90deg, #ff0000, #ff4d4d); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">OMGitsEddieG</h2>
-          <p class="text-secondary mt-1">Exploring Mexican-American culture, dance, and viral comedy.</p>
-          
-          <div class="metrics-mini-grid mt-4">
-            <!-- YouTube -->
-            <a href="https://www.youtube.com/EddieG" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="42700">0</div>
-                <div class="metric-label mini text-secondary">YOUTUBE</div>
-              </div>
-            </a>
-            <!-- Facebook -->
-            <a href="https://www.facebook.com/OMGItsEddieG" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="294000">0</div>
-                <div class="metric-label mini text-secondary">FACEBOOK</div>
-              </div>
-            </a>
-            <!-- Instagram -->
-            <a href="https://instagram.com/OMGitsEddieG" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="14300">0</div>
-                <div class="metric-label mini text-secondary">INSTAGRAM</div>
-              </div>
-            </a>
-            <!-- TikTok -->
-            <a href="https://tiktok.com/@omgitseddieg" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-.86 4.38-2.29 6.07-1.37 1.63-3.23 2.76-5.3 3.09-2.22.34-4.54.04-6.49-1.04-1.92-1.06-3.41-2.73-4.13-4.75-.71-2-1.01-4.21-.46-6.26.54-2.11 1.84-3.95 3.61-5.07 1.75-1.12 3.84-1.54 5.86-1.39.01 1.34-.01 2.68.01 4.02-1.17-.18-2.39-.02-3.44.57-1.02.58-1.78 1.51-2.1 2.66-.3 1.09-.2 2.28.26 3.29.47 1.07 1.25 1.96 2.27 2.45 1.02.49 2.25.56 3.32.18 1.09-.39 1.95-1.19 2.39-2.26.43-1.03.55-2.22.56-3.35-.01-5.74-.01-11.48-.01-17.22h3.91z"/></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="592">0</div>
-                <div class="metric-label mini text-secondary">TIKTOK</div>
-              </div>
-            </a>
+
+        <!-- Frame 15: Connect CTA -->
+        <div class="narrative-frame center-align cta-frame" data-frame="15" data-bg="0">
+          <div class="glass-panel">
+            <h2 class="font-syne text-3xl mb-2">Let's build something meaningful.</h2>
+            <p class="text-secondary mb-6">info@eddiegarcia.org</p>
+            <div class="cta-actions">
+              <a href="https://linkedin.com/in/" target="_blank" class="btn btn-outline">LinkedIn</a>
+              <button class="btn btn-primary" id="copyEmail">Copy Email</button>
+            </div>
           </div>
         </div>
-        <div class="card-glow"></div>
-      </div>
-
-      <!-- 8. ShowDeTiburcio Creator Card (Span 2x1) -->
-      <div class="bento-item span-2x1 card-creator group">
-        <div class="card-header">
-          <span class="label">Video / Entertainment</span>
-        </div>
-        <div class="card-body mt-2">
-          <h2 class="text-xl inline-block" style="background: linear-gradient(90deg, #1877f2, #4bb1f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ShowDeTiburcio</h2>
-          <p class="text-secondary mt-1">Paisa Zumba, skits, and character-driven internet gold.</p>
-          
-          <div class="metrics-mini-grid mt-4">
-            <!-- YouTube -->
-            <a href="https://www.youtube.com/@Tiburcio" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="74900">0</div>
-                <div class="metric-label mini text-secondary">YOUTUBE</div>
-              </div>
-            </a>
-            <!-- Facebook -->
-            <a href="https://www.facebook.com/ShowDeTiburcio" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="781000">0</div>
-                <div class="metric-label mini text-secondary">FACEBOOK</div>
-              </div>
-            </a>
-            <!-- Instagram -->
-            <a href="https://www.instagram.com/showdetiburcio" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="35400">0</div>
-                <div class="metric-label mini text-secondary">INSTAGRAM</div>
-              </div>
-            </a>
-            <!-- TikTok -->
-            <a href="https://www.tiktok.com/@showdetiburcio" target="_blank" class="metric-mini group/mini">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 2.22-.86 4.38-2.29 6.07-1.37 1.63-3.23 2.76-5.3 3.09-2.22.34-4.54.04-6.49-1.04-1.92-1.06-3.41-2.73-4.13-4.75-.71-2-1.01-4.21-.46-6.26.54-2.11 1.84-3.95 3.61-5.07 1.75-1.12 3.84-1.54 5.86-1.39.01 1.34-.01 2.68.01 4.02-1.17-.18-2.39-.02-3.44.57-1.02.58-1.78 1.51-2.1 2.66-.3 1.09-.2 2.28.26 3.29.47 1.07 1.25 1.96 2.27 2.45 1.02.49 2.25.56 3.32.18 1.09-.39 1.95-1.19 2.39-2.26.43-1.03.55-2.22.56-3.35-.01-5.74-.01-11.48-.01-17.22h3.91z"/></svg>
-              <div>
-                <div class="metric-value compact font-serif leading-none" data-target="67000">0</div>
-                <div class="metric-label mini text-secondary">TIKTOK</div>
-              </div>
-            </a>
-          </div>
-        </div>
-        <div class="card-glow"></div>
-      </div>
-
-      <!-- 9. MUSIC: SPOTIFY (Span 2x1) -->
-      <div class="bento-item span-2x1 card-music p-0">
-        <!-- Spotify Embed iframe gets perfectly sized to parent -->
-        <iframe src="https://open.spotify.com/embed/artist/6DzJumNLmIubmwnBeuoxhC?utm_source=generator&theme=0" width="100%" height="100%" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: var(--radius-xl);"></iframe>
-      </div>
 
       </div>
-  </main>
+
+    </div>
+  </section>
 
   <script src="app.js"></script>
 </body>
