@@ -194,7 +194,7 @@ body {
 /* Alignments */
 .left-align   { align-items: flex-start; text-align: left; padding-left: max(5vw, 14rem); }
 .right-align  { align-items: flex-end; text-align: right; }
-.center-align { align-items: center; justify-content: center; text-align: center; }
+.center-align { align-items: center; justify-content: center; text-align: center; padding-left: max(5vw, 14rem); padding-right: max(5vw, 14rem); }
 
 /* ─── Typography Defaults ─── */
 .font-syne { font-family: var(--font-display); }
