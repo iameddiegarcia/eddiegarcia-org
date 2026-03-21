@@ -95,8 +95,8 @@ if (scrollSection && frames.length > 0) {
         }
       });
 
-      // trigger metric animation if frame 10 (Narrative Engineer) is active
-      if (currentFrame === 10) {
+      // trigger metric animation if frame 8 (Tiburcio) or frame 10 (Narrative Engineer) is active
+      if (currentFrame === 8 || currentFrame === 10) {
         animateMetrics();
       }
 
