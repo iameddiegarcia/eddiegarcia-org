@@ -438,3 +438,17 @@ body {
   background: var(--text-primary);
   color: var(--text-inverse);
 }
+
+/* ─── Missing Utility Classes ─── */
+.text-accent { color: var(--accent-1); }
+.text-secondary { color: var(--text-secondary); }
+.text-sm { font-size: 0.875rem; line-height: 1.5; }
+.text-3xl { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; }
+
+.fade-delay {
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-out) 0.4s forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
