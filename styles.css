@@ -464,7 +464,7 @@ body {
 /* ═══════════════════════════════════════════════════
    MOBILE RESPONSIVE FIXES
    ═══════════════════════════════════════════════════ */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 
   /* ── THE MAIN FIX ──────────────────────────────────────────
      .left-align and .center-align use padding-left: max(5vw, 14rem).
@@ -541,9 +541,12 @@ body {
     gap: 0.5rem;
   }
 
-  /* ── Insights chips: left-align (base is flex-end for right-align frames) ─── */
+  /* ── Insights chips: left-align + prevent right-edge clipping ─── */
   .insights-content {
     justify-content: flex-start;
+    flex-wrap: wrap;
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   /* ── CTA buttons: wrap on very small screens ─── */
@@ -555,5 +558,10 @@ body {
   /* ── Header tighten ─── */
   .header.minimal-header {
     padding: 0.75rem 1rem;
+  }
+
+  /* ── Hide scroll prompt: overlaps subtitle on smaller viewports ─── */
+  .scroll-prompt {
+    display: none;
   }
 }
