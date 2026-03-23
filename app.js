@@ -145,6 +145,10 @@ if (scrollSection && frames.length > 0) {
       if (progress > 0.02) scrollPrompt.classList.add('fade-out');
       else scrollPrompt.classList.remove('fade-out');
     }
+
+    // 6. Progress bar
+    const progressBar = document.getElementById('scroll-progress-bar');
+    if (progressBar) progressBar.style.width = (progress * 100) + '%';
   };
 
   window.addEventListener('scroll', () => {

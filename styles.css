@@ -127,31 +127,50 @@ body {
 
 /* Patterns */
 #overlay-grid {
-  background-image: 
-    linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+  background-image:
+    linear-gradient(rgba(124, 106, 239, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 106, 239, 0.12) 1px, transparent 1px);
   background-size: 50px 50px;
 }
 #overlay-blueprints {
-  background-image: 
-    linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px);
-  background-size: 20px 20px;
+  background-image:
+    linear-gradient(rgba(124, 106, 239, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 106, 239, 0.18) 1px, transparent 1px),
+    linear-gradient(rgba(124, 106, 239, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124, 106, 239, 0.07) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
 }
 #overlay-nodes {
-  background: radial-gradient(circle at 75% 50%, rgba(124, 106, 239, 0.05) 0%, transparent 60%);
+  background-image: radial-gradient(circle, rgba(124, 106, 239, 0.3) 1.5px, transparent 1.5px);
+  background-size: 45px 45px;
 }
 #overlay-charts {
-  background: linear-gradient(135deg, rgba(192, 106, 239, 0.05) 0%, transparent 50%);
+  background:
+    linear-gradient(to top, rgba(192, 106, 239, 0.12) 0%, transparent 100%),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 18px,
+      rgba(192, 106, 239, 0.15) 18px,
+      rgba(192, 106, 239, 0.15) 20px
+    );
 }
 #overlay-waveforms {
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 10px,
-    rgba(0,0,0,0.03) 10px,
-    rgba(0,0,0,0.03) 12px
-  );
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 14px,
+      rgba(124, 106, 239, 0.12) 14px,
+      rgba(124, 106, 239, 0.12) 16px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(192, 106, 239, 0.08) 8px,
+      rgba(192, 106, 239, 0.08) 10px
+    );
 }
 
 /* ─── Gradient for text readability ─── */
@@ -619,4 +638,85 @@ body {
   .scroll-prompt {
     display: none;
   }
+}
+
+/* ═══════════════════════════════════════════════════
+   SCROLL PROGRESS BAR
+   ═══════════════════════════════════════════════════ */
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2), var(--accent-3));
+  z-index: 200;
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════
+   IDENTITY TEASER CHIPS (Hero Frame)
+   ═══════════════════════════════════════════════════ */
+.identity-teaser {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.id-chip {
+  padding: 0.35rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 20px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.fade-delay-2 {
+  opacity: 0;
+  animation: fadeIn 1s var(--ease-out) 0.8s forwards;
+}
+
+/* ═══════════════════════════════════════════════════
+   CTA FRAME ENHANCEMENTS
+   ═══════════════════════════════════════════════════ */
+.cta-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-1);
+  margin-bottom: 0.75rem;
+}
+.cta-email-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.cta-email-link:hover {
+  color: var(--accent-1);
+}
+
+/* Pulse animation on glass panel when CTA frame becomes active */
+.narrative-frame.active .glass-panel {
+  animation: panelPulse 0.6s var(--ease-out) forwards;
+}
+@keyframes panelPulse {
+  0%   { box-shadow: 0 20px 40px rgba(0,0,0,0.03); }
+  50%  { box-shadow: 0 0 0 4px rgba(124, 106, 239, 0.15), 0 20px 40px rgba(0,0,0,0.05); }
+  100% { box-shadow: 0 20px 40px rgba(0,0,0,0.03); }
+}
+
+/* ═══════════════════════════════════════════════════
+   RIGHT-ALIGN MAX-WIDTH CONSTRAINT
+   ═══════════════════════════════════════════════════ */
+.right-align .blurb {
+  max-width: 600px;
+}
+.right-align .embedded-content {
+  max-width: 600px;
 }
