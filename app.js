@@ -95,8 +95,8 @@ if (scrollSection && frames.length > 0) {
         }
       });
 
-      // trigger metric animation if frame 7 (OMGitsEddieG) or frame 8 (Entertainer) is active
-      if (currentFrame === 7 || currentFrame === 8) {
+      // trigger metric animation if frame 8 (OMGitsEddieG) or frame 9 (Entertainer) is active
+      if (currentFrame === 8 || currentFrame === 9) {
         animateMetrics();
       }
 
