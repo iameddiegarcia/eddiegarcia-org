@@ -927,9 +927,9 @@ body {
   max-height: 55vh;
   overflow: hidden;
 }
-/* Frames with lots of content need more bottom breathing room */
-.narrative-frame.active {
-  padding-bottom: max(5vh, 4rem);
+/* Frame 0: ensure extra clearance is never overridden */
+.narrative-frame[data-frame="0"].active {
+  padding-bottom: 8rem;
 }
 
 /* ── Bug 3: Frame 0 hero over-padding on mobile ── */
@@ -998,4 +998,37 @@ body {
 .transition-lead {
   font-size: clamp(1rem, 2vw, 1.25rem);
   line-height: 1.5;
+}
+
+/* ── Training history (Builder of People) ── */
+.training-history {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+.training-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.training-role {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: none;
+}
+.training-org {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.right-align .training-history {
+  text-align: right;
 }
