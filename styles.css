@@ -475,7 +475,7 @@ body {
   60% { transform: translate(-50%, -5px); }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .hidden-mobile { display: none; }
 }
 
@@ -916,4 +916,86 @@ body {
   .cta-actions {
     gap: 0.5rem;
   }
+}
+
+/* ═══════════════════════════════════════════════════
+   BUG FIXES — AUDIT ROUND 2
+   ═══════════════════════════════════════════════════ */
+
+/* ── Bug 2: Cap embedded content so it never overflows the gradient ── */
+.embedded-content {
+  max-height: 55vh;
+  overflow: hidden;
+}
+/* Frames with lots of content need more bottom breathing room */
+.narrative-frame.active {
+  padding-bottom: max(5vh, 4rem);
+}
+
+/* ── Bug 3: Frame 0 hero over-padding on mobile ── */
+@media (max-width: 1024px) {
+  .narrative-frame[data-frame="0"] {
+    padding-bottom: 2rem;
+  }
+}
+
+/* ── Bug 4: Tracker items — prevent wrapping ── */
+.tracker-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
+}
+
+/* ── Bug 7: Tracker overflow on short screens ── */
+@media (max-height: 700px) {
+  .persistent-tracker {
+    gap: 0.4rem;
+  }
+  .tracker-item {
+    font-size: 0.72rem;
+  }
+}
+
+/* ── Bug 5: Career timeline vertical connector line ── */
+.career-timeline {
+  position: relative;
+  padding-left: 1rem;
+}
+.career-timeline::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--accent-1), rgba(124, 106, 239, 0.1));
+  border-radius: 2px;
+}
+.timeline-item {
+  position: relative;
+}
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -1.375rem;
+  top: 0.4rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  border: 2px solid white;
+}
+.timeline-item.timeline-current::before {
+  background: var(--accent-1);
+  width: 8px;
+  height: 8px;
+  left: -1.46rem;
+  box-shadow: 0 0 8px var(--accent-1);
+}
+
+/* ── Bug 6: transition-lead class (Frame 2 quote) ── */
+.transition-lead {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.5;
 }
