@@ -95,8 +95,8 @@ if (scrollSection && frames.length > 0) {
         }
       });
 
-      // trigger metric animation if frame 8 (Tiburcio) or frame 10 (Narrative Engineer) is active
-      if (currentFrame === 8 || currentFrame === 10) {
+      // trigger metric animation if frame 7 (OMGitsEddieG) or frame 8 (Entertainer) is active
+      if (currentFrame === 7 || currentFrame === 8) {
         animateMetrics();
       }
 
