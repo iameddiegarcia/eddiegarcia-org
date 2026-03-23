@@ -461,7 +461,8 @@ body {
   gap: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
   opacity: 0.8;
   animation: bounce 2s infinite;
   pointer-events: none;
