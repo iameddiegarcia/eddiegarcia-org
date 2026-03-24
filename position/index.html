@@ -309,8 +309,9 @@ async function runSearch(q) {
   try {
     const data = await onet('/ws/online/search', { keyword: q, end: 12 });
     renderDropdown(data.occupation || []);
-  } catch {
-    hideDropdown();
+  } catch (e) {
+    dropdown.classList.remove('hidden');
+    dropdown.innerHTML = `<div class="drop-empty">Search unavailable — ${e.message}</div>`;
   }
 }
 
