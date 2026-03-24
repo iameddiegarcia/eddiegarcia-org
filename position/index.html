@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Position Intelligence Engine — Eddie Garcia</title>
+<meta name="description" content="Enter any job title and get real O*NET skill requirements, emerging demands, and role intelligence."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script defer src="/_vercel/insights/script.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f9fafb;
+  --white:#ffffff;
+  --border:rgba(0,0,0,0.08);
+  --border2:rgba(0,0,0,0.12);
+  --text:#111827;
+  --text2:#374151;
+  --text3:#6b7280;
+  --text4:#9ca3af;
+  --purple:#7c6aef;
+  --purple2:#c06aef;
+  --pink:#ef6a9a;
+  --grad:linear-gradient(135deg,#7c6aef,#c06aef,#ef6a9a);
+  --radius:14px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.08);
+}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
+::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px;}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;position:sticky;top:0;background:rgba(249,250,251,0.92);backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--border);}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;font-weight:500;text-decoration:none;letter-spacing:0.05em;text-transform:uppercase;transition:color 0.15s;}
+.nav-back:hover{color:var(--text);}
+.nav-back svg{width:14px;height:14px;}
+.nav-title{font-size:12px;font-weight:500;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;}
+.nav-badge{font-size:11px;font-weight:500;color:var(--purple);background:rgba(124,106,239,0.08);border:1px solid rgba(124,106,239,0.2);border-radius:20px;padding:3px 10px;letter-spacing:0.03em;}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:72px 32px 48px;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(circle,rgba(124,106,239,0.1) 0%,rgba(192,106,239,0.05) 45%,transparent 70%);pointer-events:none;}
+.hero-inner{position:relative;z-index:1;max-width:580px;margin:0 auto;}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--purple);margin-bottom:18px;}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(38px,5.5vw,60px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:16px;letter-spacing:-0.01em;}
+.hero-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:14px;color:var(--text3);font-weight:300;line-height:1.7;max-width:400px;margin:0 auto;}
+
+/* ── SEARCH ── */
+.search-wrap{max-width:560px;margin:40px auto 0;padding:0 32px;position:relative;}
+.search-input-row{position:relative;}
+input.search-input{
+  width:100%;background:var(--white);border:1px solid var(--border2);border-radius:40px;
+  color:var(--text);font-size:15px;font-weight:300;padding:16px 56px 16px 24px;
+  outline:none;transition:border-color 0.2s,box-shadow 0.2s;box-shadow:var(--shadow-md);
+  font-family:'Inter',sans-serif;
+}
+input.search-input::placeholder{color:var(--text4);}
+input.search-input:focus{border-color:rgba(124,106,239,0.4);box-shadow:0 0 0 3px rgba(124,106,239,0.08),var(--shadow-md);}
+.search-icon{position:absolute;right:20px;top:50%;transform:translateY(-50%);color:var(--text4);pointer-events:none;}
+.search-icon svg{width:18px;height:18px;}
+
+/* ── DROPDOWN ── */
+.dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--white);border:1px solid var(--border2);border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:200;overflow:hidden;}
+.dropdown.hidden{display:none;}
+.drop-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;transition:background 0.12s;border-bottom:1px solid rgba(0,0,0,0.04);}
+.drop-item:last-child{border-bottom:none;}
+.drop-item:hover{background:rgba(124,106,239,0.04);}
+.drop-code{font-size:11px;color:var(--text4);font-variant-numeric:tabular-nums;flex-shrink:0;font-family:monospace;}
+.drop-title{font-size:13px;color:var(--text);font-weight:500;flex:1;}
+.drop-outlook{font-size:10px;font-weight:600;color:var(--purple);background:rgba(124,106,239,0.08);border-radius:10px;padding:2px 7px;letter-spacing:0.04em;flex-shrink:0;}
+.drop-empty{padding:18px;text-align:center;color:var(--text4);font-size:13px;}
+
+/* ── CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 0;padding:0 32px;max-width:560px;margin-left:auto;margin-right:auto;}
+.chip{font-size:12px;color:var(--text3);background:var(--white);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;cursor:pointer;transition:all 0.15s;}
+.chip:hover{border-color:rgba(124,106,239,0.4);color:var(--purple);}
+
+/* ── LOADING ── */
+.loading-wrap{text-align:center;padding:64px 32px;}
+.loading-spinner{width:36px;height:36px;border:2px solid rgba(124,106,239,0.15);border-top-color:var(--purple);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-track{width:180px;height:2px;background:rgba(0,0,0,0.06);border-radius:1px;margin:12px auto 0;overflow:hidden;}
+.loading-fill{height:100%;background:var(--grad);animation:scan 1.8s ease-in-out infinite;}
+@keyframes scan{0%{width:0;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
+.loading-msg{font-size:11px;color:var(--text4);letter-spacing:0.1em;text-transform:uppercase;margin-top:10px;}
+
+/* ── ERROR ── */
+.error-wrap{max-width:480px;margin:40px auto;padding:16px 20px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);font-size:13px;color:#dc2626;text-align:center;}
+
+/* ── RESULTS ── */
+.results-wrap{max-width:900px;margin:0 auto;padding:0 32px 80px;}
+.results-back{display:inline-flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;letter-spacing:0.05em;text-transform:uppercase;padding:24px 0;transition:color 0.15s;}
+.results-back:hover{color:var(--text);}
+.results-back svg{width:13px;height:13px;}
+
+/* ── OCC CARD ── */
+.occ-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.occ-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+.occ-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
+.occ-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3vw,36px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:14px;}
+.occ-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
+.occ-pill{font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:20px;padding:3px 10px;}
+.occ-pill.accent{background:rgba(124,106,239,0.07);border-color:rgba(124,106,239,0.2);color:var(--purple);}
+.occ-desc{font-size:13px;color:var(--text3);font-weight:300;line-height:1.75;}
+
+/* ── SECTION HEADER ── */
+.sec-hd{margin-bottom:14px;}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:3px;}
+.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:600;color:var(--text);}
+
+/* ── SKILLS ── */
+.skills-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow);}
+.skill-row{padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.045);}
+.skill-row:last-child{border-bottom:none;padding-bottom:0;}
+.skill-row:first-child{padding-top:0;}
+.skill-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.skill-name{font-size:13px;font-weight:500;color:var(--text);}
+.skill-val{font-size:12px;font-weight:600;color:var(--text3);}
+.skill-track{height:4px;background:rgba(0,0,0,0.06);border-radius:2px;overflow:hidden;}
+.skill-fill{height:100%;background:linear-gradient(90deg,#7c6aef,#c06aef);border-radius:2px;width:0;transition:width 0.9s cubic-bezier(0.4,0,0.2,1);}
+
+/* ── EMERGING ── */
+.emerging-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow);}
+.em-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.045);}
+.em-row:first-child{padding-top:0;}
+.em-row:last-child{border-bottom:none;padding-bottom:0;}
+.em-num{font-size:11px;font-weight:600;color:var(--purple);width:20px;flex-shrink:0;padding-top:1px;font-variant-numeric:tabular-nums;}
+.em-text{font-size:13px;color:var(--text2);font-weight:300;line-height:1.55;}
+
+/* ── INTEL BRIEF ── */
+.brief-card{background:var(--grad);border-radius:var(--radius);padding:28px 32px;margin-bottom:20px;box-shadow:0 8px 32px rgba(124,106,239,0.2);}
+.brief-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:10px;}
+.brief-title{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:600;color:#fff;line-height:1.4;}
+
+/* ── FOOTER ── */
+.foot{text-align:center;padding:24px 32px 48px;font-size:11px;color:var(--text4);}
+.foot a{color:var(--text3);text-decoration:none;}
+.foot a:hover{color:var(--purple);}
+
+/* ── UTILS ── */
+.hidden{display:none!important;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fu{animation:fadeUp 0.35s ease-out both;}
+.fu1{animation-delay:0.04s;} .fu2{animation-delay:0.1s;} .fu3{animation-delay:0.16s;} .fu4{animation-delay:0.22s;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .nav{padding:16px 20px;}
+  .nav-title{display:none;}
+  .hero{padding:48px 20px 32px;}
+  .search-wrap{padding:0 20px;}
+  .chips{padding:0 20px;}
+  .results-wrap{padding:0 20px 64px;}
+  .occ-card{padding:22px 20px;}
+  .skills-card,.emerging-card,.brief-card{padding:20px;}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="nav-back">
+    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
+    Portfolio
+  </a>
+  <span class="nav-title">Position Intelligence Engine</span>
+  <span class="nav-badge">O*NET 30.2</span>
+</nav>
+
+<!-- ── SEARCH PHASE ── -->
+<div id="search-phase">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-label">Position Intelligence Engine</div>
+      <h1 class="hero-title">What does this <em>role actually</em> require?</h1>
+      <p class="hero-sub">Real skill data from O*NET — the U.S. Department of Labor's authoritative occupational database.</p>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-input-row">
+      <input type="text" id="search-input" class="search-input" placeholder="Type a job title…" autocomplete="off" spellcheck="false"/>
+      <span class="search-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+      </span>
+      <div id="dropdown" class="dropdown hidden"></div>
+    </div>
+  </div>
+
+  <div class="chips" id="chips">
+    <button class="chip" data-q="HR Manager">HR Manager</button>
+    <button class="chip" data-q="Training Manager">Training Manager</button>
+    <button class="chip" data-q="Management Analyst">Management Analyst</button>
+    <button class="chip" data-q="Budget Analyst">Budget Analyst</button>
+    <button class="chip" data-q="Operations Research Analyst">Operations Analyst</button>
+    <button class="chip" data-q="Compensation Manager">Compensation Manager</button>
+    <button class="chip" data-q="Program Manager">Program Manager</button>
+  </div>
+</div>
+
+<!-- ── LOADING PHASE ── -->
+<div id="loading-phase" class="hidden">
+  <div class="loading-wrap">
+    <div class="loading-spinner"></div>
+    <div class="loading-track"><div class="loading-fill"></div></div>
+    <div class="loading-msg" id="loading-msg">Searching O*NET database…</div>
+  </div>
+</div>
+
+<!-- ── RESULTS PHASE ── -->
+<div id="results-phase" class="hidden">
+  <div class="results-wrap">
+    <button class="results-back" id="back-btn">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
+      New Search
+    </button>
+
+    <div id="occ-card" class="occ-card fu"></div>
+
+    <div id="skills-section" class="hidden fu fu1">
+      <div class="sec-hd">
+        <div class="sec-label">Core Requirements</div>
+        <div class="sec-title">Key Skills by Importance</div>
+      </div>
+      <div class="skills-card" id="skills-list"></div>
+    </div>
+
+    <div id="emerging-section" class="hidden fu fu2">
+      <div class="sec-hd">
+        <div class="sec-label">What's Changing</div>
+        <div class="sec-title">Emerging Demands</div>
+      </div>
+      <div class="emerging-card" id="emerging-list"></div>
+    </div>
+  </div>
+</div>
+
+<footer class="foot">
+  Data sourced from <a href="https://www.onetcenter.org" target="_blank" rel="noopener">O*NET Web Services</a> by the U.S. Department of Labor, Employment and Training Administration.
+</footer>
+
+<script>
+const ZONE_LABELS = {
+  1: 'Little or No Preparation',
+  2: 'Some Preparation Needed',
+  3: 'Medium Preparation',
+  4: 'Considerable Preparation',
+  5: 'Extensive Preparation'
+};
+
+const LOAD_MSGS = [
+  'Searching O*NET database…',
+  'Matching occupation codes…',
+  'Pulling skill ratings…',
+  'Identifying emerging demands…',
+  'Building intelligence report…'
+];
+
+let searchTimer = null;
+let loadMsgTimer = null;
+
+const $ = id => document.getElementById(id);
+const searchPhase  = $('search-phase');
+const loadingPhase = $('loading-phase');
+const resultsPhase = $('results-phase');
+const searchInput  = $('search-input');
+const dropdown     = $('dropdown');
+
+// ── API helper ──
+async function onet(path, params = {}) {
+  const qs = new URLSearchParams({ path, ...params }).toString();
+  const r = await fetch(`/api/onet?${qs}`);
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
+    throw new Error(err.error || `Request failed: ${r.status}`);
+  }
+  return r.json();
+}
+
+// ── Search / dropdown ──
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  const q = searchInput.value.trim();
+  if (q.length < 2) { hideDropdown(); return; }
+  searchTimer = setTimeout(() => runSearch(q), 280);
+});
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') hideDropdown();
+});
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) hideDropdown();
+});
+
+$('chips').addEventListener('click', e => {
+  const chip = e.target.closest('.chip');
+  if (!chip) return;
+  searchInput.value = chip.dataset.q;
+  runSearch(chip.dataset.q);
+});
+
+async function runSearch(q) {
+  showDropdownLoading();
+  try {
+    const data = await onet('/ws/online/search', { keyword: q, end: 12 });
+    renderDropdown(data.occupation || []);
+  } catch {
+    hideDropdown();
+  }
+}
+
+function showDropdownLoading() {
+  dropdown.classList.remove('hidden');
+  dropdown.innerHTML = '<div class="drop-empty">Searching…</div>';
+}
+
+function renderDropdown(items) {
+  if (!items.length) {
+    dropdown.classList.remove('hidden');
+    dropdown.innerHTML = '<div class="drop-empty">No results found — try a different title</div>';
+    return;
+  }
+  dropdown.classList.remove('hidden');
+  dropdown.innerHTML = items.map(occ => `
+    <div class="drop-item" data-code="${occ.code}" data-title="${escHtml(occ.title)}">
+      <span class="drop-code">${occ.code}</span>
+      <span class="drop-title">${escHtml(occ.title)}</span>
+      ${occ.tags?.bright_outlook ? '<span class="drop-outlook">Bright Outlook</span>' : ''}
+    </div>
+  `).join('');
+
+  dropdown.querySelectorAll('.drop-item').forEach(el => {
+    el.addEventListener('click', () => {
+      hideDropdown();
+      loadOccupation(el.dataset.code, el.dataset.title);
+    });
+  });
+}
+
+function hideDropdown() {
+  dropdown.classList.add('hidden');
+  dropdown.innerHTML = '';
+}
+
+// ── Load occupation ──
+async function loadOccupation(code, knownTitle) {
+  showLoading();
+  try {
+    const [occ, skillsData, emergingData] = await Promise.all([
+      onet(`/ws/online/occupations/${code}`),
+      onet(`/ws/online/occupations/${code}/summary/skills`),
+      onet(`/ws/online/occupations/${code}/summary/emerging_tasks`).catch(() => null)
+    ]);
+    renderResults(occ, skillsData, emergingData);
+  } catch (e) {
+    showError(e.message);
+  }
+}
+
+// ── Render results ──
+function renderResults(occ, skillsData, emergingData) {
+  // Occupation card
+  const brightOutlook = occ.tags?.bright_outlook;
+  const zone = occ.job_zone;
+  $('occ-card').innerHTML = `
+    <div class="occ-label">O*NET ${occ.code}</div>
+    <div class="occ-title">${escHtml(occ.title)}</div>
+    <div class="occ-pills">
+      ${zone ? `<span class="occ-pill">${escHtml(ZONE_LABELS[zone] || `Job Zone ${zone}`)}</span>` : ''}
+      ${brightOutlook ? '<span class="occ-pill accent">★ Bright Outlook</span>' : ''}
+      ${occ.tags?.green ? '<span class="occ-pill">Green Occupation</span>' : ''}
+    </div>
+    <div class="occ-desc">${escHtml(occ.description || '')}</div>
+  `;
+
+  // Skills
+  const elements = skillsData?.element || [];
+  const skills = elements
+    .map(el => ({ name: el.name, score: scoreVal(el.score) }))
+    .filter(s => s.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+
+  if (skills.length) {
+    $('skills-list').innerHTML = skills.map(s => {
+      const pct = Math.min(100, Math.round((s.score / 5) * 100));
+      return `
+        <div class="skill-row">
+          <div class="skill-top">
+            <span class="skill-name">${escHtml(s.name)}</span>
+            <span class="skill-val">${s.score.toFixed(1)} / 5</span>
+          </div>
+          <div class="skill-track">
+            <div class="skill-fill" data-pct="${pct}"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    $('skills-section').classList.remove('hidden');
+  }
+
+  // Emerging tasks
+  const tasks = emergingData?.task || [];
+  if (tasks.length) {
+    $('emerging-list').innerHTML = tasks.slice(0, 6).map((t, i) => `
+      <div class="em-row">
+        <span class="em-num">0${i + 1}</span>
+        <span class="em-text">${escHtml(t.name)}</span>
+      </div>
+    `).join('');
+    $('emerging-section').classList.remove('hidden');
+  }
+
+  // Show results
+  loadingPhase.classList.add('hidden');
+  searchPhase.classList.add('hidden');
+  resultsPhase.classList.remove('hidden');
+
+  // Animate skill bars after paint
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.skill-fill[data-pct]').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  });
+}
+
+// ── Parse score from various O*NET shapes ──
+function scoreVal(score) {
+  if (!score) return 0;
+  if (typeof score === 'number') return score;
+  if (typeof score === 'object') {
+    // {value: 4.0} or [{value: 4.0}]
+    if (Array.isArray(score)) return scoreVal(score[0]);
+    if (score.value != null) return Number(score.value);
+  }
+  return 0;
+}
+
+// ── Phase helpers ──
+function showLoading() {
+  searchPhase.classList.add('hidden');
+  resultsPhase.classList.add('hidden');
+  $('skills-section').classList.add('hidden');
+  $('emerging-section').classList.add('hidden');
+  loadingPhase.classList.remove('hidden');
+
+  let i = 0;
+  $('loading-msg').textContent = LOAD_MSGS[0];
+  clearInterval(loadMsgTimer);
+  loadMsgTimer = setInterval(() => {
+    i = (i + 1) % LOAD_MSGS.length;
+    $('loading-msg').textContent = LOAD_MSGS[i];
+  }, 1100);
+}
+
+function showError(msg) {
+  clearInterval(loadMsgTimer);
+  loadingPhase.classList.add('hidden');
+  searchPhase.classList.remove('hidden');
+  // Show inline error under search
+  let err = document.querySelector('.error-wrap');
+  if (!err) {
+    err = document.createElement('div');
+    err.className = 'error-wrap';
+    $('chips').after(err);
+  }
+  err.textContent = `Couldn't load data — ${msg}. Please try again.`;
+  setTimeout(() => err?.remove(), 5000);
+}
+
+$('back-btn').addEventListener('click', () => {
+  clearInterval(loadMsgTimer);
+  resultsPhase.classList.add('hidden');
+  loadingPhase.classList.add('hidden');
+  searchPhase.classList.remove('hidden');
+  searchInput.value = '';
+  searchInput.focus();
+});
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
