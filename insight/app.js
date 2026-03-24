@@ -22,6 +22,8 @@ const INSIGHTS = {
       { title: "Systems Expose Organizational Weakness", quote: "Technology modernization often reveals deeper structural and governance flaws.", tags: ["systems","transformation","org-design"] },
       { title: "Poor Data Quality Creates Hidden Labor Costs", quote: "Bad data forces manual reconciliation and consumes analyst capacity.", tags: ["data-infrastructure","analytics"] },
       { title: "Analytics Must Answer Strategic Questions", quote: "Dashboards should drive decisions, not simply display operational metrics.", tags: ["analytics","strategy"] },
+      { title: "System Sprawl Quantifies Transformation Debt", quote: "Mapping all active systems against the core HRIS reveals the true scope of process fragmentation — the gap between official systems and actual workflows is the transformation backlog.", tags: ["systems","hr-transformation","data-infrastructure"] },
+      { title: "Knowledge Fragmentation Follows Session Fragmentation", quote: "When multiple sessions save insights to separate local files instead of a central store, the merge becomes manual labor. Knowledge architecture must account for distributed capture points or insights decay into silos.", tags: ["knowledge-management","systems-thinking","data-infrastructure"] },
     ]
   },
   "Workforce Strategy": {
@@ -40,6 +42,8 @@ const INSIGHTS = {
       { title: "HR-to-Employee Ratios Expose Strategic Misalignment", quote: "A low ratio (e.g., 1:34 vs. SHRM benchmark 1:75-100) doesn't mean overstaffing — it means headcount is concentrated in operational roles while strategic capability remains hollow. The ratio reveals where investment is going, not whether there's enough of it.", tags: ["workforce-planning","hr-transformation","metrics"] },
       { title: "Temporary Workforce Concentration Signals Institutional Avoidance", quote: "When 25% of a function is temporary or substitute staff, the organization is avoiding permanent investment in that capability. It's a structural tell.", tags: ["staffing","org-design","public-sector"] },
       { title: "Priority Hire Sequencing Is Strategy", quote: "The order in which you fill gaps determines which capabilities come online first and shapes organizational trajectory for years. Sequencing is not logistics — it's strategy.", tags: ["workforce-planning","strategy","hiring"] },
+      { title: "Retirement Pipelines Are Succession Deadlines", quote: "When 30%+ of a workforce reaches retirement eligibility within a decade, unfilled development pipelines become capability cliffs — retirement analysis is enterprise risk forecasting, not HR paperwork.", tags: ["workforce-planning","succession","strategy"] },
+      { title: "First-Year Attrition Is an Onboarding Diagnostic", quote: "When over a quarter of separations happen within the first year, the problem isn't hiring quality — it's integration design. Early attrition is a process signal, not a people signal.", tags: ["workforce-planning","onboarding","metrics"] },
     ]
   },
   "Bureaucracy & Institutional Dynamics": {
@@ -57,6 +61,8 @@ const INSIGHTS = {
       { title: "Operational Friction Erodes Trust", quote: "Bad systems gradually reduce employee confidence in leadership.", tags: ["operations","culture"] },
       { title: "Lack of Ownership Creates Failure Zones", quote: "Unclear responsibility leads to stalled initiatives.", tags: ["accountability","org-design"] },
       { title: "Special Projects Signal Structural Gaps", quote: "Work labeled \"special projects\" often represents areas the organization has not formally structured.", tags: ["org-design","transformation"] },
+      { title: "Visibility Is The Currency Of Bureaucracies", quote: "In institutional settings, work that is not logged, categorized, assigned, or connected to a recognized initiative is functionally invisible. Recognition, protection, and leverage flow less from effort itself than from whether the work is legible inside the system. Invisibility, not lack of value, is often the real failure mode for capable people in bureaucracies.", tags: ["bureaucracy","visibility","institutional-logic"] },
+      { title: "Policy Enforcement Starts Where Ambiguity Ends", quote: "Most workplace conflict around accountability is not caused by resistance alone; it is caused by soft language that leaves room for personal interpretation. Standards only become enforceable once expectations are translated into operationally clear behaviors. Leaders reduce resistance by making ambiguity expensive and clarity normal.", tags: ["bureaucracy","policy","clarity","accountability"] },
     ]
   },
   "Leadership & Influence": {
@@ -77,6 +83,9 @@ const INSIGHTS = {
       { title: "High-Performance Teams Reduce Cognitive Load", quote: "Teams that prepare decisions properly allow leaders to focus on strategy.", tags: ["leadership","management"] },
       { title: "Initiative + Judgment", quote: "Initiative is valuable only when paired with judgment.", tags: ["culture","leadership"] },
       { title: "Bilingual Leadership", quote: "The most effective transformation leaders are fluent in vision and constraint.", tags: ["leadership","transformation"] },
+      { title: "Clarity of Thinking Is Revealed Through Constraint Design", quote: "Designing tight instructions forces articulation of implicit standards. Better prompts don't just improve outputs — they sharpen the thinking that produced them.", tags: ["leadership","clarity","thinking"] },
+      { title: "People Accept Hard Truth Better When They Feel The Fairness", quote: "A tough message lands when the standard is framed as shared responsibility, customer impact, and fairness to the team rather than as irritation with individual behavior. The emotional difference between \"you failed\" and \"this is what the work requires\" determines whether accountability feels legitimate or personal. The right tone is what allows hard expectations to survive contact with people.", tags: ["leadership","accountability","communication","framing"] },
+      { title: "Reframing Is More Powerful Than Defending", quote: "When a message is likely to trigger pushback, leaders gain more by changing the frame than by piling on explanation. Positioning expectations as normal, mission-linked, and protective of service quality creates pull; over-justification invites debate on the wrong terrain. Once a leader starts defending the premise, they have already surrendered strategic ground.", tags: ["leadership","influence","framing","executive-presence"] },
     ]
   },
   "Technology & Transformation": {
@@ -93,6 +102,9 @@ const INSIGHTS = {
       { title: "Position Control Is a Strategic Choke Point", quote: "Control over position data connects budgeting, workforce planning, and analytics.", tags: ["workforce-planning","analytics"] },
       { title: "System Integrators Are Strategic Translators", quote: "Transformation leaders translate between operational needs and system capabilities.", tags: ["transformation","systems"] },
       { title: "Transformation Nodes", quote: "Hybrid analyst teams often function as internal transformation offices.", tags: ["transformation","org-design"] },
+      { title: "Route Through Working Infrastructure, Not Ideal Infrastructure", quote: "When the designed delivery channel fails, reroute through an already-connected channel rather than building a new capability. The fastest solution uses what's already live.", tags: ["systems","automation","strategy"] },
+      { title: "Self-Improving Tools Create Compound Returns", quote: "Tools that cache results from every interaction get faster over time. Design infrastructure that learns from its own operation — the more you use the system, the more valuable it becomes.", tags: ["systems","automation","knowledge-management"] },
+      { title: "AI Becomes Strategic Only When It Produces Reusable Thinking", quote: "AI shifts from tactical to strategic when outputs are heuristics and decision principles, not one-off answers — building intellectual capital, not just completing tasks.", tags: ["technology","ai-strategy","knowledge-systems"] },
     ]
   },
   "HR Transformation": {
@@ -111,6 +123,7 @@ const INSIGHTS = {
       { title: "HRBPs Are the Central Nervous System, Not a Support Function", quote: "When HRBPs are elite generalists with deep multi-specialization experience, they become the primary delivery mechanism — not a staffing line item inside one pillar. Zero filled HRBP positions means the nervous system doesn't exist yet.", tags: ["hr-transformation","org-design","hrbp"] },
       { title: "Proposed Structures Inherit Current Weaknesses", quote: "A reorganization that moves existing people into new boxes without addressing capability gaps produces the same output from a different address. The reorg is the skeleton; capability is the muscle.", tags: ["hr-transformation","org-design"] },
       { title: "The 20/30 Problem", quote: "When only 20% of HR staff have formal training in modern capabilities and only 30% have adopted available technology, the transformation gap isn't structural — it's human. No amount of reorganization fixes an upskilling deficit.", tags: ["hr-transformation","training","change-management"] },
+      { title: "Position Descriptions Are Blueprints For The Operating Model", quote: "A position description is not just an HR compliance document; it is a design artifact that reveals what work the organization thinks matters, how roles are supposed to integrate, and where capability gaps are being hidden. Reviewing PDs strategically can expose whether the org is building clerical support, operational administration, or true transformation capacity. In HR transformation, staffing problems are often misdiagnosed when the real issue is that the role architecture itself is pointing at the wrong operating model.", tags: ["hr-transformation","org-design","role-architecture"] },
     ]
   },
   "Organizational Culture": {
@@ -137,6 +150,10 @@ const INSIGHTS = {
       { title: "Improvised Fairness Is Unfair", quote: "Without written protocols for edge cases — tech disruptions, panel interruptions, process exceptions — well-intentioned improvisation creates uneven treatment. Fairness requires systems, not goodwill.", tags: ["process-design","compliance","hr-transformation"] },
       { title: "Operational Dignity Matters", quote: "Employees judge leadership credibility by the quality of operational systems.", tags: ["operations","culture"] },
       { title: "Systems Should Reduce Cognitive Load", quote: "Good processes simplify work rather than complicate it.", tags: ["process-design","systems"] },
+      { title: "Systems Drift Toward Overproduction Without Constraints", quote: "Analytical systems produce more outputs by default — quality requires artificial scarcity enforced through explicit count limits and exclusion criteria.", tags: ["process-design","signal-vs-noise","constraints"] },
+      { title: "Evaluation Criteria Must Be Embedded, Not Implied", quote: "Stating evaluation gates explicitly (e.g., \"Would this change a future decision?\") turns subjective quality judgment into a repeatable filter. Implicit standards don't hold.", tags: ["process-design","frameworks","decision-filters"] },
+      { title: "Acknowledgment Prevents More Escalation Than Resolution Speed", quote: "Customers usually tolerate delay better than silence. A simple acknowledgment, ETA, and categorization discipline often protects trust more effectively than trying to solve everything immediately. Many service problems are actually communication design problems, not throughput problems.", tags: ["process-design","customer-service","communication-systems"] },
+      { title: "Hybrid Work Fails At The Point Of Experience, Not Policy", quote: "Telecommuting becomes fragile when the lived experience for coworkers and customers is materially worse than being in person. The real standard for remote work is not permission to be remote; it is whether the interaction quality, responsiveness, and visibility remain comparable to onsite work. This shifts hybrid management from ideology into a design test based on experience quality.", tags: ["process-design","hybrid-work","service-quality"] },
     ]
   },
   "Strategy & Institutional Change": {
@@ -149,6 +166,9 @@ const INSIGHTS = {
       { title: "Parallel Tracks Enable Change", quote: "Innovation and compliance must move together in public-sector environments.", tags: ["public-sector","strategy"] },
       { title: "Design Around Institutional Slowness", quote: "When enterprise systems consistently lag, build fallback architectures rather than waiting for resolution. Dependency on slow systems without a Plan B transfers risk to your own deliverables.", tags: ["strategy","public-sector","systems"] },
       { title: "Strategic Work Often Hides in Operational Language", quote: "Transformation efforts are frequently mislabeled as routine administrative work.", tags: ["leadership","org-design"] },
+      { title: "Knowledge Systems Require Curation, Not Accumulation", quote: "A knowledge system's value comes from what it excludes as much as what it holds. Systems that accumulate without active filtering degrade over time.", tags: ["strategy","knowledge-management","curation"] },
+      { title: "Build On The Core Before The Future", quote: "Enterprise transformation fails when leaders try to layer visionary capabilities on top of unstable transactional foundations. The smarter sequence is to stabilize the system that pays people, governs records, and defines truth before selling the future-state architecture. Transformation sequencing itself is strategic, and credibility is lost when advanced capabilities are built on contested operational truth.", tags: ["strategy","sequencing","enterprise-change"] },
+      { title: "Governance Beats Heroics", quote: "When multiple groups interpret the same operational dataset independently, the organization creates parallel truths, duplicated effort, and policy risk. Durable progress comes from coordinated governance over data access, definitions, and reporting ownership rather than from individual teams working harder. In complex organizations, ambiguity in governance produces recurring friction that no amount of individual effort can solve.", tags: ["strategy","governance","data-strategy"] },
     ]
   },
   "Personal Strategic Philosophy": {
@@ -167,6 +187,8 @@ const INSIGHTS = {
       { title: "The Gap Between Philosophy and Workforce Is the Real Gap", quote: "Having a sophisticated organizational philosophy means nothing if the workforce lacks the baseline capability to execute it. Vision without bench strength is just aspiration.", tags: ["strategy","leadership","workforce-planning"] },
       { title: "Reorgs Are Scaffolding — Culture Is the Building", quote: "Accept a structural reorganization as the skeleton, then inject capability-first philosophy into how people move through it. The structure enables; the operating model determines what actually changes.", tags: ["strategy","org-design","hr-transformation"] },
       { title: "Your Model Is Your Business Case", quote: "When your personal organizational philosophy (elite HRBPs, interchangeable managers, continuous improvement, tribal accountability) can be articulated clearly against established frameworks, it becomes a competing architecture — not just an opinion. Quantify the delta and let the numbers argue.", tags: ["strategy","leadership","influence"] },
+      { title: "Insight Capture Turns Experience Into Compounding Advantage", quote: "The real asset is not the work product from any single conversation, but the transferable lessons extracted from repeated friction, tradeoffs, and decision patterns. A personal knowledge system becomes strategic when it captures judgment, not output. The highest-leverage use of AI in knowledge work is converting lived experience into durable decision intelligence.", tags: ["strategy","knowledge-compounding","judgment"] },
+      { title: "Standards Need A Narrative, Not Just A Rule", quote: "Teams are more likely to internalize discipline when expectations are tied to identity: who we are, how we work, and what kind of team we are becoming. Standards stick when they feel like belonging to a culture, not merely complying with a manager. Culture adoption happens through narrative framing, not policy language alone.", tags: ["strategy","culture-building","leadership-identity"] },
     ]
   }
 };
