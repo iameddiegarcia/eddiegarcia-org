@@ -327,6 +327,14 @@ function SkillBar({pct,color="p"}){
 function impCls(v){return v>=4?"high":v>=3?"med":"low";}
 function impPct(v){return Math.round((v/5)*100);}
 function catColor(cat){return{cognitive:"p",technical:"b",social:"b",basic:"a"}[cat]||"p";}
+function parsePct(v){
+  if(typeof v==="number"&&Number.isFinite(v))return Math.round(v);
+  if(typeof v==="string"){
+    const n=parseFloat(v.replace("%","").trim());
+    if(Number.isFinite(n))return Math.round(n);
+  }
+  return 0;
+}
 
 /* ── Insight Modal ── */
 function InsightModal({data,label,onClose,onNext}){
@@ -408,6 +416,7 @@ Rules:
 - alignment must be one of: strong, partial, gap.
 - question_focus must be one of: strength, gap.
 - severity must be one of: critical, moderate, low.
+- match_confidence must be a whole number from 0 to 100 with no percent sign.
 - Use O*NET style skills and terminology where possible.
 Return ONLY JSON.`,
         `Analyze this current job description or title and map it to O*NET:\n\n${val}`,1500
@@ -417,16 +426,18 @@ Return ONLY JSON.`,
       const rawMatches=(report.closest_matches&&report.closest_matches.length)?report.closest_matches:[primary];
       const normalizedMatches=rawMatches.map(m=>({
         ...m,
+        match_confidence:parsePct(m.match_confidence),
         code:m.code||m.onet_code,
         title:m.title||m.onet_title,
         name:m.title||m.onet_title,
         description:m.why_match||m.description||"Closest O*NET alignment for this description.",
-        tags:[m.code||m.onet_code,`${m.match_confidence||0}% match`,m.bright_outlook?"bright outlook":"classification"]
+        tags:[m.code||m.onet_code,`${parsePct(m.match_confidence)}% match`,m.bright_outlook?"bright outlook":"classification"]
       }));
+      const primaryConfidence=parsePct(primary.match_confidence)||normalizedMatches[0]?.match_confidence||0;
       setOcc({
         onet_code:primary.onet_code||primary.code||"",
         onet_title:primary.onet_title||primary.title||"Best Match",
-        match_confidence:primary.match_confidence||0,
+        match_confidence:primaryConfidence,
         description:primary.description||"",
         bright_outlook:primary.bright_outlook,
         zone:primary.zone,
