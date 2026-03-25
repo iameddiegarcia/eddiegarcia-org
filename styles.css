@@ -82,10 +82,7 @@ body {
 .narrative-scroll {
   position: relative;
   width: 100%;
-  /* We have 16 distinct text states. 
-     We'll make the scroll container very tall. 
-     e.g. 16 states * 100vh = 1600vh */
-  height: 1500vh;
+  height: 1600vh;
 }
 
 .narrative-sticky {
@@ -271,6 +268,14 @@ body {
   max-width: 800px;
   text-shadow: 0 0 10px rgba(255,255,255,0.9);
 }
+.manifesto-line {
+  font-size: clamp(0.95rem, 1.8vw, 1.2rem);
+  color: var(--text-secondary);
+  max-width: 760px;
+  margin-top: 1rem;
+  line-height: 1.6;
+  text-shadow: 0 0 10px rgba(255,255,255,0.9);
+}
 .mt-4 { margin-top: 1rem; }
 .mb-4 { margin-bottom: 1rem; }
 .mb-2 { margin-bottom: 0.5rem; }
@@ -330,12 +335,6 @@ body {
   gap: 1rem;
   margin-bottom: 1rem;
 }
-.principles-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
 .insight-engine-label {
   font-size: 0.7rem;
   font-weight: 700;
@@ -388,6 +387,147 @@ body {
   font-size: 2rem;
   color: var(--text-primary);
   display: block;
+}
+
+/* ─── Principles Module ─── */
+.principles-shell {
+  max-width: 760px;
+}
+.principles-intro {
+  margin-bottom: 1rem;
+}
+.principle-foundation,
+.principle-note {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  text-shadow: none;
+}
+.principle-note {
+  margin-top: 0.4rem;
+  color: var(--text-muted);
+}
+.principle-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+.principle-pill {
+  appearance: none;
+  border: 1px solid rgba(124, 106, 239, 0.2);
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 0.7rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: left;
+}
+.principle-pill:hover,
+.principle-pill.active {
+  color: var(--text-primary);
+  border-color: rgba(124, 106, 239, 0.45);
+  box-shadow: 0 8px 18px rgba(124, 106, 239, 0.12);
+  transform: translateY(-1px);
+}
+.principle-panel {
+  background: rgba(255,255,255,0.76);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.principle-panel-kicker {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent-1);
+  margin-bottom: 0.45rem;
+}
+.principle-panel-title {
+  font-size: 1.35rem;
+  margin-bottom: 0.5rem;
+  text-shadow: none;
+}
+.principle-panel-text {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+  text-shadow: none;
+  max-height: 11rem;
+  overflow-y: auto;
+  padding-right: 0.3rem;
+}
+
+/* ─── Proof / Signal Cards ─── */
+.signal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.signal-card {
+  background: rgba(255,255,255,0.72);
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  padding: 1rem 1rem 1.05rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  min-height: 126px;
+}
+.signal-kicker {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent-1);
+  margin-bottom: 0.4rem;
+}
+.signal-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+  line-height: 1.35;
+}
+.signal-text {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+.right-align .signal-grid,
+.right-align .engine-suite {
+  justify-content: flex-end;
+}
+
+/* ─── Unifier Chips ─── */
+.unifier-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+  max-width: 820px;
+}
+.unifier-chip {
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(124, 106, 239, 0.22);
+  background: rgba(255,255,255,0.68);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
 }
 
 /* Social Links Row */
@@ -607,6 +747,10 @@ body {
     font-size: clamp(1rem, 4vw, 1.4rem);
     max-width: 100%;
   }
+  .manifesto-line {
+    font-size: 0.95rem;
+    max-width: 100%;
+  }
 
   /* ── Glass panel: 4rem (64px) per side is too wide on mobile ── */
   .glass-panel {
@@ -626,6 +770,31 @@ body {
   /* ── Social link buttons: tighten gap ─── */
   .social-links-row {
     gap: 0.5rem;
+  }
+
+  .signal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .engine-suite {
+    flex-direction: column;
+  }
+
+  .insight-engine-card {
+    max-width: 100%;
+  }
+
+  .principle-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .principle-pill {
+    font-size: 0.68rem;
+    padding: 0.65rem 0.7rem;
+  }
+
+  .principle-panel {
+    padding: 1rem;
   }
 
   /* ── Insights chips: left-align + prevent right-edge clipping ─── */
@@ -676,6 +845,7 @@ body {
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 1.5rem;
+  max-width: 780px;
 }
 .id-chip {
   padding: 0.35rem 0.9rem;
@@ -730,8 +900,9 @@ body {
 .right-align .blurb {
   max-width: 600px;
 }
-.right-align .embedded-content {
-  max-width: 600px;
+.right-align .embedded-content,
+.left-align .embedded-content {
+  max-width: 760px;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -937,8 +1108,8 @@ body {
 
 /* ── Bug 2: Cap embedded content so it never overflows the gradient ── */
 .embedded-content {
-  max-height: 55vh;
-  overflow: hidden;
+  max-height: 62vh;
+  overflow: visible;
 }
 /* Frame 0: ensure extra clearance is never overridden */
 .narrative-frame[data-frame="0"].active {

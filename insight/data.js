@@ -111,15 +111,6 @@ window.INSIGHTS = {
           "principles",
           "leadership"
         ]
-      },
-      {
-        "title": "Kaizen",
-        "quote": "Employees should embrace the philosophy of continuous improvement. This principle encourages everyone to constantly seek ways to enhance processes, technologies, and performance. By adopting Kaizen, employees contribute to the team's objectives and drive progress through incremental changes and innovations.",
-        "tags": [
-          "kaizen",
-          "principles",
-          "leadership"
-        ]
       }
     ]
   },
