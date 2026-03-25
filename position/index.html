@@ -3,492 +3,604 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Position Intelligence Engine — Eddie Garcia</title>
-<meta name="description" content="Enter any job title and get real O*NET skill requirements, emerging demands, and role intelligence."/>
+<title>Position Intelligence Engine — EG.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-<script defer src="/_vercel/insights/script.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#f9fafb;
-  --white:#ffffff;
-  --border:rgba(0,0,0,0.08);
-  --border2:rgba(0,0,0,0.12);
-  --text:#111827;
-  --text2:#374151;
-  --text3:#6b7280;
-  --text4:#9ca3af;
-  --purple:#7c6aef;
-  --purple2:#c06aef;
-  --pink:#ef6a9a;
+  --bg:#f9fafb;--white:#ffffff;
+  --text:rgb(17,24,39);--text2:rgb(75,85,99);--text3:rgb(107,114,128);
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.15);
+  --a1:#7c6aef;--a2:#c06aef;--a3:#ef6a9a;
   --grad:linear-gradient(135deg,#7c6aef,#c06aef,#ef6a9a);
-  --radius:14px;
-  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
-  --shadow-md:0 4px 16px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
-  --shadow-lg:0 20px 60px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.08);
+  --glow:radial-gradient(circle,rgba(124,106,239,0.12) 0%,rgba(192,106,239,0.06) 40%,transparent 70%);
+  --rc:14px;--rm:22px;--rb:8px;--rt:100px;
 }
-body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
-::-webkit-scrollbar{width:5px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:16px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
 
-/* ── NAV ── */
-.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;position:sticky;top:0;background:rgba(249,250,251,0.92);backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--border);}
-.nav-back{display:flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;font-weight:500;text-decoration:none;letter-spacing:0.05em;text-transform:uppercase;transition:color 0.15s;}
+/* NAV */
+header{display:flex;align-items:center;justify-content:space-between;padding:32px;max-width:1200px;margin:0 auto;}
+.nav-back{font-size:13px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;text-decoration:none;transition:color .15s;}
 .nav-back:hover{color:var(--text);}
-.nav-back svg{width:14px;height:14px;}
-.nav-title{font-size:12px;font-weight:500;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;}
-.nav-badge{font-size:11px;font-weight:500;color:var(--purple);background:rgba(124,106,239,0.08);border:1px solid rgba(124,106,239,0.2);border-radius:20px;padding:3px 10px;letter-spacing:0.03em;}
+.theme-toggle{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:rgba(0,0,0,.04);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.theme-toggle:hover{background:rgba(0,0,0,.08);}
 
-/* ── HERO ── */
-.hero{position:relative;text-align:center;padding:72px 32px 48px;overflow:hidden;}
-.hero::before{content:'';position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:radial-gradient(circle,rgba(124,106,239,0.1) 0%,rgba(192,106,239,0.05) 45%,transparent 70%);pointer-events:none;}
-.hero-inner{position:relative;z-index:1;max-width:580px;margin:0 auto;}
-.hero-label{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--purple);margin-bottom:18px;}
-.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(38px,5.5vw,60px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:16px;letter-spacing:-0.01em;}
-.hero-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.hero-sub{font-size:14px;color:var(--text3);font-weight:300;line-height:1.7;max-width:400px;margin:0 auto;}
+/* HERO */
+.hero{position:relative;text-align:center;padding:60px 32px 80px;overflow:hidden;}
+.hero-glow{position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:700px;height:500px;background:var(--glow);pointer-events:none;z-index:0;}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto;}
+.hero-label{font-size:12px;font-weight:700;color:var(--a1);letter-spacing:3px;text-transform:uppercase;margin-bottom:24px;}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(40px,6vw,67px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:20px;}
+.grad-text{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:italic;}
+.hero-sub{font-size:17px;color:var(--text2);line-height:1.65;max-width:500px;margin:0 auto 32px;}
+.scroll-cue{font-size:13px;color:var(--text3);cursor:pointer;transition:color .15s;display:inline-flex;align-items:center;gap:6px;}
+.scroll-cue:hover{color:var(--text2);}
 
-/* ── SEARCH ── */
-.search-wrap{max-width:560px;margin:40px auto 0;padding:0 32px;position:relative;}
-.search-input-row{position:relative;}
-input.search-input{
-  width:100%;background:var(--white);border:1px solid var(--border2);border-radius:40px;
-  color:var(--text);font-size:15px;font-weight:300;padding:16px 56px 16px 24px;
-  outline:none;transition:border-color 0.2s,box-shadow 0.2s;box-shadow:var(--shadow-md);
-  font-family:'Inter',sans-serif;
-}
-input.search-input::placeholder{color:var(--text4);}
-input.search-input:focus{border-color:rgba(124,106,239,0.4);box-shadow:0 0 0 3px rgba(124,106,239,0.08),var(--shadow-md);}
-.search-icon{position:absolute;right:20px;top:50%;transform:translateY(-50%);color:var(--text4);pointer-events:none;}
-.search-icon svg{width:18px;height:18px;}
+/* INPUT */
+.input-zone{max-width:640px;margin:0 auto;padding:0 32px 56px;}
+.field-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:block;}
+textarea{width:100%;background:var(--white);border:1px solid var(--border2);border-radius:var(--rc);color:var(--text);font-family:Inter,sans-serif;font-size:15px;font-weight:300;line-height:1.65;padding:18px 20px;resize:none;height:100px;outline:none;transition:border-color .2s,box-shadow .2s;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+textarea::placeholder{color:rgba(107,114,128,.6);}
+textarea:focus{border-color:rgba(124,106,239,.5);box-shadow:0 0 0 3px rgba(124,106,239,.08);}
 
-/* ── DROPDOWN ── */
-.dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--white);border:1px solid var(--border2);border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:200;overflow:hidden;}
-.dropdown.hidden{display:none;}
-.drop-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;transition:background 0.12s;border-bottom:1px solid rgba(0,0,0,0.04);}
-.drop-item:last-child{border-bottom:none;}
-.drop-item:hover{background:rgba(124,106,239,0.04);}
-.drop-code{font-size:11px;color:var(--text4);font-variant-numeric:tabular-nums;flex-shrink:0;font-family:monospace;}
-.drop-title{font-size:13px;color:var(--text);font-weight:500;flex:1;}
-.drop-outlook{font-size:10px;font-weight:600;color:var(--purple);background:rgba(124,106,239,0.08);border-radius:10px;padding:2px 7px;letter-spacing:0.04em;flex-shrink:0;}
-.drop-empty{padding:18px;text-align:center;color:var(--text4);font-size:13px;}
+/* CHIPS */
+.chips-label{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:16px 0 10px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.chip{padding:6px 14px;background:var(--white);border:1px solid var(--border);border-radius:var(--rt);font-size:13px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:Inter,sans-serif;}
+.chip:hover,.chip.active{border-color:rgba(124,106,239,.35);color:var(--a1);background:rgba(124,106,239,.05);}
 
-/* ── CHIPS ── */
-.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:20px 0 0;padding:0 32px;max-width:560px;margin-left:auto;margin-right:auto;}
-.chip{font-size:12px;color:var(--text3);background:var(--white);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;cursor:pointer;transition:all 0.15s;}
-.chip:hover{border-color:rgba(124,106,239,0.4);color:var(--purple);}
-
-/* ── LOADING ── */
-.loading-wrap{text-align:center;padding:64px 32px;}
-.loading-spinner{width:36px;height:36px;border:2px solid rgba(124,106,239,0.15);border-top-color:var(--purple);border-radius:50%;animation:spin 0.75s linear infinite;margin:0 auto 16px;}
+/* BUTTON */
+.btn-run{width:100%;padding:14px 24px;background:var(--grad);color:#fff;border:none;border-radius:var(--rb);font-family:Inter,sans-serif;font-size:14px;font-weight:600;letter-spacing:.02em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:opacity .15s,transform .1s;box-shadow:0 4px 14px rgba(124,106,239,.3);}
+.btn-run:hover:not(:disabled){opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,106,239,.4);}
+.btn-run:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+.kbd{font-size:11px;opacity:.5;font-weight:400;font-family:monospace;}
+.spinner{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;flex-shrink:0;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.loading-track{width:180px;height:2px;background:rgba(0,0,0,0.06);border-radius:1px;margin:12px auto 0;overflow:hidden;}
-.loading-fill{height:100%;background:var(--grad);animation:scan 1.8s ease-in-out infinite;}
-@keyframes scan{0%{width:0;margin-left:0}50%{width:60%;margin-left:20%}100%{width:0;margin-left:100%}}
-.loading-msg{font-size:11px;color:var(--text4);letter-spacing:0.1em;text-transform:uppercase;margin-top:10px;}
 
-/* ── ERROR ── */
-.error-wrap{max-width:480px;margin:40px auto;padding:16px 20px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);font-size:13px;color:#dc2626;text-align:center;}
+/* LOADING */
+.loading{max-width:400px;margin:0 auto;padding:48px 32px;text-align:center;display:none;}
+.loading.show{display:block;}
+.load-track{height:1px;background:rgba(0,0,0,.08);overflow:hidden;margin-bottom:16px;}
+.load-fill{height:100%;background:var(--grad);animation:scan 1.8s ease-in-out infinite;}
+@keyframes scan{0%{width:0;margin-left:0}50%{width:55%;margin-left:22%}100%{width:0;margin-left:100%}}
+.load-msg{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:2px;text-transform:uppercase;}
 
-/* ── RESULTS ── */
-.results-wrap{max-width:900px;margin:0 auto;padding:0 32px 80px;}
-.results-back{display:inline-flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;letter-spacing:0.05em;text-transform:uppercase;padding:24px 0;transition:color 0.15s;}
-.results-back:hover{color:var(--text);}
-.results-back svg{width:13px;height:13px;}
+/* ERROR */
+.err{max-width:640px;margin:0 auto;padding:0 32px 32px;display:none;}
+.err.show{display:block;}
+.err-bar{padding:14px 16px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--rb);font-size:13px;color:#dc2626;}
 
-/* ── OCC CARD ── */
-.occ-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
-.occ-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
-.occ-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
-.occ-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(24px,3vw,36px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:14px;}
-.occ-pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;}
-.occ-pill{font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:20px;padding:3px 10px;}
-.occ-pill.accent{background:rgba(124,106,239,0.07);border-color:rgba(124,106,239,0.2);color:var(--purple);}
-.occ-desc{font-size:13px;color:var(--text3);font-weight:300;line-height:1.75;}
+/* SECTION WRAP */
+.section-wrap{max-width:1100px;margin:0 auto;padding:0 32px 80px;}
+.sec-hd{text-align:center;margin-bottom:40px;}
+.sec-hd h2{font-family:'Playfair Display',Georgia,serif;font-size:clamp(28px,4vw,38px);font-weight:700;color:var(--text);margin-bottom:10px;}
+.sec-hd p{font-size:16px;color:var(--text2);}
 
-/* ── SECTION HEADER ── */
-.sec-hd{margin-bottom:14px;}
-.sec-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:3px;}
-.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:600;color:var(--text);}
+/* GRIDS */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:840px){.grid-3{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.grid-3,.grid-2{grid-template-columns:1fr;}}
+@media(max-width:680px){.grid-2{grid-template-columns:1fr;}}
 
-/* ── SKILLS ── */
-.skills-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow);}
-.skill-row{padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.045);}
-.skill-row:last-child{border-bottom:none;padding-bottom:0;}
-.skill-row:first-child{padding-top:0;}
-.skill-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
-.skill-name{font-size:13px;font-weight:500;color:var(--text);}
-.skill-val{font-size:12px;font-weight:600;color:var(--text3);}
-.skill-track{height:4px;background:rgba(0,0,0,0.06);border-radius:2px;overflow:hidden;}
-.skill-fill{height:100%;background:linear-gradient(90deg,#7c6aef,#c06aef);border-radius:2px;width:0;transition:width 0.9s cubic-bezier(0.4,0,0.2,1);}
+/* TOPIC CARD */
+.topic-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rc);padding:28px 24px;cursor:pointer;transition:border-color .2s,box-shadow .2s,transform .15s;}
+.topic-card:hover{border-color:rgba(124,106,239,.25);box-shadow:0 8px 24px rgba(124,106,239,.1);transform:translateY(-2px);}
+.card-icon{width:44px;height:44px;background:rgba(124,106,239,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px;}
+.card-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3;}
+.card-desc{font-size:14px;color:var(--text2);line-height:1.55;margin-bottom:12px;}
+.card-count{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;}
 
-/* ── EMERGING ── */
-.emerging-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow);}
-.em-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.045);}
-.em-row:first-child{padding-top:0;}
-.em-row:last-child{border-bottom:none;padding-bottom:0;}
-.em-num{font-size:11px;font-weight:600;color:var(--purple);width:20px;flex-shrink:0;padding-top:1px;font-variant-numeric:tabular-nums;}
-.em-text{font-size:13px;color:var(--text2);font-weight:300;line-height:1.55;}
+/* RESULTS */
+.results{max-width:1100px;margin:0 auto;padding:0 32px 80px;display:none;}
+.results.show{display:block;}
+.occ-hd{text-align:center;padding:48px 0 40px;border-bottom:1px solid var(--border);margin-bottom:48px;}
+.occ-label{font-size:12px;font-weight:700;color:var(--a1);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.occ-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(30px,5vw,52px);font-weight:700;color:var(--text);line-height:1.15;margin-bottom:16px;}
+.occ-pills{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.pill{font-size:12px;color:var(--text3);background:rgba(0,0,0,.04);border:1px solid var(--border);border-radius:var(--rt);padding:4px 12px;}
+.pill.a{background:rgba(124,106,239,.08);border-color:rgba(124,106,239,.2);color:var(--a1);}
+.occ-desc{font-size:15px;color:var(--text2);line-height:1.65;max-width:480px;margin:0 auto 20px;}
+.conf-lbl{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.conf-track{width:180px;height:2px;background:rgba(0,0,0,.08);margin:0 auto 5px;overflow:hidden;}
+.conf-fill{height:100%;background:var(--grad);transition:width .8s ease;}
+.conf-pct{font-size:13px;font-weight:600;color:var(--a1);}
+.alts{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:18px;}
+.alts-lbl{font-size:11px;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.alt-btn{font-size:12px;color:var(--text2);padding:4px 12px;border:1px solid var(--border);border-radius:var(--rt);background:var(--white);cursor:pointer;transition:all .12s;font-family:Inter,sans-serif;}
+.alt-btn:hover{border-color:rgba(124,106,239,.35);color:var(--a1);}
 
-/* ── INTEL BRIEF ── */
-.brief-card{background:var(--grad);border-radius:var(--radius);padding:28px 32px;margin-bottom:20px;box-shadow:0 8px 32px rgba(124,106,239,0.2);}
-.brief-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:10px;}
-.brief-title{font-family:'Playfair Display',Georgia,serif;font-size:18px;font-weight:600;color:#fff;line-height:1.4;}
+/* STAT STRIP */
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:56px;}
+.stat-block{background:var(--white);border:1px solid var(--border);border-radius:var(--rc);padding:24px;text-align:center;}
+.stat-num{font-family:'Playfair Display',Georgia,serif;font-size:44px;font-weight:700;color:var(--text);line-height:1;margin-bottom:6px;}
+.stat-num.g{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.stat-lbl{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;}
 
-/* ── FOOTER ── */
-.foot{text-align:center;padding:24px 32px 48px;font-size:11px;color:var(--text4);}
-.foot a{color:var(--text3);text-decoration:none;}
-.foot a:hover{color:var(--purple);}
+/* RESULTS SECTION HEADER */
+.r-hd{text-align:center;margin-bottom:28px;}
+.r-hd h3{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.r-hd p{font-size:14px;color:var(--text3);}
+.r-hd.left{text-align:left;}
 
-/* ── UTILS ── */
-.hidden{display:none!important;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.fu{animation:fadeUp 0.35s ease-out both;}
-.fu1{animation-delay:0.04s;} .fu2{animation-delay:0.1s;} .fu3{animation-delay:0.16s;} .fu4{animation-delay:0.22s;}
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:24px;animation:fadeO .2s ease;}
+.overlay.show{display:flex;}
+@keyframes fadeO{from{opacity:0}to{opacity:1}}
+.modal{background:var(--white);border:1px solid rgba(0,0,0,.15);border-radius:var(--rm);padding:40px 36px 32px;max-width:520px;width:100%;position:relative;animation:slideM .25s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 64px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.06);}
+@keyframes slideM{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:6px;border:none;background:none;color:var(--text3);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:background .12s,color .12s;}
+.modal-close:hover{background:rgba(0,0,0,.06);color:var(--text);}
+.modal-cat{font-size:11px;font-weight:700;color:var(--a2);letter-spacing:2.2px;text-transform:uppercase;margin-bottom:12px;}
+.modal-title{font-family:'Playfair Display',Georgia,serif;font-size:25px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:16px;}
+.modal-quote{border-left:3px solid var(--a1);padding-left:16px;margin-bottom:20px;}
+.modal-quote p{font-size:17px;font-weight:400;font-style:italic;color:var(--text2);line-height:1.65;}
+.sk-row{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.06);}
+.sk-row:last-child{border-bottom:none;}
+.sk-name{font-size:13px;color:var(--text2);width:36%;flex-shrink:0;}
+.sk-track{flex:1;height:3px;background:rgba(0,0,0,.06);border-radius:2px;overflow:hidden;}
+.sk-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(.4,0,.2,1);}
+.sk-fill.p{background:var(--a1);}.sk-fill.k{background:var(--a2);}.sk-fill.a{background:#d97706;}
+.sk-score{font-size:12px;color:var(--text3);width:36px;text-align:right;flex-shrink:0;}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.tag{font-size:11px;font-weight:600;border-radius:var(--rt);padding:4px 10px;border:1px solid;}
+.tag.purple{background:rgba(124,106,239,.1);color:var(--a1);border-color:rgba(124,106,239,.15);}
+.tag.pink{background:rgba(192,106,239,.1);color:var(--a2);border-color:rgba(192,106,239,.15);}
+.tag.red{background:rgba(220,38,38,.07);color:#dc2626;border-color:rgba(220,38,38,.15);}
+.tag.amber{background:rgba(217,119,6,.08);color:#d97706;border-color:rgba(217,119,6,.15);}
+.tag.green{background:rgba(22,163,74,.08);color:#16a34a;border-color:rgba(22,163,74,.15);}
+.share-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.share-lbl{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:1px;text-transform:uppercase;}
+.share-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:rgba(0,0,0,.03);color:var(--text3);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;font-family:Inter,sans-serif;transition:background .12s;}
+.share-btn:hover{background:rgba(0,0,0,.08);color:var(--text);}
+.modal-actions{display:flex;gap:10px;}
+.btn-another{flex:1;padding:11px 20px;background:var(--grad);color:#fff;border:none;border-radius:var(--rb);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s;box-shadow:0 4px 12px rgba(124,106,239,.3);font-family:Inter,sans-serif;}
+.btn-another:hover{opacity:.88;}
+.btn-copy{padding:11px 20px;background:rgba(0,0,0,.04);color:var(--text2);border:1px solid rgba(0,0,0,.08);border-radius:var(--rb);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:7px;transition:background .12s;font-family:Inter,sans-serif;}
+.btn-copy:hover{background:rgba(0,0,0,.08);}
 
-/* ── RESPONSIVE ── */
-@media(max-width:600px){
-  .nav{padding:16px 20px;}
-  .nav-title{display:none;}
-  .hero{padding:48px 20px 32px;}
-  .search-wrap{padding:0 20px;}
-  .chips{padding:0 20px;}
-  .results-wrap{padding:0 20px 64px;}
-  .occ-card{padding:22px 20px;}
-  .skills-card,.emerging-card,.brief-card{padding:20px;}
-}
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:28px 32px;text-align:center;}
+.foot-main{font-size:13px;color:var(--text3);margin-bottom:10px;}
+.foot-onet{font-size:11.5px;color:var(--text3);line-height:1.7;max-width:620px;margin:0 auto;}
+.foot-onet strong{font-weight:600;color:var(--text2);}
+.foot-onet a{color:var(--a1);text-decoration:none;}
+.foot-onet a:hover{text-decoration:underline;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fu{animation:fadeUp .4s ease-out both;}
+.d1{animation-delay:.05s;}.d2{animation-delay:.1s;}.d3{animation-delay:.15s;}
+.d4{animation-delay:.2s;}.d5{animation-delay:.25s;}.d6{animation-delay:.3s;}
+
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.12);border-radius:3px;}
+@media(max-width:600px){header,.hero,.input-zone,.section-wrap,.results,footer{padding-left:20px;padding-right:20px;}.stat-strip{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <a href="/" class="nav-back">
-    <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
-    Portfolio
-  </a>
-  <span class="nav-title">Position Intelligence Engine</span>
-  <span class="nav-badge">O*NET 30.2</span>
-</nav>
+<header>
+  <a class="nav-back" href="https://eddiegarcia.org">← Portfolio</a>
+  <button class="theme-toggle" title="Toggle theme" onclick="toggleTheme()">☀</button>
+</header>
 
-<!-- ── SEARCH PHASE ── -->
-<div id="search-phase">
-  <div class="hero">
-    <div class="hero-inner">
-      <div class="hero-label">Position Intelligence Engine</div>
-      <h1 class="hero-title">What does this <em>role actually</em> require?</h1>
-      <p class="hero-sub">Real skill data from O*NET — the U.S. Department of Labor's authoritative occupational database.</p>
-    </div>
-  </div>
-
-  <div class="search-wrap">
-    <div class="search-input-row">
-      <input type="text" id="search-input" class="search-input" placeholder="Type a job title…" autocomplete="off" spellcheck="false"/>
-      <span class="search-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
-      </span>
-      <div id="dropdown" class="dropdown hidden"></div>
-    </div>
-  </div>
-
-  <div class="chips" id="chips">
-    <button class="chip" data-q="HR Manager">HR Manager</button>
-    <button class="chip" data-q="Training Manager">Training Manager</button>
-    <button class="chip" data-q="Management Analyst">Management Analyst</button>
-    <button class="chip" data-q="Budget Analyst">Budget Analyst</button>
-    <button class="chip" data-q="Operations Research Analyst">Operations Analyst</button>
-    <button class="chip" data-q="Compensation Manager">Compensation Manager</button>
-    <button class="chip" data-q="Program Manager">Program Manager</button>
+<div class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <p class="hero-label">Position Intelligence Engine</p>
+    <h1 class="hero-title">What position are you<br><span class="grad-text">hiring for?</span></h1>
+    <p class="hero-sub">Enter a job title or paste a position description. The engine surfaces the O*NET skill profile, emerging gaps, and manager intelligence — grounded in data, not gut feeling.</p>
+    <span class="scroll-cue" onclick="document.getElementById('input-anchor').scrollIntoView({behavior:'smooth'})">Explore Positions ↓</span>
   </div>
 </div>
 
-<!-- ── LOADING PHASE ── -->
-<div id="loading-phase" class="hidden">
-  <div class="loading-wrap">
-    <div class="loading-spinner"></div>
-    <div class="loading-track"><div class="loading-fill"></div></div>
-    <div class="loading-msg" id="loading-msg">Searching O*NET database…</div>
-  </div>
+<div class="input-zone" id="input-anchor">
+  <label class="field-label">Position Title or Description</label>
+  <textarea id="posInput" placeholder='"Senior Data Analyst" — or paste a full position description…'></textarea>
+  <div class="chips-label">Explore Positions</div>
+  <div class="chips" id="chips"></div>
+  <button class="btn-run" id="runBtn" onclick="runEngine()">
+    Run the Engine <span class="kbd">Ctrl+Enter</span>
+  </button>
 </div>
 
-<!-- ── RESULTS PHASE ── -->
-<div id="results-phase" class="hidden">
-  <div class="results-wrap">
-    <button class="results-back" id="back-btn">
-      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 2L4 7l5 5"/></svg>
-      New Search
-    </button>
-
-    <div id="occ-card" class="occ-card fu"></div>
-
-    <div id="skills-section" class="hidden fu fu1">
-      <div class="sec-hd">
-        <div class="sec-label">Core Requirements</div>
-        <div class="sec-title">Key Skills by Importance</div>
-      </div>
-      <div class="skills-card" id="skills-list"></div>
-    </div>
-
-    <div id="emerging-section" class="hidden fu fu2">
-      <div class="sec-hd">
-        <div class="sec-label">What's Changing</div>
-        <div class="sec-title">Emerging Demands</div>
-      </div>
-      <div class="emerging-card" id="emerging-list"></div>
-    </div>
-  </div>
+<div class="loading" id="loading">
+  <div class="load-track"><div class="load-fill"></div></div>
+  <div class="load-msg" id="loadMsg">Searching O*NET database…</div>
 </div>
 
-<footer class="foot">
-  Data sourced from <a href="https://www.onetcenter.org" target="_blank" rel="noopener">O*NET Web Services</a> by the U.S. Department of Labor, Employment and Training Administration.
+<div class="err" id="errWrap">
+  <div class="err-bar" id="errMsg"></div>
+</div>
+
+<div class="section-wrap" id="topicsSection">
+  <div class="sec-hd">
+    <h2>Choose Your Position</h2>
+    <p>Each position surfaces O*NET-backed skill profiles drawn from U.S. labor market data.</p>
+  </div>
+  <div class="grid-3" id="topicsGrid"></div>
+</div>
+
+<div class="results" id="resultsSection"></div>
+
+<footer>
+  <p class="foot-main">Position Intelligence Engine — Strategic clarity, grounded in data.</p>
+  <p class="foot-onet">
+    This site incorporates information from <strong>O*NET Web Services</strong> by the
+    <a href="https://www.dol.gov/agencies/eta" target="_blank" rel="noreferrer">U.S. Department of Labor, Employment and Training Administration (USDOL/ETA)</a>.
+    O*NET® is a trademark of USDOL/ETA. &nbsp;
+    <a href="https://services.onetcenter.org/" target="_blank" rel="noreferrer">O*NET Web Services</a>
+    &nbsp;·&nbsp; <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC-BY 4.0</a>
+    &nbsp;·&nbsp; Data release 30.2 &nbsp;·&nbsp; Updated February 2026
+  </p>
 </footer>
 
-<script>
-const ZONE_LABELS = {
-  1: 'Little or No Preparation',
-  2: 'Some Preparation Needed',
-  3: 'Medium Preparation',
-  4: 'Considerable Preparation',
-  5: 'Extensive Preparation'
-};
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-cat" id="mCat"></div>
+    <h3 class="modal-title" id="mTitle"></h3>
+    <div class="modal-quote" id="mQuote" style="display:none"><p id="mQuoteText"></p></div>
+    <div id="mSkills"></div>
+    <div class="modal-tags" id="mTags"></div>
+    <div class="share-row">
+      <span class="share-lbl">Share</span>
+      <button class="share-btn" onclick="share('x')" title="Share on X">𝕏</button>
+      <button class="share-btn" onclick="share('li')" title="Share on LinkedIn">in</button>
+      <button class="share-btn" onclick="share('fb')" title="Share on Facebook">f</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-another" onclick="nextModal()">↺ Another Insight</button>
+      <button class="btn-copy" id="copyBtn" onclick="copyModal()">⎘ Copy</button>
+    </div>
+  </div>
+</div>
 
-const LOAD_MSGS = [
-  'Searching O*NET database…',
-  'Matching occupation codes…',
-  'Pulling skill ratings…',
-  'Identifying emerging demands…',
-  'Building intelligence report…'
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+// Calls /api/claude — the Vercel edge function proxy (no CORS, no exposed key)
+const API_URL = '/api/claude';
+
+const POSITIONS = [
+  {title:"Project Manager",       icon:"🗂",  desc:"Scope, schedule, and delivery across teams."},
+  {title:"Software Developer",    icon:"💻",  desc:"Code, architecture, and engineering practice."},
+  {title:"HR Specialist",         icon:"👥",  desc:"People operations, compliance, and talent."},
+  {title:"Budget Analyst",        icon:"📊",  desc:"Financial planning, forecasting, and controls."},
+  {title:"Operations Analyst",    icon:"⚙️",  desc:"Process optimization and workflow strategy."},
+  {title:"Training Manager",      icon:"🎓",  desc:"L&D program design, delivery, and evaluation."},
+  {title:"Management Analyst",    icon:"🔍",  desc:"Org efficiency, strategy, and recommendations."},
+  {title:"Cybersecurity Analyst", icon:"🔒",  desc:"Threat detection, risk management, compliance."},
+  {title:"Data Scientist",        icon:"🧪",  desc:"Modeling, ML, and statistical analysis at scale."},
 ];
 
-let searchTimer = null;
-let loadMsgTimer = null;
+const MSGS = [
+  "Searching O*NET database…","Matching occupation codes…",
+  "Pulling skill importance ratings…","Identifying emerging competencies…",
+  "Running gap analysis…","Generating manager intelligence…"
+];
 
-const $ = id => document.getElementById(id);
-const searchPhase  = $('search-phase');
-const loadingPhase = $('loading-phase');
-const resultsPhase = $('results-phase');
-const searchInput  = $('search-input');
-const dropdown     = $('dropdown');
+// ── STATE ──────────────────────────────────────────────────────────────────
+let loadInterval = null;
+let modalItems = [];
+let modalIdx = 0;
 
-// ── API helper ──
-async function onet(path, params = {}) {
-  const qs = new URLSearchParams({ path, ...params }).toString();
-  const r = await fetch(`/api/onet?${qs}`);
-  if (!r.ok) {
-    const err = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
-    throw new Error(err.error || `Request failed: ${r.status}`);
-  }
-  return r.json();
-}
-
-// ── Search / dropdown ──
-searchInput.addEventListener('input', () => {
-  clearTimeout(searchTimer);
-  const q = searchInput.value.trim();
-  if (q.length < 2) { hideDropdown(); return; }
-  searchTimer = setTimeout(() => runSearch(q), 280);
-});
-
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Escape') hideDropdown();
-});
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('.search-wrap')) hideDropdown();
-});
-
-$('chips').addEventListener('click', e => {
-  const chip = e.target.closest('.chip');
-  if (!chip) return;
-  searchInput.value = chip.dataset.q;
-  runSearch(chip.dataset.q);
-});
-
-async function runSearch(q) {
-  showDropdownLoading();
-  try {
-    const data = await onet('/online/search', { keyword: q, end: 12 });
-    renderDropdown(data.occupation || []);
-  } catch (e) {
-    dropdown.classList.remove('hidden');
-    dropdown.innerHTML = `<div class="drop-empty">Search unavailable — ${e.message}</div>`;
-  }
-}
-
-function showDropdownLoading() {
-  dropdown.classList.remove('hidden');
-  dropdown.innerHTML = '<div class="drop-empty">Searching…</div>';
-}
-
-function renderDropdown(items) {
-  if (!items.length) {
-    dropdown.classList.remove('hidden');
-    dropdown.innerHTML = '<div class="drop-empty">No results found — try a different title</div>';
-    return;
-  }
-  dropdown.classList.remove('hidden');
-  dropdown.innerHTML = items.map(occ => `
-    <div class="drop-item" data-code="${occ.code}" data-title="${escHtml(occ.title)}">
-      <span class="drop-code">${occ.code}</span>
-      <span class="drop-title">${escHtml(occ.title)}</span>
-      ${occ.tags?.bright_outlook ? '<span class="drop-outlook">Bright Outlook</span>' : ''}
-    </div>
-  `).join('');
-
-  dropdown.querySelectorAll('.drop-item').forEach(el => {
-    el.addEventListener('click', () => {
-      hideDropdown();
-      loadOccupation(el.dataset.code, el.dataset.title);
-    });
+// ── INIT ───────────────────────────────────────────────────────────────────
+(function init() {
+  const chips = document.getElementById('chips');
+  POSITIONS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = p.title;
+    btn.onclick = () => {
+      document.getElementById('posInput').value = p.title;
+      document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+    };
+    chips.appendChild(btn);
   });
+
+  const grid = document.getElementById('topicsGrid');
+  POSITIONS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `<div class="card-icon">${p.icon}</div><div class="card-title">${p.title}</div><div class="card-desc">${p.desc}</div><div class="card-count">6 core skills</div>`;
+    card.onclick = () => {
+      document.getElementById('posInput').value = p.title;
+      document.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.textContent === p.title));
+      runEngine();
+    };
+    grid.appendChild(card);
+  });
+
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') runEngine();
+    if (e.key === 'Escape') closeModal();
+  });
+})();
+
+// ── UTILS ──────────────────────────────────────────────────────────────────
+function safeJSON(raw) {
+  let t = raw.replace(/```json|```/g, '').trim();
+  try { return JSON.parse(t); } catch(e) {}
+  const s = t.indexOf('{'), end = t.lastIndexOf('}');
+  if (s !== -1 && end !== -1) { try { return JSON.parse(t.slice(s, end+1)); } catch(e) {} }
+  if (s !== -1) {
+    let a = t.slice(s);
+    for (let i = a.length; i > 0; i--) {
+      try {
+        const p = a.slice(0, i); let br=0,bk=0,inS=false,esc=false;
+        for (const c of p) { if(esc){esc=false;continue;} if(c==='\\'){esc=true;continue;} if(c==='"')inS=!inS; if(!inS){if(c==='{')br++;if(c==='}')br--;if(c==='[')bk++;if(c===']')bk--;} }
+        return JSON.parse(p+'}'.repeat(Math.max(0,br))+']'.repeat(Math.max(0,bk)));
+      } catch(e) { continue; }
+    }
+  }
+  throw new Error('Could not parse response');
 }
 
-function hideDropdown() {
-  dropdown.classList.add('hidden');
-  dropdown.innerHTML = '';
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-// ── Load occupation ──
-async function loadOccupation(code, knownTitle) {
-  showLoading();
-  try {
-    const [occ, skillsData, emergingData] = await Promise.all([
-      onet(`/online/occupations/${code}`),
-      onet(`/online/occupations/${code}/summary/skills`),
-      onet(`/online/occupations/${code}/summary/emerging_tasks`).catch(() => null)
-    ]);
-    renderResults(occ, skillsData, emergingData);
-  } catch (e) {
-    showError(e.message);
+async function callClaude(system, user, maxTokens = 700) {
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxTokens,
+      system,
+      messages: [{ role: 'user', content: user }]
+    })
+  });
+  if (!res.ok) throw new Error(`API error ${res.status}`);
+  const d = await res.json();
+  if (d.error) throw new Error(d.error.message || 'Unknown API error');
+  return d.content?.find(b => b.type === 'text')?.text || '{}';
+}
+
+function pct5(v) { return Math.round((v/5)*100); }
+function pct7(v) { return Math.round((v/7)*100); }
+function catColor(c) { return {cognitive:'p',technical:'p',social:'k',basic:'a'}[c]||'p'; }
+
+function setLoading(on) {
+  const el = document.getElementById('loading');
+  const msg = document.getElementById('loadMsg');
+  if (on) {
+    el.classList.add('show');
+    let i = 0;
+    loadInterval = setInterval(() => { i=(i+1)%MSGS.length; msg.textContent=MSGS[i]; }, 1300);
+  } else {
+    el.classList.remove('show');
+    clearInterval(loadInterval);
   }
 }
 
-// ── Render results ──
-function renderResults(occ, skillsData, emergingData) {
-  // Occupation card
-  const brightOutlook = occ.tags?.bright_outlook;
-  const zone = occ.job_zone;
-  $('occ-card').innerHTML = `
-    <div class="occ-label">O*NET ${occ.code}</div>
-    <div class="occ-title">${escHtml(occ.title)}</div>
-    <div class="occ-pills">
-      ${zone ? `<span class="occ-pill">${escHtml(ZONE_LABELS[zone] || `Job Zone ${zone}`)}</span>` : ''}
-      ${brightOutlook ? '<span class="occ-pill accent">★ Bright Outlook</span>' : ''}
-      ${occ.tags?.green ? '<span class="occ-pill">Green Occupation</span>' : ''}
+function setError(msg) {
+  const wrap = document.getElementById('errWrap');
+  const el = document.getElementById('errMsg');
+  if (msg) { el.textContent='⚠ '+msg; wrap.classList.add('show'); }
+  else { wrap.classList.remove('show'); }
+}
+
+// ── MAIN ENGINE ────────────────────────────────────────────────────────────
+async function runEngine() {
+  const input = document.getElementById('posInput').value.trim();
+  if (!input) return;
+  const btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Analyzing…';
+  setError(null);
+  setLoading(true);
+  document.getElementById('resultsSection').classList.remove('show');
+  try {
+    const occRaw = await callClaude(
+      'Map input to best O*NET-SOC occupation. Return ONLY compact JSON no markdown:\n{"onet_code":"15-1252.00","onet_title":"Software Developers","match_confidence":94,"description":"Under 100 chars.","alternate_matches":[{"code":"15-1253.00","title":"Software QA Analysts"}],"bright_outlook":true,"zone":4,"zone_label":"Considerable preparation needed"}\nReturn ONLY the JSON.',
+      `O*NET occupation for: "${input}"`, 500
+    );
+    const occ = safeJSON(occRaw);
+
+    const skRaw = await callClaude(
+      'Return O*NET 30.2 skill intelligence as compact JSON. No markdown. All strings under 110 chars:\n{"core_skills":[{"name":"Skill","importance":4.5,"level":4.2,"category":"cognitive"}],"foundation_skills":[{"name":"Skill","importance":3.8,"level":3.5,"category":"basic"}],"emerging_skills":[{"name":"Skill","description":"Short reason","tag":"hot"}],"gap_areas":[{"name":"Gap","severity":"critical","reason":"Short reason"}],"interview_questions":[{"question":"Question?","targets_skill":"Skill"}],"manager_insight":"Two sentences max.","top_skill_summary":"One punchy sentence."}\n6 core_skills,4 foundation_skills,4 emerging_skills,4 gap_areas,5 interview_questions. tag:hot|rising|critical. severity:critical|moderate|low. Return ONLY JSON.',
+      `Skill intelligence for: ${occ.onet_title} (${occ.onet_code})`, 1000
+    );
+    const sk = safeJSON(skRaw);
+
+    setLoading(false);
+    renderResults(occ, sk);
+  } catch(e) {
+    setLoading(false);
+    setError(e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Run the Engine <span class="kbd">Ctrl+Enter</span>';
+  }
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function renderResults(occ, sk) {
+  const critCount = (sk.gap_areas||[]).filter(g=>g.severity==='critical').length;
+  const altsHtml = (occ.alternate_matches||[]).length
+    ? `<div class="alts"><span class="alts-lbl">Also Consider</span>${occ.alternate_matches.map(m=>`<button class="alt-btn" onclick="document.getElementById('posInput').value='${escHtml(m.title)}';runEngine()">${escHtml(m.title)}</button>`).join('')}</div>` : '';
+
+  document.getElementById('resultsSection').innerHTML = `
+    <div class="occ-hd fu">
+      <div class="occ-label">Matched Occupation</div>
+      <h2 class="occ-title">${escHtml(occ.onet_title)}</h2>
+      <div class="occ-pills">
+        <span class="pill a">${escHtml(occ.onet_code)}</span>
+        <span class="pill">Zone ${occ.zone} — ${escHtml(occ.zone_label)}</span>
+        ${occ.bright_outlook?'<span class="pill a">★ Bright Outlook</span>':''}
+      </div>
+      <p class="occ-desc">${escHtml(occ.description)}</p>
+      <div class="conf-lbl">Match Confidence</div>
+      <div class="conf-track"><div class="conf-fill" id="confFill" style="width:0%"></div></div>
+      <div class="conf-pct">${occ.match_confidence}%</div>
+      ${altsHtml}
     </div>
-    <div class="occ-desc">${escHtml(occ.description || '')}</div>
+    <div class="stat-strip fu d1">
+      <div class="stat-block"><div class="stat-num g">${(sk.core_skills||[]).length}</div><div class="stat-lbl">Core Skills</div></div>
+      <div class="stat-block"><div class="stat-num">${(sk.emerging_skills||[]).length}</div><div class="stat-lbl">Emerging Skills</div></div>
+      <div class="stat-block"><div class="stat-num">${critCount}</div><div class="stat-lbl">Critical Gaps</div></div>
+    </div>
+    <div class="r-hd fu d2"><h3>Core Skills — Required Proficiency</h3><p>O*NET Importance (1–5) · Level (0–7) · Click any card to explore</p></div>
+    <div class="grid-3 fu d2" style="margin-bottom:56px">${buildSkillCards(sk.core_skills||[])}</div>
+    <div class="r-hd fu d3"><h3>Foundation Skills — Baseline Expected</h3><p>Always assumed. Rarely tested. Click to inspect.</p></div>
+    <div class="grid-3 fu d3" style="margin-bottom:56px">${buildFoundationCards(sk.foundation_skills||[])}</div>
+    <div class="r-hd fu d4"><h3>Emerging Skills — Raise the Bar Here</h3><p>Not always in JDs. Increasingly separating top performers.</p></div>
+    <div class="grid-3 fu d4" style="margin-bottom:56px">${buildEmergingCards(sk.emerging_skills||[])}</div>
+    <div class="grid-2 fu d5" style="margin-bottom:56px;align-items:start">
+      <div>
+        <div class="r-hd left"><h3>Gap Analysis</h3><p>Common weak spots. Click to examine.</p></div>
+        <div class="grid-2" style="gap:12px;margin-top:20px">${buildGapCards(sk.gap_areas||[])}</div>
+      </div>
+      <div>
+        <div class="r-hd left"><h3>Interview Probes</h3><p>Skill-targeted questions. Click to use.</p></div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:20px">${buildQCards(sk.interview_questions||[])}</div>
+      </div>
+    </div>
+    <div class="r-hd fu d6"><h3>Manager Intelligence Brief</h3><p>What separates top performers from average ones.</p></div>
+    <div class="topic-card fu d6" style="border-color:rgba(124,106,239,.2);background:rgba(124,106,239,.03);margin-bottom:40px"
+      onclick='openBrief(${JSON.stringify(escHtml(sk.top_skill_summary||"")), JSON.stringify(escHtml(sk.manager_insight||""))})'>
+      <div class="card-icon">🎯</div>
+      <div class="card-title">${escHtml(sk.top_skill_summary||'')}</div>
+      <div class="card-desc">${escHtml(sk.manager_insight||'')}</div>
+      <div class="card-count">Click to expand + share</div>
+    </div>
+    <div style="text-align:center;margin-bottom:20px">
+      <button class="btn-another" style="display:inline-flex;width:auto" onclick="resetEngine()">↺ Analyze Another Position</button>
+    </div>
   `;
 
-  // Skills
-  const elements = skillsData?.element || [];
-  const skills = elements
-    .map(el => ({ name: el.name, score: scoreVal(el.score) }))
-    .filter(s => s.score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 10);
+  document.getElementById('resultsSection').classList.add('show');
+  document.getElementById('topicsSection').style.display = 'none';
+  document.getElementById('hero').style.display = 'none';
+  setTimeout(() => { const f=document.getElementById('confFill'); if(f) f.style.width=(occ.match_confidence||0)+'%'; }, 300);
+  document.getElementById('resultsSection').scrollIntoView({behavior:'smooth',block:'start'});
 
-  if (skills.length) {
-    $('skills-list').innerHTML = skills.map(s => {
-      const pct = Math.min(100, Math.round((s.score / 5) * 100));
-      return `
-        <div class="skill-row">
-          <div class="skill-top">
-            <span class="skill-name">${escHtml(s.name)}</span>
-            <span class="skill-val">${s.score.toFixed(1)} / 5</span>
-          </div>
-          <div class="skill-track">
-            <div class="skill-fill" data-pct="${pct}"></div>
-          </div>
-        </div>
-      `;
-    }).join('');
-    $('skills-section').classList.remove('hidden');
-  }
-
-  // Emerging tasks
-  const tasks = emergingData?.task || [];
-  if (tasks.length) {
-    $('emerging-list').innerHTML = tasks.slice(0, 6).map((t, i) => `
-      <div class="em-row">
-        <span class="em-num">0${i + 1}</span>
-        <span class="em-text">${escHtml(t.name)}</span>
-      </div>
-    `).join('');
-    $('emerging-section').classList.remove('hidden');
-  }
-
-  // Show results
-  loadingPhase.classList.add('hidden');
-  searchPhase.classList.add('hidden');
-  resultsPhase.classList.remove('hidden');
-
-  // Animate skill bars after paint
-  requestAnimationFrame(() => {
-    document.querySelectorAll('.skill-fill[data-pct]').forEach(el => {
-      el.style.width = el.dataset.pct + '%';
-    });
-  });
+  // store for modal use
+  window._sk = sk;
+  window._occ = occ;
 }
 
-// ── Parse score from various O*NET shapes ──
-function scoreVal(score) {
-  if (!score) return 0;
-  if (typeof score === 'number') return score;
-  if (typeof score === 'object') {
-    // {value: 4.0} or [{value: 4.0}]
-    if (Array.isArray(score)) return scoreVal(score[0]);
-    if (score.value != null) return Number(score.value);
-  }
-  return 0;
+function buildSkillCards(skills) {
+  const all = skills.map(s=>({
+    cat:'CORE SKILL', title:s.name, quote:null,
+    skills:[{name:'Importance',pct:pct5(s.importance||0),color:catColor(s.category),score:(s.importance||0).toFixed(1)+'/5'},{name:'Level',pct:pct7(s.level||0),color:catColor(s.category),score:(s.level||0).toFixed(1)+'/7'}],
+    tags:[s.category||'skill','onet-rated'],tagColor:'purple',body:s.name
+  }));
+  return skills.map((s,i)=>`<div class="topic-card" onclick='openModal(window._sk._coreModals,${i})'><div class="card-icon">◈</div><div class="card-title">${escHtml(s.name)}</div><div class="card-desc">${escHtml(s.category||'core')} skill</div><div class="card-count">${(s.importance||0).toFixed(1)}/5 importance</div></div>`).join('');
 }
 
-// ── Phase helpers ──
-function showLoading() {
-  searchPhase.classList.add('hidden');
-  resultsPhase.classList.add('hidden');
-  $('skills-section').classList.add('hidden');
-  $('emerging-section').classList.add('hidden');
-  loadingPhase.classList.remove('hidden');
-
-  let i = 0;
-  $('loading-msg').textContent = LOAD_MSGS[0];
-  clearInterval(loadMsgTimer);
-  loadMsgTimer = setInterval(() => {
-    i = (i + 1) % LOAD_MSGS.length;
-    $('loading-msg').textContent = LOAD_MSGS[i];
-  }, 1100);
+function buildFoundationCards(skills) {
+  return skills.map((s,i)=>`<div class="topic-card" onclick='openModal(window._sk._foundModals,${i})'><div class="card-icon">◇</div><div class="card-title">${escHtml(s.name)}</div><div class="card-desc">${escHtml(s.category||'foundation')} skill</div><div class="card-count">${(s.importance||0).toFixed(1)}/5 importance</div></div>`).join('');
 }
 
-function showError(msg) {
-  clearInterval(loadMsgTimer);
-  loadingPhase.classList.add('hidden');
-  searchPhase.classList.remove('hidden');
-  // Show inline error under search
-  let err = document.querySelector('.error-wrap');
-  if (!err) {
-    err = document.createElement('div');
-    err.className = 'error-wrap';
-    $('chips').after(err);
-  }
-  err.textContent = `Couldn't load data — ${msg}. Please try again.`;
-  setTimeout(() => err?.remove(), 5000);
+function buildEmergingCards(items) {
+  const icons={hot:'🔥',rising:'↑',critical:'⚠️'};
+  return items.map((e,i)=>`<div class="topic-card" onclick='openModal(window._sk._emModals,${i})'><div class="card-icon">${icons[e.tag]||'↑'}</div><div class="card-title">${escHtml(e.name)}</div><div class="card-desc">${escHtml(e.description)}</div><div class="card-count">${(e.tag||'rising').toUpperCase()}</div></div>`).join('');
 }
 
-$('back-btn').addEventListener('click', () => {
-  clearInterval(loadMsgTimer);
-  resultsPhase.classList.add('hidden');
-  loadingPhase.classList.add('hidden');
-  searchPhase.classList.remove('hidden');
-  searchInput.value = '';
-  searchInput.focus();
+function buildGapCards(items) {
+  const icons={critical:'🔴',moderate:'🟡',low:'🟢'};
+  return items.map((g,i)=>`<div class="topic-card" onclick='openModal(window._sk._gapModals,${i})'><div class="card-icon">${icons[g.severity]||'🟡'}</div><div class="card-title">${escHtml(g.name)}</div><div class="card-desc">${escHtml(g.reason)}</div><div class="card-count">${(g.severity||'moderate').toUpperCase()}</div></div>`).join('');
+}
+
+function buildQCards(items) {
+  return items.map((q,i)=>`<div class="topic-card" onclick='openModal(window._sk._qModals,${i})'><div class="card-icon" style="font-size:15px;font-weight:700">Q${i+1}</div><div class="card-title" style="font-size:14px;font-weight:400;line-height:1.55">${escHtml(q.question)}</div><div class="card-count">↳ ${escHtml(q.targets_skill)}</div></div>`).join('');
+}
+
+// Build modal data arrays after sk is set (called post-render via window._sk)
+document.addEventListener('click', function buildModalsOnce() {
+  if (!window._sk || window._sk._built) return;
+  const sk = window._sk;
+  sk._coreModals = (sk.core_skills||[]).map(s=>({cat:'CORE SKILL',title:s.name,quote:null,skills:[{name:'Importance',pct:pct5(s.importance||0),color:catColor(s.category),score:(s.importance||0).toFixed(1)+'/5'},{name:'Level',pct:pct7(s.level||0),color:catColor(s.category),score:(s.level||0).toFixed(1)+'/7'}],tags:[s.category||'skill','onet-rated'],tagColor:'purple',body:s.name}));
+  sk._foundModals = (sk.foundation_skills||[]).map(s=>({cat:'FOUNDATION SKILL',title:s.name,quote:null,skills:[{name:'Importance',pct:pct5(s.importance||0),color:'a',score:(s.importance||0).toFixed(1)+'/5'}],tags:['foundation','onet'],tagColor:'purple',body:s.name}));
+  sk._emModals   = (sk.emerging_skills||[]).map(e=>({cat:'EMERGING SKILLS · 2025–26',title:e.name,quote:e.description,skills:[],tags:[e.tag||'rising','workforce'],tagColor:e.tag==='hot'?'amber':e.tag==='critical'?'red':'pink',body:e.description}));
+  sk._gapModals  = (sk.gap_areas||[]).map(g=>({cat:'GAP ANALYSIS',title:g.name,quote:g.reason,skills:[],tags:[g.severity||'moderate','development'],tagColor:g.severity==='critical'?'red':g.severity==='low'?'green':'amber',body:g.reason}));
+  sk._qModals    = (sk.interview_questions||[]).map((q,i)=>({cat:'INTERVIEW PROBE',title:`Q${i+1} — ${q.targets_skill}`,quote:q.question,skills:[],tags:[q.targets_skill||'skill','interview'],tagColor:'purple',body:q.question}));
+  sk._built = true;
 });
 
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;');
+function openBrief(title, body) {
+  openModal([{cat:'MANAGER INTELLIGENCE BRIEF',title,quote:body,skills:[],tags:['hiring','strategy','onet'],tagColor:'purple',body}], 0);
+}
+
+// ── MODAL ───────────────────────────────────────────────────────────────────
+function openModal(items, idx) {
+  if (!items || !items.length) return;
+  // ensure modals are built
+  if (window._sk && !window._sk._built) window._sk._coreModals && (window._sk._built=false); // trigger build
+  modalItems = items;
+  modalIdx = idx;
+  renderModal(items[idx]);
+  document.getElementById('overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderModal(data) {
+  document.getElementById('mCat').textContent = data.cat || '';
+  document.getElementById('mTitle').textContent = data.title || '';
+  const qEl = document.getElementById('mQuote');
+  if (data.quote) { document.getElementById('mQuoteText').textContent = data.quote; qEl.style.display='block'; }
+  else { qEl.style.display='none'; }
+  const skEl = document.getElementById('mSkills');
+  if (data.skills && data.skills.length) {
+    skEl.innerHTML = data.skills.map(s=>`<div class="sk-row"><span class="sk-name">${s.name}</span><div class="sk-track"><div class="sk-fill ${s.color}" style="width:0%" data-pct="${s.pct}"></div></div><span class="sk-score">${s.score}</span></div>`).join('');
+    setTimeout(()=>{ skEl.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.pct+'%'); }, 60);
+  } else { skEl.innerHTML=''; }
+  document.getElementById('mTags').innerHTML = (data.tags||[]).map(t=>`<span class="tag ${data.tagColor||'purple'}">#${t.toLowerCase().replace(/\s+/g,'-')}</span>`).join('');
+}
+
+function closeModal() {
+  document.getElementById('overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function nextModal() {
+  modalIdx = (modalIdx+1) % modalItems.length;
+  renderModal(modalItems[modalIdx]);
+}
+
+function copyModal() {
+  const data = modalItems[modalIdx];
+  const txt = `${data.title}\n\n${data.quote||data.body||''}\n\n${(data.tags||[]).map(t=>'#'+t).join(' ')}`;
+  navigator.clipboard?.writeText(txt);
+  const btn = document.getElementById('copyBtn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '✓ Copied';
+  setTimeout(()=>btn.innerHTML=orig, 1500);
+}
+
+function share(platform) {
+  const data = modalItems[modalIdx];
+  const txt = encodeURIComponent(`${data.title}\n\n${data.quote||data.body||''}`);
+  const url = encodeURIComponent(window.location.href);
+  const urls = {
+    x:`https://twitter.com/intent/tweet?text=${txt}&url=${url}`,
+    li:`https://www.linkedin.com/shareArticle?mini=true&title=${encodeURIComponent(data.title)}&summary=${txt}&url=${url}`,
+    fb:`https://www.facebook.com/sharer/sharer.php?u=${url}`
+  };
+  window.open(urls[platform],'_blank','noopener,noreferrer,width=600,height=400');
+}
+
+function resetEngine() {
+  window._sk = null; window._occ = null;
+  document.getElementById('posInput').value = '';
+  document.getElementById('resultsSection').classList.remove('show');
+  document.getElementById('topicsSection').style.display = '';
+  document.getElementById('hero').style.display = '';
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toggleTheme() {
+  document.body.classList.toggle('dark');
+  document.querySelector('.theme-toggle').textContent = document.body.classList.contains('dark') ? '☽' : '☀';
 }
 </script>
 </body>
