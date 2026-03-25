@@ -1,12 +1,12 @@
 module.exports = async function handler(req, res) {
   const { path, ...rest } = req.query;
 
-  if (!path || !path.startsWith('/ws/online/')) {
+  if (!path || !path.startsWith('/online/')) {
     return res.status(400).json({ error: 'Invalid path' });
   }
 
   const qs = new URLSearchParams(rest).toString();
-  const url = `https://services.onetcenter.org${path}${qs ? '?' + qs : ''}`;
+  const url = `https://api-v2.onetcenter.org${path}${qs ? '?' + qs : ''}`;
 
   console.log('[onet] key defined:', !!process.env.ONET_API_KEY, '| url:', url);
 

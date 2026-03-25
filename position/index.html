@@ -307,7 +307,7 @@ $('chips').addEventListener('click', e => {
 async function runSearch(q) {
   showDropdownLoading();
   try {
-    const data = await onet('/ws/online/search', { keyword: q, end: 12 });
+    const data = await onet('/online/search', { keyword: q, end: 12 });
     renderDropdown(data.occupation || []);
   } catch (e) {
     dropdown.classList.remove('hidden');
@@ -353,9 +353,9 @@ async function loadOccupation(code, knownTitle) {
   showLoading();
   try {
     const [occ, skillsData, emergingData] = await Promise.all([
-      onet(`/ws/online/occupations/${code}`),
-      onet(`/ws/online/occupations/${code}/summary/skills`),
-      onet(`/ws/online/occupations/${code}/summary/emerging_tasks`).catch(() => null)
+      onet(`/online/occupations/${code}`),
+      onet(`/online/occupations/${code}/summary/skills`),
+      onet(`/online/occupations/${code}/summary/emerging_tasks`).catch(() => null)
     ]);
     renderResults(occ, skillsData, emergingData);
   } catch (e) {
