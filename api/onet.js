@@ -8,6 +8,8 @@ module.exports = async function handler(req, res) {
   const qs = new URLSearchParams(rest).toString();
   const url = `https://services.onetcenter.org${path}${qs ? '?' + qs : ''}`;
 
+  console.log('[onet] key defined:', !!process.env.ONET_API_KEY, '| url:', url);
+
   try {
     const r = await fetch(url, {
       headers: {
@@ -18,6 +20,8 @@ module.exports = async function handler(req, res) {
     });
 
     if (!r.ok) {
+      const body = await r.text().catch(() => '');
+      console.log('[onet] status:', r.status, '| body:', body.slice(0, 200));
       return res.status(r.status).json({ error: `O*NET error: ${r.status}` });
     }
 
