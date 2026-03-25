@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Raise the Bar: Job Description Gap Analysis</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f9fafb;
+  --white:#ffffff;
+  --border:rgba(0,0,0,0.08);
+  --border2:rgba(0,0,0,0.12);
+  --text:#111827;
+  --text2:#374151;
+  --text3:#6b7280;
+  --text4:#9ca3af;
+  --purple:#7c6aef;
+  --purple2:#c06aef;
+  --pink:#ef6a9a;
+  --grad:linear-gradient(135deg,#7c6aef,#c06aef,#ef6a9a);
+  --grad-soft:linear-gradient(135deg,rgba(124,106,239,0.08),rgba(192,106,239,0.05));
+  --hero-glow:radial-gradient(circle,rgba(124,106,239,0.12) 0%,rgba(192,106,239,0.06) 40%,rgba(0,0,0,0) 70%);
+  --radius:14px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.08);
+}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
+*{font-family:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px;}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;position:sticky;top:0;background:rgba(249,250,251,0.9);backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--border);}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;font-weight:500;text-decoration:none;letter-spacing:0.05em;text-transform:uppercase;transition:color 0.15s;}
+.nav-back:hover{color:var(--text);}
+.nav-back svg{width:14px;height:14px;}
+.nav-title{font-size:12px;font-weight:500;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-badge{font-size:11px;font-weight:500;color:var(--purple);background:rgba(124,106,239,0.08);border:1px solid rgba(124,106,239,0.2);border-radius:20px;padding:3px 10px;letter-spacing:0.03em;}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:80px 32px 64px;overflow:hidden;}
+.hero-glow{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:var(--hero-glow);pointer-events:none;z-index:0;}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto;}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--purple);margin-bottom:20px;}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(42px,6vw,68px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:20px;letter-spacing:-0.01em;}
+.hero-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:15px;color:var(--text3);font-weight:300;line-height:1.7;max-width:420px;margin:0 auto 32px;}
+.hero-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;transition:color 0.15s;}
+.hero-cta:hover{color:var(--text);}
+.hero-cta svg{width:14px;height:14px;}
+
+/* ── INPUT SECTION ── */
+.input-section{max-width:680px;margin:0 auto;padding:0 32px 64px;}
+.input-section-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:600;color:var(--text);text-align:center;margin-bottom:6px;}
+.input-section-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:24px;}
+.input-wrap{position:relative;}
+textarea.main-input{
+  width:100%;
+  background:var(--white);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  color:var(--text);
+  font-size:14px;
+  font-weight:300;
+  line-height:1.7;
+  padding:18px 20px;
+  resize:none;
+  height:100px;
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  box-shadow:var(--shadow);
+  font-family:'Inter',sans-serif;
+}
+textarea.main-input::placeholder{color:var(--text4);}
+textarea.main-input:focus{border-color:rgba(124,106,239,0.4);box-shadow:0 0 0 3px rgba(124,106,239,0.08),var(--shadow);}
+.input-actions{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px;}
+.btn-run{display:inline-flex;align-items:center;gap:8px;padding:11px 28px;background:var(--grad);color:#fff;border:none;border-radius:40px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s,transform 0.15s;letter-spacing:0.02em;box-shadow:0 4px 14px rgba(124,106,239,0.3);}
+.btn-run:hover:not(:disabled){opacity:0.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,106,239,0.4);}
+.btn-run:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.kbd{font-size:11px;color:var(--text4);background:rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-family:monospace;}
+
+/* ── EXAMPLE CHIPS ── */
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:20px;}
+.chip{font-size:12px;color:var(--text3);background:var(--white);border:1px solid var(--border2);border-radius:20px;padding:5px 14px;cursor:pointer;transition:all 0.15s;font-weight:400;}
+.chip:hover{border-color:rgba(124,106,239,0.4);color:var(--purple);background:rgba(124,106,239,0.04);}
+
+/* ── LOADING ── */
+.loading-wrap{text-align:center;padding:48px 0;}
+.loading-spinner{width:32px;height:32px;border:2px solid rgba(124,106,239,0.15);border-top-color:var(--purple);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-track{width:200px;height:2px;background:rgba(0,0,0,0.06);border-radius:1px;margin:12px auto 0;overflow:hidden;}
+.loading-fill{height:100%;background:var(--grad);animation:scan 1.8s ease-in-out infinite;}
+@keyframes scan{0%{width:0;margin-left:0}50%{width:50%;margin-left:25%}100%{width:0;margin-left:100%}}
+.loading-msg{font-size:12px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-top:8px;}
+
+/* ── ERROR ── */
+.error-msg{max-width:480px;margin:0 auto;padding:14px 18px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);font-size:13px;color:#dc2626;}
+
+/* ── RESULTS ── */
+.results-wrap{max-width:960px;margin:0 auto;padding:0 32px 80px;}
+
+/* ── OCC HERO CARD ── */
+.occ-hero{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.occ-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+.occ-hero-inner{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;}
+.occ-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
+.occ-name{font-family:'Playfair Display',Georgia,serif;font-size:clamp(26px,3.5vw,40px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:14px;}
+.occ-meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;}
+.occ-pill{font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:20px;padding:3px 10px;}
+.occ-pill.hi{background:rgba(124,106,239,0.06);border-color:rgba(124,106,239,0.2);color:var(--purple);}
+.occ-desc{font-size:13px;color:var(--text3);font-weight:300;line-height:1.7;}
+.occ-conf{text-align:center;flex-shrink:0;}
+.conf-num{font-family:'Playfair Display',Georgia,serif;font-size:56px;font-weight:700;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.conf-lbl{font-size:11px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px;}
+.conf-bar{height:3px;width:80px;background:rgba(0,0,0,0.06);border-radius:2px;margin:8px auto 0;overflow:hidden;}
+.conf-fill{height:100%;background:var(--grad);border-radius:2px;transition:width 0.8s ease;}
+.alts-row{margin-top:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.alts-label{font-size:11px;color:var(--text4);text-transform:uppercase;letter-spacing:0.06em;}
+.alt-chip{font-size:11px;color:var(--text3);background:var(--white);border:1px solid var(--border2);border-radius:12px;padding:3px 10px;cursor:pointer;transition:all 0.12s;}
+.alt-chip:hover{border-color:rgba(124,106,239,0.3);color:var(--purple);}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px;}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);text-align:center;}
+.stat-num{font-family:'Playfair Display',Georgia,serif;font-size:36px;font-weight:700;line-height:1;color:var(--text);margin-bottom:4px;}
+.stat-lbl{font-size:11px;color:var(--text3);letter-spacing:0.04em;}
+.stat-sub{font-size:11px;color:var(--text4);margin-top:2px;}
+
+/* ── SECTION HEADER ── */
+.sec-hd{margin-bottom:16px;}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:4px;}
+.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:600;color:var(--text);}
+
+/* ── SKILLS GRID ── */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.skill-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);transition:border-color 0.15s,box-shadow 0.15s;}
+.skill-card:hover{border-color:rgba(124,106,239,0.2);box-shadow:var(--shadow-md);}
+.sk-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:10px;}
+.sk-track{height:4px;background:rgba(0,0,0,0.06);border-radius:2px;overflow:hidden;margin-bottom:10px;}
+.sk-fill{height:100%;border-radius:2px;transition:width 1s cubic-bezier(0.4,0,0.2,1);}
+.sk-fill-p{background:linear-gradient(90deg,#7c6aef,#c06aef);}
+.sk-fill-b{background:linear-gradient(90deg,#3b82f6,#6366f1);}
+.sk-fill-g{background:linear-gradient(90deg,#10b981,#06b6d4);}
+.sk-fill-a{background:linear-gradient(90deg,#f59e0b,#ef6a4e);}
+.sk-meta{display:flex;justify-content:space-between;align-items:center;}
+.sk-lvl{font-size:11px;color:var(--text4);}
+.sk-imp{font-size:12px;font-weight:600;}
+.sk-imp.high{color:var(--purple);}
+.sk-imp.med{color:#f59e0b;}
+.sk-imp.low{color:var(--text3);}
+
+/* ── INSIGHT CARDS (topic cards) ── */
+.topic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;}
+.topic-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;cursor:pointer;transition:all 0.2s;box-shadow:var(--shadow);}
+.topic-card:hover{border-color:rgba(124,106,239,0.25);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.tc-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px;}
+.tc-icon-p{background:rgba(124,106,239,0.1);}
+.tc-icon-b{background:rgba(59,130,246,0.1);}
+.tc-icon-g{background:rgba(16,185,129,0.1);}
+.tc-icon-a{background:rgba(245,158,11,0.1);}
+.tc-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.tc-desc{font-size:12px;color:var(--text3);line-height:1.5;font-weight:300;margin-bottom:10px;}
+.tc-count{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);}
+
+/* ── INSIGHT MODAL OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeOverlay 0.2s ease;}
+@keyframes fadeOverlay{from{opacity:0}to{opacity:1}}
+.insight-modal{background:var(--white);border-radius:var(--radius);padding:36px;max-width:540px;width:100%;position:relative;box-shadow:var(--shadow-lg);animation:slideModal 0.25s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes slideModal{from{opacity:0;transform:translateY(20px) scale(0.97)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:14px;transition:all 0.15s;}
+.modal-close:hover{background:rgba(0,0,0,0.06);color:var(--text);}
+.modal-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:14px;}
+.modal-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:18px;}
+.modal-quote{border-left:3px solid var(--purple);padding-left:16px;margin-bottom:18px;}
+.modal-quote p{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-size:15px;color:var(--text2);line-height:1.7;}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.modal-tag{font-size:11px;color:var(--text3);background:rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:12px;padding:3px 10px;}
+.modal-actions{display:flex;gap:8px;align-items:center;}
+.btn-another{flex:1;padding:11px;background:var(--grad);color:#fff;border:none;border-radius:40px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:opacity 0.15s;box-shadow:0 4px 14px rgba(124,106,239,0.3);}
+.btn-another:hover{opacity:0.88;}
+.btn-copy{padding:11px 18px;background:rgba(0,0,0,0.04);color:var(--text3);border:1px solid var(--border);border-radius:40px;font-size:13px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.15s;}
+.btn-copy:hover{background:rgba(0,0,0,0.08);color:var(--text);}
+
+/* ── EMERGING LIST ── */
+.emerging-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px;box-shadow:var(--shadow);}
+.em-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.em-row:first-child{padding-top:0;}
+.em-row:last-child{border-bottom:none;padding-bottom:0;}
+.em-num{font-size:11px;font-weight:600;color:var(--text4);width:22px;flex-shrink:0;padding-top:2px;font-variant-numeric:tabular-nums;}
+.em-body{flex:1;}
+.em-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.em-desc{font-size:12px;color:var(--text3);line-height:1.55;font-weight:300;}
+.em-tag{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;flex-shrink:0;margin-top:2px;}
+.t-hot{background:rgba(124,106,239,0.07);border-color:rgba(124,106,239,0.2);color:var(--purple);}
+.t-rising{background:rgba(59,130,246,0.07);border-color:rgba(59,130,246,0.2);color:#3b82f6;}
+.t-critical{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2);color:#d97706;}
+
+/* ── GAP + QUESTIONS GRID ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:14px;}
+.gap-row{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.gap-row:first-child{padding-top:0;}
+.gap-row:last-child{border-bottom:none;padding-bottom:0;}
+.gap-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.d-red{background:#ef4444;}
+.d-amber{background:#f59e0b;}
+.d-lime{background:#22c55e;}
+.gap-body{flex:1;}
+.gap-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.gap-rsn{font-size:12px;color:var(--text3);font-weight:300;line-height:1.5;}
+.gap-dev{font-size:11px;color:var(--text4);line-height:1.6;margin-top:6px;}
+.g-badge{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;border-radius:10px;border:1px solid;flex-shrink:0;margin-top:3px;}
+.gb-c{background:#fef2f2;border-color:#fecaca;color:#dc2626;}
+.gb-m{background:#fffbeb;border-color:#fde68a;color:#d97706;}
+.gb-l{background:#f0fdf4;border-color:#bbf7d0;color:#16a34a;}
+.q-row{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.q-row:first-child{padding-top:0;}
+.q-row:last-child{border-bottom:none;padding-bottom:0;}
+.q-n{font-size:11px;font-weight:600;color:var(--purple);width:22px;flex-shrink:0;padding-top:1px;}
+.q-text{font-size:13px;color:var(--text);font-weight:300;line-height:1.55;margin-bottom:3px;}
+.q-sk{font-size:10px;color:var(--text4);}
+.q-why{font-size:11px;color:var(--text4);line-height:1.5;margin-top:4px;}
+
+/* ── INTEL BRIEF ── */
+.brief-card{background:var(--grad);border-radius:var(--radius);padding:32px;margin-bottom:24px;box-shadow:0 8px 32px rgba(124,106,239,0.25);}
+.brief-inner{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.brief-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:12px;}
+.brief-dna{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:600;color:#fff;line-height:1.4;}
+.brief-divider{width:1px;background:rgba(255,255,255,0.2);display:none;}
+.brief-txt{font-size:13px;color:rgba(255,255,255,0.8);line-height:1.8;font-weight:300;}
+.brief-txt strong{color:#fff;font-weight:600;}
+
+/* ── FOOTER ── */
+.foot{text-align:center;padding:24px 32px 48px;font-size:12px;color:var(--text4);}
+.foot a{color:var(--text3);text-decoration:none;}
+.foot a:hover{color:var(--purple);}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:80px 32px;}
+.empty-glow{position:relative;display:inline-block;margin-bottom:24px;}
+.empty-icon{width:64px;height:64px;border-radius:18px;background:rgba(124,106,239,0.08);border:1px solid rgba(124,106,239,0.15);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto;}
+.empty-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.empty-sub{font-size:13px;color:var(--text3);max-width:320px;margin:0 auto;line-height:1.7;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:720px){
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .skills-grid{grid-template-columns:1fr;}
+  .topic-grid{grid-template-columns:1fr 1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .brief-inner{grid-template-columns:1fr;}
+  .occ-hero-inner{grid-template-columns:1fr;}
+  .occ-conf{display:none;}
+}
+@media(max-width:480px){.topic-grid{grid-template-columns:1fr;}nav{padding:16px 20px;}}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fu{animation:fadeUp 0.4s ease-out both;}
+.fu1{animation-delay:0.04s;}
+.fu2{animation-delay:0.1s;}
+.fu3{animation-delay:0.16s;}
+.fu4{animation-delay:0.22s;}
+.fu5{animation-delay:0.28s;}
+.fu6{animation-delay:0.34s;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect, useCallback } = React;
+
+const MSGS = ["READING JOB DESCRIPTION...","MATCHING CLOSEST O*NET CLASSIFICATIONS...","MAPPING COMPETENCIES TO ROLE DEMANDS...","IDENTIFYING COMPETENCY GAPS...","BUILDING DEVELOPMENT SUGGESTIONS...","GENERATING TARGETED QUESTIONS..."];
+const EXAMPLES = ["Paste a program manager job description","Paste an HR business partner job description","Paste a data analyst job description","Paste a training manager job description"];
+
+const TOPIC_ICONS = {
+  cognitive:"🧠", technical:"⚙️", social:"🤝", basic:"📖",
+  default:"✦"
+};
+const TOPIC_COLORS = ["p","b","g","a"];
+
+function safeJSON(raw){
+  let t=raw.replace(/```json|```/g,'').trim();
+  try{return JSON.parse(t);}catch{}
+  const s=t.indexOf('{'),e=t.lastIndexOf('}');
+  if(s!==-1&&e!==-1){try{return JSON.parse(t.slice(s,e+1));}catch{}}
+  if(s!==-1){
+    let a=t.slice(s);
+    for(let i=a.length;i>0;i--){
+      try{
+        const p=a.slice(0,i);let br=0,bk=0,inS=false,esc=false;
+        for(const c of p){if(esc){esc=false;continue;}if(c==='\\'){esc=true;continue;}if(c==='"')inS=!inS;if(!inS){if(c==='{')br++;if(c==='}')br--;if(c==='[')bk++;if(c===']')bk--;}}
+        return JSON.parse(p+'}'.repeat(Math.max(0,br))+']'.repeat(Math.max(0,bk)));
+      }catch{continue;}
+    }
+  }
+  throw new Error("Could not parse JSON");
+}
+
+async function callClaude(system,user,max=700){
+  const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:max,system,messages:[{role:"user",content:user}]})});
+  const d=await r.json();
+  return d.content?.find(b=>b.type==="text")?.text||"{}";
+}
+
+/* ── Animated skill bar ── */
+function SkillBar({pct,color="p"}){
+  const [w,setW]=useState(0);
+  useEffect(()=>{const t=setTimeout(()=>setW(pct),300);return()=>clearTimeout(t);},[pct]);
+  return <div className="sk-track"><div className={`sk-fill sk-fill-${color}`} style={{width:`${w}%`}}/></div>;
+}
+
+function impCls(v){return v>=4?"high":v>=3?"med":"low";}
+function impPct(v){return Math.round((v/5)*100);}
+function catColor(cat){return{cognitive:"p",technical:"b",social:"b",basic:"a"}[cat]||"p";}
+
+/* ── Insight Modal ── */
+function InsightModal({data,label,onClose,onNext}){
+  if(!data)return null;
+  const title=data.name||data.title||"Insight";
+  return(
+    <div className="overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="insight-modal">
+        <button className="modal-close" onClick={onClose}>×</button>
+        <div className="modal-label">{label}</div>
+        <div className="modal-title">{title}</div>
+        <div className="modal-quote"><p>{data.description}</p></div>
+        <div className="modal-tags">
+          {(data.tags||[data.tag||"insight"]).map((t,i)=>(
+            <span key={i} className="modal-tag">#{t.toLowerCase().replace(/\s+/g,'-')}</span>
+          ))}
+        </div>
+        <div className="modal-actions">
+          <button className="btn-another" onClick={onNext}>
+            <span>↺</span> Another Insight
+          </button>
+          <button className="btn-copy" onClick={()=>navigator.clipboard?.writeText(`${data.name}\n\n${data.description}`)}>
+            <span>⎘</span> Copy
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Main App ── */
+function App(){
+  const [phase,setPhase]=useState("hero"); // hero | loading | results
+  const [input,setInput]=useState("");
+  const [loadMsg,setLoadMsg]=useState(MSGS[0]);
+  const [err,setErr]=useState(null);
+  const [occ,setOcc]=useState(null);
+  const [sk,setSk]=useState(null);
+  const [modal,setModal]=useState(null); // {items, idx, label}
+  const tmr=useRef(null);
+
+  const scrollToInput=()=>document.getElementById("input-anchor")?.scrollIntoView({behavior:"smooth",block:"start"});
+
+  const analyze=useCallback(async()=>{
+    const val=input.trim();
+    if(!val)return;
+    setPhase("loading");setErr(null);setOcc(null);setSk(null);
+    let i=0;
+    tmr.current=setInterval(()=>{i=(i+1)%MSGS.length;setLoadMsg(MSGS[i]);},1200);
+    try{
+      const rr=await callClaude(
+        `You are analyzing a CURRENT job description or title against O*NET-SOC occupations.
+Return ONLY compact JSON. No markdown. Keep strings under 140 chars unless a field explicitly allows 2 short sentences.
+{
+  "primary_match":{"onet_code":"11-3021.00","onet_title":"Computer and Information Systems Managers","match_confidence":92,"description":"Short description","bright_outlook":true,"zone":4,"zone_label":"Considerable preparation needed"},
+  "closest_matches":[
+    {"code":"11-3021.00","title":"Computer and Information Systems Managers","match_confidence":92,"why_match":"Short evidence-based reason","bright_outlook":true,"zone":4,"zone_label":"Considerable preparation needed"}
+  ],
+  "described_competencies":[
+    {"name":"Stakeholder communication","description":"What the description shows","category":"social","alignment":"strong","evidence":"Short quote or paraphrase from input","development_suggestion":"How to strengthen this competency","tags":["communication","leadership"]}
+  ],
+  "core_skills":[{"name":"Skill","importance":4.5,"level":4.2,"category":"cognitive"}],
+  "foundation_skills":[{"name":"Skill","importance":3.8,"level":3.5,"category":"basic"}],
+  "gap_areas":[
+    {"name":"Gap","severity":"critical","reason":"Why this is a gap against likely O*NET matches","evidence_from_description":"What is missing or only implied","development_actions":["Action 1","Action 2"],"related_skills":["Skill A","Skill B"]}
+  ],
+  "interview_questions":[
+    {"question":"Question directly tied to one competency or gap?","targets_skill":"Competency or gap name","question_focus":"strength","why_it_matters":"What the answer would validate"}
+  ],
+  "manager_insight":"Two short sentences max.",
+  "top_skill_summary":"One punchy sentence."
+}
+Rules:
+- Treat the input as a current job description first; if it is only a title, infer cautiously.
+- Return 3 closest_matches when possible.
+- Questions must map directly to described_competencies or gap_areas. No generic interview questions.
+- gap_areas must represent missing, weak, or under-evidenced competencies relative to the closest O*NET matches.
+- development_actions must be practical ways to build the missing competency.
+- alignment must be one of: strong, partial, gap.
+- question_focus must be one of: strength, gap.
+- severity must be one of: critical, moderate, low.
+- Use O*NET style skills and terminology where possible.
+Return ONLY JSON.`,
+        `Analyze this current job description or title and map it to O*NET:\n\n${val}`,1500
+      );
+      const report=safeJSON(rr);
+      const primary=report.primary_match||report.closest_matches?.[0]||{};
+      const rawMatches=(report.closest_matches&&report.closest_matches.length)?report.closest_matches:[primary];
+      const normalizedMatches=rawMatches.map(m=>({
+        ...m,
+        code:m.code||m.onet_code,
+        title:m.title||m.onet_title,
+        name:m.title||m.onet_title,
+        description:m.why_match||m.description||"Closest O*NET alignment for this description.",
+        tags:[m.code||m.onet_code,`${m.match_confidence||0}% match`,m.bright_outlook?"bright outlook":"classification"]
+      }));
+      setOcc({
+        onet_code:primary.onet_code||primary.code||"",
+        onet_title:primary.onet_title||primary.title||"Best Match",
+        match_confidence:primary.match_confidence||0,
+        description:primary.description||"",
+        bright_outlook:primary.bright_outlook,
+        zone:primary.zone,
+        zone_label:primary.zone_label,
+        alternate_matches:normalizedMatches.slice(1)
+      });
+      setSk({
+        ...report,
+        closest_matches:normalizedMatches
+      });
+      setPhase("results");
+    }catch(e){
+      setErr(e.message);
+      setPhase("results");
+    }
+    finally{clearInterval(tmr.current);}
+  },[input]);
+
+  useEffect(()=>{
+    const h=(e)=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")analyze();};
+    window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);
+  },[analyze]);
+
+  const openModal=(items,label,idx=0)=>setModal({items,label,idx});
+  const closeModal=()=>setModal(null);
+  const nextInsight=()=>setModal(m=>({...m,idx:(m.idx+1)%m.items.length}));
+
+  const critCount=(sk?.gap_areas||[]).filter(g=>g.severity==="critical").length;
+
+  return(
+    <>
+    {/* NAV */}
+    <nav className="nav">
+      <a href="https://eddiegarcia.org" className="nav-back">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 2L4 7l5 5"/></svg>
+        Portfolio
+      </a>
+      <span className="nav-title">Raise the Bar</span>
+      <div className="nav-right">
+        <span className="nav-badge">O*NET 30.2</span>
+      </div>
+    </nav>
+
+    {/* HERO */}
+    {phase==="hero"&&(
+      <div className="hero">
+        <div className="hero-glow"/>
+        <div className="hero-inner">
+          <div className="hero-label">Raise the Bar</div>
+          <h1 className="hero-title">
+            Raise the bar for this<br/><em>job description</em>
+          </h1>
+          <p className="hero-sub">
+            Paste the current job description to find the closest O*NET classifications, surface competency gaps, and see where the role can be strengthened.
+          </p>
+          <button className="hero-cta" onClick={scrollToInput}>
+            Raise the Bar
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M7 2v10M2 7l5 5 5-5"/></svg>
+          </button>
+        </div>
+      </div>
+    )}
+
+    {/* INPUT */}
+    <div id="input-anchor" style={{maxWidth:680,margin:"0 auto",padding:phase==="hero"?"0 32px 80px":"32px 32px 48px"}}>
+      {phase==="hero"&&(
+        <>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <div className="sec-label">Raise the Bar</div>
+            <div className="input-section-title" style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:24,fontWeight:600,color:"var(--text)"}}>Strengthen the Current Role</div>
+            <div style={{fontSize:13,color:"var(--text3)",marginTop:4}}>Paste the full description to spot what is strong today and what needs to be developed next.</div>
+          </div>
+          <div className="chips" style={{marginBottom:16}}>
+            {EXAMPLES.map(ex=><span key={ex} className="chip" onClick={()=>setInput(ex)}>{ex}</span>)}
+          </div>
+        </>
+      )}
+      <textarea
+        className="main-input"
+        placeholder="Paste a current job description here, or enter a title like &quot;Senior Data Analyst&quot;..."
+        value={input}
+        onChange={e=>setInput(e.target.value)}
+        style={{height:phase==="results"?80:100}}
+      />
+      <div className="input-actions">
+        <button className="btn-run" onClick={analyze} disabled={phase==="loading"||!input.trim()}>
+          {phase==="loading"
+            ?<><div style={{width:14,height:14,border:"2px solid rgba(255,255,255,0.3)",borderTopColor:"#fff",borderRadius:"50%",animation:"spin 0.6s linear infinite"}}/>Analyzing...</>
+            :<><span>✦</span>Analyze Description</>
+          }
+        </button>
+        <span className="kbd">⌘+Enter</span>
+      </div>
+    </div>
+
+    {/* LOADING */}
+    {phase==="loading"&&(
+      <div className="loading-wrap">
+        <div className="loading-spinner"/>
+        <div className="loading-track"><div className="loading-fill"/></div>
+        <div className="loading-msg">{loadMsg}</div>
+      </div>
+    )}
+
+    {/* RESULTS */}
+    {phase==="results"&&(
+      <div className="results-wrap">
+        {err&&<div className="error-msg">⚠ {err}</div>}
+
+        {sk&&occ&&(
+          <>
+          {/* OCC HERO */}
+          <div className="occ-hero fu">
+            <div className="occ-hero-inner">
+              <div>
+                <div className="occ-label">Closest O*NET Classification</div>
+                <div className="occ-name">{occ.onet_title}</div>
+                <div className="occ-meta-row">
+                  <span className="occ-pill hi">{occ.onet_code}</span>
+                  {occ.zone&&<span className="occ-pill">Zone {occ.zone} — {occ.zone_label}</span>}
+                  {occ.bright_outlook&&<span className="occ-pill hi">★ Bright Outlook</span>}
+                </div>
+                <p className="occ-desc">{occ.description}</p>
+                {(occ.alternate_matches||[]).length>0&&(
+                  <div className="alts-row">
+                    <span className="alts-label">Also consider</span>
+                    {occ.alternate_matches.map(m=>(
+                      <span key={m.code} className="alt-chip" onClick={()=>{
+                        const idx=Math.max(0,(sk.closest_matches||[]).findIndex(x=>x.code===m.code));
+                        openModal(sk.closest_matches,"CLOSEST MATCHES",idx);
+                      }}>{m.title} · {m.match_confidence}%</span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="occ-conf">
+                <div className="conf-num">{occ.match_confidence}%</div>
+                <div className="conf-lbl">Match Confidence</div>
+                <div className="conf-bar"><div className="conf-fill" style={{width:`${occ.match_confidence||0}%`}}/></div>
+              </div>
+            </div>
+          </div>
+
+          {/* STATS */}
+          <div className="stat-row fu fu1">
+            <div className="stat-card">
+              <div className="stat-num">{(sk.closest_matches||[]).length||1}</div>
+              <div className="stat-lbl">Close Matches</div>
+              <div className="stat-sub">O*NET classifications</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num">{(sk.described_competencies||[]).length}</div>
+              <div className="stat-lbl">Competencies Found</div>
+              <div className="stat-sub">Evidence in description</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num">{critCount}</div>
+              <div className="stat-lbl">Critical Gaps</div>
+              <div className="stat-sub">Need development</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-num">{(sk.gap_areas||[]).length}</div>
+              <div className="stat-lbl">Development Priorities</div>
+              <div className="stat-sub">Build next</div>
+            </div>
+          </div>
+
+          {/* CLOSEST MATCHES */}
+          <div className="sec-hd fu fu2">
+            <div className="sec-label">Classification Options</div>
+            <div className="sec-title">Closest O*NET Matches Behind the Recommendation</div>
+          </div>
+          <div className="emerging-card fu fu2">
+            {(sk.closest_matches||[]).map((m,i)=>(
+              <div key={i} className="em-row" style={{cursor:"pointer"}} onClick={()=>openModal(sk.closest_matches,"CLOSEST MATCHES",i)}>
+                <span className="em-num">0{i+1}</span>
+                <div className="em-body">
+                  <div className="em-name">{m.title}</div>
+                  <div className="em-desc">{m.description}</div>
+                </div>
+                <span className="em-tag t-rising">{m.match_confidence}%</span>
+              </div>
+            ))}
+          </div>
+
+          {/* COMPETENCIES FOUND */}
+          <div className="sec-hd fu fu3">
+            <div className="sec-label">Competencies Found</div>
+            <div className="sec-title">What the Current Description Already Signals</div>
+          </div>
+          <div className="topic-grid fu fu3">
+            {(sk.described_competencies||[]).map((s,i)=>{
+              const colorKey=TOPIC_COLORS[i%4];
+              const icon=TOPIC_ICONS[s.category]||TOPIC_ICONS.default;
+              return(
+                <div key={i} className="topic-card" onClick={()=>openModal([{name:s.name,description:`Evidence: ${s.evidence}\n\n${s.description}\n\nDevelopment suggestion: ${s.development_suggestion}`,tags:[s.category||"competency",s.alignment||"partial"]}],s.name)}>
+                  <div className={`tc-icon tc-icon-${colorKey}`}>{icon}</div>
+                  <div className="tc-name">{s.name}</div>
+                  <div className="tc-desc">{s.description}</div>
+                  <div className="tc-count">{(s.alignment||"partial").toUpperCase()}</div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* O*NET EXPECTED SKILLS */}
+          <div className="sec-hd fu fu4">
+            <div className="sec-label">Expected O*NET Skills</div>
+            <div className="sec-title">Competencies the Closest Classifications Prioritize</div>
+          </div>
+          <div className="skills-grid fu fu4">
+            {[...(sk.core_skills||[]),...(sk.foundation_skills||[])].slice(0,8).map((s,i)=>{
+              const cls=impCls(s.importance||0);
+              const col=catColor(s.category);
+              return(
+                <div key={i} className="skill-card">
+                  <div className="sk-name">{s.name}</div>
+                  <SkillBar pct={impPct(s.importance||0)} color={col}/>
+                  <div className="sk-meta">
+                    <span className="sk-lvl">Level {(s.level||0).toFixed(1)} / 7.0</span>
+                    <span className={`sk-imp ${cls}`}>{(s.importance||0).toFixed(1)} / 5</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* GAPS + QUESTIONS */}
+          <div className="two-col fu fu5">
+            <div className="panel">
+              <div className="panel-title">Gap Analysis + Development Actions</div>
+              {(sk.gap_areas||[]).map((g,i)=>{
+                const dotCls={critical:"d-red",moderate:"d-amber",low:"d-lime"}[g.severity]||"d-amber";
+                const badgeCls={critical:"gb-c",moderate:"gb-m",low:"gb-l"}[g.severity]||"gb-m";
+                return(
+                  <div key={i} className="gap-row">
+                    <div className={`gap-dot ${dotCls}`}/>
+                    <div className="gap-body">
+                      <div className="gap-name">{g.name}</div>
+                      <div className="gap-rsn">{g.reason}</div>
+                      <div className="gap-dev">
+                        Evidence: {g.evidence_from_description}
+                        <br/>
+                        Build it: {(g.development_actions||[]).join(" · ")}
+                      </div>
+                    </div>
+                    <span className={`g-badge ${badgeCls}`}>{(g.severity||"moderate").toUpperCase()}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="panel">
+              <div className="panel-title">Questions Tied to Competencies and Gaps</div>
+              {(sk.interview_questions||[]).map((q,i)=>(
+                <div key={i} className="q-row">
+                  <span className="q-n">Q{i+1}</span>
+                  <div>
+                    <div className="q-text">{q.question}</div>
+                    <div className="q-sk">↳ targets: {q.targets_skill} · {(q.question_focus||"strength").toUpperCase()}</div>
+                    <div className="q-why">{q.why_it_matters}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* INTEL BRIEF */}
+          <div className="brief-card fu fu6">
+            <div className="brief-inner">
+              <div>
+                <div className="brief-label">Competency Summary</div>
+                <div className="brief-dna">{sk.top_skill_summary}</div>
+              </div>
+              <div>
+                <div className="brief-label">Gap Interpretation</div>
+                <div className="brief-txt" dangerouslySetInnerHTML={{__html:(sk.manager_insight||"").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")}}/>
+              </div>
+            </div>
+          </div>
+          </>
+        )}
+      </div>
+    )}
+
+    {/* FOOTER */}
+    <div className="foot">
+      O*NET 30.2 · CC-BY 4.0 · U.S. Dept. of Labor · Updated Feb 2026 · <a href="https://eddiegarcia.org" target="_blank">eddiegarcia.org</a>
+    </div>
+
+    {/* INSIGHT MODAL */}
+    {modal&&(
+      <InsightModal
+        data={modal.items[modal.idx]}
+        label={modal.label}
+        onClose={closeModal}
+        onNext={nextInsight}
+      />
+    )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
