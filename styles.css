@@ -324,6 +324,18 @@ body {
   box-shadow: 0 0 20px rgba(124, 106, 239, 0.15);
   transform: translateY(-2px);
 }
+.engine-suite {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.principles-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
 .insight-engine-label {
   font-size: 0.7rem;
   font-weight: 700;
