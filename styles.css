@@ -1105,6 +1105,21 @@ body {
 .timeline-current .timeline-year {
   color: var(--accent-1);
 }
+.timeline-kicker {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.35rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(124, 106, 239, 0.12);
+  border: 1px solid rgba(124, 106, 239, 0.22);
+  color: var(--accent-1);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-shadow: none;
+}
 .timeline-role {
   font-size: 0.85rem;
   font-weight: 600;
@@ -1112,12 +1127,18 @@ body {
   line-height: 1.3;
   text-shadow: 0 0 8px rgba(255,255,255,0.9);
 }
+.timeline-current .timeline-role {
+  font-size: 0.95rem;
+}
 .timeline-org {
   font-size: 0.72rem;
   color: var(--text-muted);
   margin-top: 0.15rem;
   font-weight: 500;
   text-shadow: 0 0 8px rgba(255,255,255,0.9);
+}
+.timeline-current .timeline-org {
+  color: var(--text-secondary);
 }
 
 /* ── Resume download ghost button ── */
