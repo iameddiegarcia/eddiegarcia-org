@@ -91,11 +91,14 @@ if (principleButtons.length && principleTitle && principleText) {
     principleText.textContent = principle.text;
 
     principleButtons.forEach((button) => {
-      button.classList.toggle('active', button.dataset.principle === key);
+      const isActive = button.dataset.principle === key;
+      button.classList.toggle('active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
     });
   };
 
   principleButtons.forEach((button) => {
+    button.setAttribute('aria-pressed', button.classList.contains('active') ? 'true' : 'false');
     button.addEventListener('click', () => setPrinciple(button.dataset.principle));
   });
 

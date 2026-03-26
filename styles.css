@@ -412,6 +412,8 @@ body {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.55rem;
   margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
 }
 .principle-pill {
   appearance: none;
@@ -429,6 +431,10 @@ body {
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   text-align: left;
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
+  touch-action: manipulation;
 }
 .principle-pill:hover,
 .principle-pill.active {
@@ -436,6 +442,10 @@ body {
   border-color: rgba(124, 106, 239, 0.45);
   box-shadow: 0 8px 18px rgba(124, 106, 239, 0.12);
   transform: translateY(-1px);
+}
+.principle-pill:focus-visible {
+  outline: 2px solid rgba(124, 106, 239, 0.45);
+  outline-offset: 2px;
 }
 .principle-panel {
   background: rgba(255,255,255,0.76);
@@ -1004,6 +1014,44 @@ body {
   margin-bottom: 0.75rem;
   text-shadow: none;
   line-height: 1.4;
+}
+
+.presentation-card {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 0.85rem;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(124, 106, 239, 0.2);
+  border-radius: 14px;
+  text-decoration: none;
+  max-width: 420px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  pointer-events: auto;
+}
+.presentation-card:hover {
+  border-color: rgba(124, 106, 239, 0.4);
+  box-shadow: 0 12px 24px rgba(124, 106, 239, 0.14);
+  transform: translateY(-2px);
+}
+.presentation-card:focus-visible {
+  outline: 2px solid rgba(124, 106, 239, 0.45);
+  outline-offset: 3px;
+}
+.presentation-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: none;
+}
+.presentation-desc {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  text-shadow: none;
 }
 
 /* ── Cert badges (Builder of People) ── */
