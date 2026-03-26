@@ -2312,6 +2312,33 @@ window.INSIGHTS = {
           "systems-builder",
           "leverage"
         ]
+      },
+      {
+        "title": "The Tool Is Neutral — The Operator Is The Variable",
+        "quote": "It’s not about the tool. It’s what you do with it. A crayon in a toddler’s hand is a weapon of mass destruction. Access to tools (AI, code, capital, data) is commoditized. The edge is never the instrument — it’s the judgment, intent, and skill of the person wielding it.",
+        "tags": [
+          "personal-strategic-philosophy",
+          "leverage",
+          "tools",
+          "judgment"
+        ]
+      }
+    ]
+  },
+  "Parenting & Legacy": {
+    "icon": "🌱",
+    "color": "rgba(234,179,8,0.15)",
+    "desc": "Operator development, tool stewardship, and the long game of raising humans.",
+    "items": [
+      {
+        "title": "A Crayon Is a Weapon — And That’s the Point",
+        "quote": "It’s not about the tool. It’s what you do with it. A crayon in a toddler’s hand is a weapon of mass destruction. Parenting is the original systems design problem. Every tool you hand a child — language, technology, freedom, discipline — is neutral until shaped by guidance.",
+        "tags": [
+          "parenting",
+          "leverage",
+          "development",
+          "legacy"
+        ]
       }
     ]
   }
