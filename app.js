@@ -145,6 +145,41 @@ if (galleryTrack && gallerySlides.length && galleryLightbox && galleryLightboxIm
   });
 }
 
+// ─── Metric Counters Logic ───
+const metrics = document.querySelectorAll('.metric-value');
+let metricsAnimated = false;
+
+const animateMetrics = () => {
+  if (metricsAnimated) return;
+  metricsAnimated = true;
+
+  metrics.forEach(counter => {
+    const target = +counter.getAttribute('data-target');
+    const duration = 2000;
+    const frameDuration = 1000 / 60;
+    const totalFrames = Math.round(duration / frameDuration);
+    let frame = 0;
+    const increment = target / totalFrames;
+
+    const updateCount = () => {
+      frame++;
+      const currentCount = Math.round(increment * frame);
+
+      if (frame < totalFrames) {
+        counter.innerText = currentCount.toLocaleString();
+        requestAnimationFrame(updateCount);
+      } else {
+        if (target >= 10000) {
+          counter.innerText = (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+        } else {
+          counter.innerText = target.toLocaleString();
+        }
+      }
+    };
+    updateCount();
+  });
+};
+
 // ─── Main Scroll Controller ───
 if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
@@ -191,6 +226,11 @@ if (scrollSection && frames.length > 0) {
             photo.style.opacity = 0;
           }
         });
+      }
+
+      // 2b. Trigger metric counters on Creator/Entertainer frames
+      if (activeFrameEl.querySelector('.metric-value')) {
+        animateMetrics();
       }
 
       // 3. Activate Overlays
