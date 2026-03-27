@@ -57,26 +57,6 @@ const PRINCIPLES = {
   },
 };
 
-// ─── Email Copy Logic ───
-const copyEmailBtn = document.getElementById('copyEmail');
-if (copyEmailBtn) {
-  copyEmailBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText('info@eddiegarcia.org').then(() => {
-      copyEmailBtn.textContent = 'Copied!';
-      copyEmailBtn.style.background = '#4ade80';
-      copyEmailBtn.style.borderColor = '#4ade80';
-      copyEmailBtn.style.color = 'white';
-      
-      setTimeout(() => {
-        copyEmailBtn.textContent = 'Copy Email';
-        copyEmailBtn.style.background = '';
-        copyEmailBtn.style.borderColor = '';
-        copyEmailBtn.style.color = '';
-      }, 2000);
-    });
-  });
-}
-
 // ─── Principles Interaction ───
 const principleButtons = document.querySelectorAll('.principle-pill');
 const principleTitle = document.getElementById('principle-title');
@@ -106,40 +86,64 @@ if (principleButtons.length && principleTitle && principleText) {
   setPrinciple(initialKey);
 }
 
-// ─── Metric Couters Logic ───
-const metrics = document.querySelectorAll('.metric-value');
-let metricsAnimated = false; // flag to only animate once
+// ─── Technologist Gallery ───
+const galleryTrack = document.querySelector('[data-gallery-track]');
+const galleryNavButtons = document.querySelectorAll('[data-gallery-nav]');
+const gallerySlides = document.querySelectorAll('.gallery-slide');
+const galleryLightbox = document.getElementById('gallery-lightbox');
+const galleryLightboxImage = document.getElementById('gallery-lightbox-image');
+const galleryLightboxCaption = document.getElementById('gallery-lightbox-caption');
+const galleryLightboxClose = document.getElementById('gallery-lightbox-close');
+const lightboxDismissTargets = document.querySelectorAll('[data-lightbox-close]');
 
-const animateMetrics = () => {
-  if (metricsAnimated) return;
-  metricsAnimated = true;
-  
-  metrics.forEach(counter => {
-    const target = +counter.getAttribute('data-target');
-    const duration = 2000;
-    const frameDuration = 1000 / 60;
-    const totalFrames = Math.round(duration / frameDuration);
-    let frame = 0;
-    const increment = target / totalFrames;
+if (galleryTrack && gallerySlides.length && galleryLightbox && galleryLightboxImage && galleryLightboxCaption) {
+  const slideGalleryBy = (direction) => {
+    const amount = galleryTrack.clientWidth * 0.85 * direction;
+    galleryTrack.scrollBy({ left: amount, behavior: 'smooth' });
+  };
 
-    const updateCount = () => {
-      frame++;
-      const currentCount = Math.round(increment * frame);
-      
-      if (frame < totalFrames) {
-        counter.innerText = currentCount.toLocaleString();
-        requestAnimationFrame(updateCount);
-      } else {
-        if (target >= 10000) {
-          counter.innerText = (target / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
-        } else {
-          counter.innerText = target.toLocaleString();
-        }
-      }
-    };
-    updateCount();
+  const openLightbox = (button) => {
+    const src = button.dataset.galleryImage;
+    const alt = button.dataset.galleryAlt || '';
+    const caption = button.dataset.galleryCaption || '';
+    if (!src) return;
+
+    galleryLightboxImage.src = src;
+    galleryLightboxImage.alt = alt;
+    galleryLightboxCaption.textContent = caption;
+    galleryLightbox.hidden = false;
+    document.body.classList.add('modal-open');
+  };
+
+  const closeLightbox = () => {
+    galleryLightbox.hidden = true;
+    galleryLightboxImage.src = '';
+    galleryLightboxImage.alt = '';
+    galleryLightboxCaption.textContent = '';
+    document.body.classList.remove('modal-open');
+  };
+
+  galleryNavButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      slideGalleryBy(button.dataset.galleryNav === 'next' ? 1 : -1);
+    });
   });
-};
+
+  gallerySlides.forEach((button) => {
+    button.addEventListener('click', () => openLightbox(button));
+  });
+
+  galleryLightboxClose?.addEventListener('click', closeLightbox);
+  lightboxDismissTargets.forEach((target) => {
+    target.addEventListener('click', closeLightbox);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && !galleryLightbox.hidden) {
+      closeLightbox();
+    }
+  });
+}
 
 // ─── Main Scroll Controller ───
 if (scrollSection && frames.length > 0) {
@@ -159,7 +163,7 @@ if (scrollSection && frames.length > 0) {
     if (progress < 0) progress = 0;
     if (progress > 1) progress = 1;
 
-    // Calculate current frame (e.g., 0 to 15)
+    // Calculate current frame
     let currentFrame = Math.floor(progress * numFrames);
     if (currentFrame >= numFrames) currentFrame = numFrames - 1;
 
@@ -174,11 +178,6 @@ if (scrollSection && frames.length > 0) {
           frame.classList.remove('active');
         }
       });
-
-      // trigger metric animation when the creator / entertainer frames appear
-      if (currentFrame === 9 || currentFrame === 10) {
-        animateMetrics();
-      }
 
       const activeFrameEl = frames[currentFrame];
 
@@ -234,6 +233,9 @@ if (scrollSection && frames.length > 0) {
   window.addEventListener('scroll', () => {
     requestAnimationFrame(updateScroll);
   }, { passive: true });
+  window.addEventListener('resize', () => {
+    requestAnimationFrame(updateScroll);
+  });
   
   // Custom navigation link logic
   const jumpLinks = document.querySelectorAll('.tracker-item');
