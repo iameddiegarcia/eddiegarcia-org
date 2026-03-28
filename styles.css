@@ -126,12 +126,14 @@ body.modal-open {
   --morph-scale: 1;
   --morph-y: 0px;
   --morph-blur: 0px;
+  --portrait-width: min(70vw, 920px);
+  --portrait-height: min(74vh, 920px);
   position: absolute;
   inset: 0;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: clamp(4.75rem, 8vh, 6.5rem) 4vw 0;
+  padding: clamp(5.25rem, 8vh, 6.75rem) 3vw clamp(5rem, 12vh, 8rem);
   opacity: var(--morph-opacity);
   transform: translate3d(0, var(--morph-y), 0) scale(var(--morph-scale));
   filter: blur(var(--morph-blur));
@@ -139,12 +141,15 @@ body.modal-open {
 }
 
 .portrait-layer img {
-  width: min(78vw, 960px);
-  height: min(92vh, 1120px);
+  width: var(--portrait-width);
+  height: var(--portrait-height);
   object-fit: contain;
   object-position: var(--portrait-position, center bottom);
   transform: translate3d(var(--portrait-offset-x, 0), var(--portrait-offset-y, 0), 0) scale(var(--portrait-image-scale, 1));
   transform-origin: center bottom;
+  filter: drop-shadow(0 0 40px rgba(255,255,255,0.98)) drop-shadow(0 0 96px rgba(255,255,255,0.96));
+  -webkit-mask-image: radial-gradient(ellipse 88% 92% at center, #000 70%, rgba(0, 0, 0, 0.96) 82%, rgba(0, 0, 0, 0.68) 92%, transparent 100%);
+  mask-image: radial-gradient(ellipse 88% 92% at center, #000 70%, rgba(0, 0, 0, 0.96) 82%, rgba(0, 0, 0, 0.68) 92%, transparent 100%);
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -152,62 +157,72 @@ body.modal-open {
 .portrait-layer[data-portrait="leadership"] {
   --portrait-image-scale: 0.95;
   --portrait-offset-x: 3vw;
+  --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="thought-leader"] {
   --portrait-image-scale: 0.95;
   --portrait-offset-x: 6vw;
-  --portrait-offset-y: 0.5vh;
+  --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="strategic-architect"] {
   --portrait-image-scale: 0.94;
   --portrait-offset-x: 2vw;
+  --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="technologist"] {
   --portrait-image-scale: 0.96;
   --portrait-offset-x: 2vw;
+  --portrait-offset-y: 2vh;
 }
 
 .portrait-layer[data-portrait="vibe-coder"] {
-  --portrait-image-scale: 1.02;
-  --portrait-offset-x: 9vw;
+  --portrait-image-scale: 0.98;
+  --portrait-offset-x: 7vw;
+  --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="builder-of-people"] {
   --portrait-image-scale: 0.95;
   --portrait-offset-x: 1vw;
+  --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="creator"] {
-  --portrait-image-scale: 0.98;
+  --portrait-width: min(62vw, 820px);
+  --portrait-height: min(66vh, 800px);
+  --portrait-image-scale: 0.94;
   --portrait-offset-x: 2vw;
+  --portrait-offset-y: 11vh;
 }
 
 .portrait-layer[data-portrait="entertainer"] {
-  --portrait-image-scale: 0.92;
-  --portrait-offset-x: 4vw;
+  --portrait-width: min(82vw, 1120px);
+  --portrait-height: min(58vh, 680px);
+  --portrait-image-scale: 0.98;
+  --portrait-offset-x: 1vw;
+  --portrait-offset-y: 5vh;
 }
 
 .portrait-layer[data-portrait="artist-producer"] {
-  --portrait-image-scale: 0.98;
+  --portrait-image-scale: 0.94;
   --portrait-offset-x: 5vw;
+  --portrait-offset-y: 4vh;
 }
 
 .portrait-layer[data-portrait="organization-of-one"] {
   --portrait-image-scale: 0.96;
   --portrait-offset-x: 1vw;
+  --portrait-offset-y: 3vh;
 }
 
 @media (max-width: 1024px) {
   .portrait-layer {
-    padding: 4.75rem 1rem 0;
-  }
-
-  .portrait-layer img {
-    width: min(108vw, 780px);
-    height: min(74vh, 820px);
+    --portrait-width: min(104vw, 760px);
+    --portrait-height: min(58vh, 720px);
+    padding: 4.75rem 0.75rem 7rem;
   }
 
   .portrait-layer[data-portrait="vibe-coder"],
@@ -216,8 +231,11 @@ body.modal-open {
   }
 
   .portrait-layer[data-portrait="entertainer"] {
-    --portrait-image-scale: 1.02;
-    --portrait-offset-x: 8vw;
+    --portrait-width: min(115vw, 820px);
+    --portrait-height: min(46vh, 520px);
+    --portrait-image-scale: 1;
+    --portrait-offset-x: 3vw;
+    --portrait-offset-y: 3vh;
   }
 }
 
@@ -283,8 +301,8 @@ body.modal-open {
 .bottom-gradient {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 68vh;
-  background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 22%, rgba(255,255,255,0.9) 44%, rgba(255,255,255,0.45) 66%, transparent 100%);
+  height: 44vh;
+  background: linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.94) 20%, rgba(255,255,255,0.62) 46%, rgba(255,255,255,0.18) 74%, transparent 100%);
   z-index: 3;
 }
 
@@ -319,6 +337,52 @@ body.modal-open {
 }
 .narrative-frame.active * {
   pointer-events: auto;
+}
+
+.narrative-frame.split-layout {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  align-content: stretch;
+  padding-top: clamp(5.75rem, 10vh, 7.25rem);
+  padding-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
+}
+
+.frame-summary {
+  display: grid;
+  gap: 0.55rem;
+  align-self: start;
+  max-width: min(38rem, 100%);
+}
+
+.frame-summary .label {
+  margin-bottom: 0;
+}
+
+.frame-summary .title,
+.frame-summary .blurb {
+  text-shadow: none;
+}
+
+.frame-summary .blurb {
+  margin-bottom: 0;
+}
+
+.frame-details {
+  align-self: end;
+  margin-top: 0;
+  position: relative;
+  z-index: 12;
+}
+
+.left-align.split-layout .frame-summary,
+.left-align.split-layout .frame-details {
+  margin-right: auto;
+}
+
+.right-align.split-layout .frame-summary,
+.right-align.split-layout .frame-details {
+  margin-left: auto;
+  text-align: right;
 }
 
 /* Alignments */
@@ -1088,6 +1152,17 @@ body.modal-open {
     padding: 3vh 1.5rem;
   }
 
+  .narrative-frame.split-layout {
+    padding: 4.75rem 1.5rem 1.25rem;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .frame-summary,
+  .frame-details {
+    max-width: 100%;
+    width: 100%;
+  }
+
   /* ── Scale down oversized type ──────────────────────────────
      clamp(4rem, 9vw, 8rem) resolves to 4rem (64px) on mobile
      because 9vw < 4rem at narrow widths. Redefine the clamp range.
@@ -1106,6 +1181,10 @@ body.modal-open {
   .blurb {
     font-size: clamp(1rem, 4vw, 1.4rem);
     max-width: 100%;
+  }
+
+  .frame-summary {
+    gap: 0.35rem;
   }
   .subtitle {
     font-size: clamp(1rem, 4vw, 1.4rem);
