@@ -47,13 +47,42 @@
   <section id="narrative-scroll" class="narrative-scroll">
     <div class="narrative-sticky">
       
-      <!-- Background Asset Layers -->
-      <div class="photo-layer" id="bg-photo-0" style="background-image: url('images/intro-pondering.jpg');"></div>
-      <div class="photo-layer" id="bg-photo-1" style="background-image: url('images/strategist-chess-seated.jpg');"></div>
-      <div class="photo-layer" id="bg-photo-2" style="background-image: url('images/architect-chess-standing.jpg');"></div>
-      <div class="photo-layer" id="bg-photo-3" style="background-image: url('images/entertainer-creator.jpg');"></div>
-      <div class="photo-layer" id="bg-photo-4" style="background-image: url('images/artist-guitar.jpg');"></div>
-      <div class="photo-layer" id="bg-photo-5" style="background-image: url('images/technologist/future-of-the-internet.jpg');"></div>
+      <div class="portrait-stage" aria-hidden="true">
+        <div class="portrait-stage-backdrop"></div>
+        <div class="portrait-stage-glow portrait-stage-glow-a"></div>
+        <div class="portrait-stage-glow portrait-stage-glow-b"></div>
+
+        <figure class="portrait-layer" data-portrait="leadership">
+          <img src="images/scroll-portraits/leadership.jpg" alt="" decoding="async" fetchpriority="high">
+        </figure>
+        <figure class="portrait-layer" data-portrait="thought-leader">
+          <img src="images/scroll-portraits/thought-leader.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="strategic-architect">
+          <img src="images/scroll-portraits/strategic-architect.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="technologist">
+          <img src="images/scroll-portraits/technologist.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="vibe-coder">
+          <img src="images/scroll-portraits/vibe-coder.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="builder-of-people">
+          <img src="images/scroll-portraits/builder-of-people.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="creator">
+          <img src="images/scroll-portraits/creator.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="entertainer">
+          <img src="images/scroll-portraits/entertainer.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="artist-producer">
+          <img src="images/scroll-portraits/artist-producer.jpg" alt="" decoding="async">
+        </figure>
+        <figure class="portrait-layer" data-portrait="organization-of-one">
+          <img src="images/scroll-portraits/organization-of-one.jpg" alt="" decoding="async">
+        </figure>
+      </div>
 
       <!-- Overlay Animations -->
       <!-- Subtly activated in specific sections via CSS -->
@@ -91,7 +120,7 @@
       <div class="text-narrative-container">
         
         <!-- Frame 0: HERO -->
-        <div class="narrative-frame left-align" data-frame="0" data-bg="0">
+        <div class="narrative-frame left-align" data-frame="0" data-bg="0" data-portrait="leadership">
           <h1 class="giant-text font-syne">WHO IS EDDIE GARCIA?</h1>
           <p class="manifesto-line fade-delay">We are not our job titles. We are defined by what we do and what we stand for.</p>
           <div class="identity-teaser fade-delay-2">
@@ -107,7 +136,7 @@
         </div>
 
         <!-- Frame 1: Principled Leadership -->
-        <div class="narrative-frame left-align" data-frame="1" data-bg="0" data-overlay="overlay-blueprints">
+        <div class="narrative-frame left-align" data-frame="1" data-bg="0" data-overlay="overlay-blueprints" data-portrait="leadership">
           <div class="label">SECTION 01</div>
           <h2 class="title font-syne">Principled Leadership</h2>
           <p class="blurb">Principles shape the practice, especially when the work spans people, systems, and service.</p>
@@ -139,7 +168,7 @@
         </div>
 
         <!-- Frame 2: Thought Leader -->
-        <div class="narrative-frame right-align" data-frame="2" data-bg="1" data-overlay="overlay-grid">
+        <div class="narrative-frame right-align" data-frame="2" data-bg="1" data-overlay="overlay-grid" data-portrait="thought-leader">
           <div class="label">SECTION 02</div>
           <h2 class="title font-syne">Thought Leader</h2>
           <p class="blurb">Eddie is regarded as a thought leader across leadership, technology, organizational design, and systems thinking.</p>
@@ -159,7 +188,7 @@
         </div>
 
         <!-- Frame 3: Strategic Architect -->
-        <div class="narrative-frame right-align" data-frame="3" data-bg="2" data-overlay="overlay-nodes">
+        <div class="narrative-frame right-align" data-frame="3" data-bg="2" data-overlay="overlay-nodes" data-portrait="strategic-architect">
           <div class="label">SECTION 03</div>
           <h2 class="title font-syne">Strategic Architect</h2>
           <p class="blurb">Organizational design, systems architecture, and people systems built to hold under pressure.</p>
@@ -191,7 +220,7 @@
         </div>
 
         <!-- Frame 4: Technologist -->
-        <div class="narrative-frame left-align" data-frame="4" data-bg="5" data-overlay="overlay-charts">
+        <div class="narrative-frame left-align" data-frame="4" data-bg="5" data-overlay="overlay-charts" data-portrait="technologist">
           <div class="label">SECTION 04</div>
           <h2 class="title font-syne">Technologist</h2>
           <p class="blurb">Curious about emerging technology, but always focused on what it unlocks for people and institutions.</p>
@@ -228,7 +257,7 @@
         </div>
 
         <!-- Frame 5: Vibe Coder -->
-        <div class="narrative-frame right-align" data-frame="5" data-bg="2" data-overlay="overlay-charts">
+        <div class="narrative-frame right-align" data-frame="5" data-bg="2" data-overlay="overlay-charts" data-portrait="vibe-coder">
           <div class="label">SECTION 05</div>
           <h2 class="title font-syne">Vibe Coder</h2>
           <p class="blurb">Turns ideas into working tools with AI-native workflows, fast iteration, and practical judgment.</p>
@@ -260,7 +289,7 @@
         </div>
 
         <!-- Frame 6: Builder of People -->
-        <div class="narrative-frame right-align" data-frame="6" data-bg="2" data-overlay="overlay-nodes">
+        <div class="narrative-frame right-align" data-frame="6" data-bg="2" data-overlay="overlay-nodes" data-portrait="builder-of-people">
           <div class="label">SECTION 06</div>
           <h2 class="title font-syne">Builder of People</h2>
           <p class="blurb">Raises standards, builds capability, and multiplies the people around him.</p>
@@ -289,7 +318,7 @@
         </div>
 
         <!-- Frame 7: Creator (OMGitsEddieG) -->
-        <div class="narrative-frame left-align" data-frame="7" data-bg="3" data-overlay="overlay-grid">
+        <div class="narrative-frame left-align" data-frame="7" data-bg="3" data-overlay="overlay-grid" data-portrait="creator">
           <div class="label">SECTION 07</div>
           <h2 class="title font-syne">Creator <span class="era-tag">(2013–17)</span></h2>
           <p class="blurb">Built audience, identity, and community from scratch.</p>
@@ -310,7 +339,7 @@
         </div>
 
         <!-- Frame 8: Entertainer (ShowDeTiburcio) -->
-        <div class="narrative-frame left-align" data-frame="8" data-bg="3" data-overlay="overlay-grid">
+        <div class="narrative-frame left-align" data-frame="8" data-bg="3" data-overlay="overlay-grid" data-portrait="entertainer">
           <div class="label">SECTION 08</div>
           <h2 class="title font-syne">Entertainer <span class="era-tag">(2017–20)</span></h2>
           <p class="blurb">Can hold energy, timing, and attention at scale.</p>
@@ -344,20 +373,38 @@
         </div>
 
         <!-- Frame 9: Artist & Producer -->
-        <div class="narrative-frame left-align" data-frame="9" data-bg="4" data-overlay="overlay-waveforms">
+        <div class="narrative-frame left-align" data-frame="9" data-bg="4" data-overlay="overlay-waveforms" data-portrait="artist-producer">
           <div class="label">SECTION 09</div>
           <h2 class="title font-syne">Artist &amp; Producer</h2>
           <p class="blurb">Writes it. Produces it. Performs it. Gives emotion its architecture.</p>
           <div class="embedded-content digito-content mt-4">
-             <iframe src="https://open.spotify.com/embed/artist/6DzJumNLmIubmwnBeuoxhC?utm_source=generator&theme=0" width="100%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);"></iframe>
+            <a href="https://www.digitoproject.com" target="_blank" rel="noopener" class="presentation-card">
+              <div class="insight-engine-label">OFFICIAL SITE</div>
+              <div class="presentation-title">www.digitoproject.com</div>
+              <div class="presentation-desc">Explore the music, releases, and creative world behind Digito Project.</div>
+              <span class="insight-engine-cta">Visit site →</span>
+            </a>
           </div>
         </div>
 
         <!-- Frame 10: Final Statement -->
-        <div class="narrative-frame center-align" data-frame="10" data-bg="0" data-overlay="overlay-blueprints">
+        <div class="narrative-frame center-align" data-frame="10" data-bg="0" data-overlay="overlay-blueprints" data-portrait="organization-of-one">
           <h1 class="giant-text font-syne tight-line">NOT WHAT I DO.</h1>
           <h1 class="giant-text font-syne">IT&apos;S WHO I AM.</h1>
           <p class="subtitle italic font-serif mt-4">An organization of one.</p>
+          <div class="embedded-content final-links">
+            <div class="final-engines">
+              <a href="/fit/" class="insight-engine-card">
+                <div class="insight-engine-label">FIT ANALYZER</div>
+                <p class="insight-engine-desc">Paste a position description and see how Eddie&apos;s experience, skills, and leadership map to your role.</p>
+                <span class="insight-engine-cta">Analyze Fit →</span>
+              </a>
+            </div>
+            <div class="final-contact">
+              <a href="https://linkedin.com/in/eddiegarcialax" target="_blank" class="btn btn-outline btn-sm">LinkedIn</a>
+              <a href="mailto:info@eddiegarcia.org" class="btn btn-outline btn-sm">info@eddiegarcia.org</a>
+            </div>
+          </div>
         </div>
 
       </div>

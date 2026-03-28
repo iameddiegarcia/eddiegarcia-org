@@ -4,8 +4,15 @@
 
 const scrollSection = document.getElementById('narrative-scroll');
 const frames = document.querySelectorAll('.narrative-frame');
-const photos = document.querySelectorAll('.photo-layer');
+const portraitLayers = Array.from(document.querySelectorAll('.portrait-layer'));
 const overlays = document.querySelectorAll('.overlay-layer');
+const trackers = document.querySelectorAll('.tracker-item');
+const scrollPrompt = document.querySelector('.scroll-prompt');
+const progressBar = document.getElementById('scroll-progress-bar');
+const portraitLayerMap = new Map(portraitLayers.map((layer) => [layer.dataset.portrait, layer]));
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const easeInOut = (value) => value * value * (3 - 2 * value);
 const PRINCIPLES = {
   initiative: {
     title: 'Initiative',
@@ -180,11 +187,85 @@ const animateMetrics = () => {
   });
 };
 
+const setPortraitState = (layer, { opacity = 0, scale = 1, y = 0, blur = 0, zIndex = 1 }) => {
+  layer.style.setProperty('--morph-opacity', opacity.toFixed(4));
+  layer.style.setProperty('--morph-scale', scale.toFixed(4));
+  layer.style.setProperty('--morph-y', `${y.toFixed(1)}px`);
+  layer.style.setProperty('--morph-blur', `${blur.toFixed(1)}px`);
+  layer.style.zIndex = String(zIndex);
+};
+
+const updatePortraitMorph = (currentFrame, frameProgress, numFrames) => {
+  if (!portraitLayers.length) return;
+
+  const activeFrameEl = frames[currentFrame];
+  const nextFrameIndex = Math.min(currentFrame + 1, numFrames - 1);
+  const nextFrameEl = frames[nextFrameIndex];
+  const currentPortrait = activeFrameEl?.dataset.portrait;
+  const nextPortrait = nextFrameEl?.dataset.portrait || currentPortrait;
+  const reducedMotion = prefersReducedMotion.matches;
+  const transitionStart = reducedMotion ? 0.88 : 0.72;
+  const transitionEnd = reducedMotion ? 0.89 : 0.96;
+
+  let morph = 0;
+  if (currentFrame < numFrames - 1 && currentPortrait && currentPortrait !== nextPortrait) {
+    const rawMorph = clamp((frameProgress - transitionStart) / (transitionEnd - transitionStart), 0, 1);
+    morph = reducedMotion ? (rawMorph >= 0.5 ? 1 : 0) : easeInOut(rawMorph);
+  }
+
+  portraitLayers.forEach((layer) => {
+    setPortraitState(layer, {
+      opacity: 0,
+      scale: 1.015,
+      y: 12,
+      blur: reducedMotion ? 0 : 4,
+      zIndex: 1
+    });
+  });
+
+  const currentLayer = portraitLayerMap.get(currentPortrait);
+  const nextLayer = portraitLayerMap.get(nextPortrait);
+
+  if (currentPortrait === nextPortrait || currentFrame === numFrames - 1) {
+    if (currentLayer) {
+      setPortraitState(currentLayer, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        blur: 0,
+        zIndex: 3
+      });
+    }
+    return;
+  }
+
+  if (currentLayer) {
+    setPortraitState(currentLayer, {
+      opacity: 1 - morph,
+      scale: 1 - (morph * 0.02),
+      y: -8 * morph,
+      blur: reducedMotion ? 0 : 2.5 * morph,
+      zIndex: 2
+    });
+  }
+
+  if (nextLayer) {
+    setPortraitState(nextLayer, {
+      opacity: morph,
+      scale: 1.02 - (morph * 0.02),
+      y: 12 * (1 - morph),
+      blur: reducedMotion ? 0 : 4 * (1 - morph),
+      zIndex: 3
+    });
+  }
+};
+
 // ─── Main Scroll Controller ───
 if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
   let activeFrameIndex = -1;
-  scrollSection.style.height = `${numFrames * 100}vh`;
+  let isTicking = false;
+  scrollSection.style.height = `${numFrames * 120}vh`;
 
   const updateScroll = () => {
     const rect = scrollSection.getBoundingClientRect();
@@ -198,9 +279,13 @@ if (scrollSection && frames.length > 0) {
     if (progress < 0) progress = 0;
     if (progress > 1) progress = 1;
 
-    // Calculate current frame
-    let currentFrame = Math.floor(progress * numFrames);
+    const frameProgressValue = progress * numFrames;
+    let currentFrame = Math.floor(frameProgressValue);
     if (currentFrame >= numFrames) currentFrame = numFrames - 1;
+    const frameProgress = currentFrame === numFrames - 1 ? 1 : frameProgressValue - currentFrame;
+    const activeFrameEl = frames[currentFrame];
+
+    updatePortraitMorph(currentFrame, frameProgress, numFrames);
 
     if (currentFrame !== activeFrameIndex) {
       activeFrameIndex = currentFrame;
@@ -213,20 +298,6 @@ if (scrollSection && frames.length > 0) {
           frame.classList.remove('active');
         }
       });
-
-      const activeFrameEl = frames[currentFrame];
-
-      // 2. Activate Background Photo
-      const bgId = activeFrameEl.getAttribute('data-bg');
-      if (bgId !== null) {
-        photos.forEach(photo => {
-          if (photo.id === `bg-photo-${bgId}`) {
-            photo.style.opacity = 1;
-          } else {
-            photo.style.opacity = 0;
-          }
-        });
-      }
 
       // 2b. Trigger metric counters on Creator/Entertainer frames
       if (activeFrameEl.querySelector('.metric-value')) {
@@ -243,8 +314,8 @@ if (scrollSection && frames.length > 0) {
         }
       });
     }
+
     // 4. Update Persistent Tracker
-    const trackers = document.querySelectorAll('.tracker-item');
     let bestTrackerTarget = 0;
     trackers.forEach(t => {
       const target = parseInt(t.getAttribute('data-target-frame'), 10);
@@ -259,29 +330,31 @@ if (scrollSection && frames.length > 0) {
     });
 
     // 5. Scroll Prompt fade-out
-    const scrollPrompt = document.querySelector('.scroll-prompt');
     if (scrollPrompt) {
       if (progress > 0.02) scrollPrompt.classList.add('fade-out');
       else scrollPrompt.classList.remove('fade-out');
     }
 
     // 6. Progress bar
-    const progressBar = document.getElementById('scroll-progress-bar');
     if (progressBar) progressBar.style.width = (progress * 100) + '%';
   };
 
-  window.addEventListener('scroll', () => {
-    requestAnimationFrame(updateScroll);
-  }, { passive: true });
-  window.addEventListener('resize', () => {
-    requestAnimationFrame(updateScroll);
-  });
+  const requestScrollUpdate = () => {
+    if (isTicking) return;
+    isTicking = true;
+    requestAnimationFrame(() => {
+      updateScroll();
+      isTicking = false;
+    });
+  };
+
+  window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+  window.addEventListener('resize', requestScrollUpdate);
   
   // Custom navigation link logic
-  const jumpLinks = document.querySelectorAll('.tracker-item');
-  jumpLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-      const targetFrame = parseInt(e.target.getAttribute('data-target-frame'), 10);
+  trackers.forEach(link => {
+    link.addEventListener('click', (event) => {
+      const targetFrame = parseInt(event.currentTarget.getAttribute('data-target-frame'), 10);
       if (!isNaN(targetFrame)) {
         const targetProgress = (targetFrame + 0.1) / numFrames; 
         
