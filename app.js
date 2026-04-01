@@ -10,9 +10,77 @@ const trackers = document.querySelectorAll('.tracker-item');
 const scrollPrompt = document.querySelector('.scroll-prompt');
 const progressBar = document.getElementById('scroll-progress-bar');
 const portraitLayerMap = new Map(portraitLayers.map((layer) => [layer.dataset.portrait, layer]));
+const portraitImageMap = new Map(
+  portraitLayers.map((layer) => [layer.dataset.portrait, layer.querySelector('img')]).filter(([, image]) => image)
+);
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const prefersLitePortraits = window.matchMedia('(max-width: 820px)');
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const easeInOut = (value) => value * value * (3 - 2 * value);
+const isLikelyIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+  || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+const shouldUseLitePortraits = () => prefersLitePortraits.matches || isLikelyIOS;
+
+const setLitePortraitMode = (enabled) => {
+  document.body.classList.toggle('lite-portraits', enabled);
+};
+
+const hydratePortrait = (portraitKey) => {
+  const image = portraitImageMap.get(portraitKey);
+  if (!image) return;
+
+  const pendingSrc = image.dataset.src;
+  if (pendingSrc && image.getAttribute('src') !== pendingSrc) {
+    image.setAttribute('src', pendingSrc);
+  }
+};
+
+const hydrateAllPortraits = () => {
+  portraitLayers.forEach((layer) => hydratePortrait(layer.dataset.portrait));
+};
+
+const syncLitePortraitAssets = (currentFrame, numFrames) => {
+  const keepPortraits = new Set();
+  const frameIndexes = [
+    Math.max(currentFrame - 1, 0),
+    currentFrame,
+    Math.min(currentFrame + 1, numFrames - 1),
+    Math.min(currentFrame + 2, numFrames - 1)
+  ];
+
+  frameIndexes.forEach((frameIndex) => {
+    const portraitKey = frames[frameIndex]?.dataset.portrait;
+    if (portraitKey) keepPortraits.add(portraitKey);
+  });
+
+  portraitImageMap.forEach((image, portraitKey) => {
+    if (!image.dataset.src) return;
+
+    if (keepPortraits.has(portraitKey)) {
+      hydratePortrait(portraitKey);
+      return;
+    }
+
+    if (image.hasAttribute('src')) {
+      image.removeAttribute('src');
+    }
+  });
+};
+
+const syncPortraitAssets = (currentFrame, numFrames) => {
+  const litePortraits = shouldUseLitePortraits();
+  setLitePortraitMode(litePortraits);
+
+  if (litePortraits) {
+    syncLitePortraitAssets(currentFrame, numFrames);
+  } else {
+    hydrateAllPortraits();
+  }
+
+  return litePortraits;
+};
+
 const PRINCIPLES = {
   initiative: {
     title: 'Initiative',
@@ -97,11 +165,33 @@ if (principleButtons.length && principleTitle && principleText) {
 const galleryTrack = document.querySelector('[data-gallery-track]');
 const galleryNavButtons = document.querySelectorAll('[data-gallery-nav]');
 const gallerySlides = document.querySelectorAll('.gallery-slide');
+const galleryPreviewImages = Array.from(document.querySelectorAll('.gallery-slide img[data-src]'));
 const galleryLightbox = document.getElementById('gallery-lightbox');
 const galleryLightboxImage = document.getElementById('gallery-lightbox-image');
 const galleryLightboxCaption = document.getElementById('gallery-lightbox-caption');
 const galleryLightboxClose = document.getElementById('gallery-lightbox-close');
 const lightboxDismissTargets = document.querySelectorAll('[data-lightbox-close]');
+let galleryMediaHydrated = false;
+
+const hydrateGalleryMedia = () => {
+  if (galleryMediaHydrated) return;
+
+  galleryPreviewImages.forEach((image) => {
+    const pendingSrc = image.dataset.src;
+    if (pendingSrc && image.getAttribute('src') !== pendingSrc) {
+      image.setAttribute('src', pendingSrc);
+    }
+  });
+
+  galleryMediaHydrated = true;
+};
+
+const syncGalleryMedia = (currentFrame = 0) => {
+  if (galleryMediaHydrated) return;
+  if (!shouldUseLitePortraits() || currentFrame >= 3) {
+    hydrateGalleryMedia();
+  }
+};
 
 if (galleryTrack && gallerySlides.length && galleryLightbox && galleryLightboxImage && galleryLightboxCaption) {
   const slideGalleryBy = (direction) => {
@@ -110,6 +200,8 @@ if (galleryTrack && gallerySlides.length && galleryLightbox && galleryLightboxIm
   };
 
   const openLightbox = (button) => {
+    hydrateGalleryMedia();
+
     const src = button.dataset.galleryImage;
     const alt = button.dataset.galleryAlt || '';
     const caption = button.dataset.galleryCaption || '';
@@ -195,6 +287,37 @@ const setPortraitState = (layer, { opacity = 0, scale = 1, y = 0, blur = 0, zInd
   layer.style.zIndex = String(zIndex);
 };
 
+/* ═══════════════════════════════════════════════════
+   PHASED SCROLL REVEAL — per-frame scroll phases
+   ═══════════════════════════════════════════════════
+   Phase A (0.00–0.15): Portrait fades in, summary text fades in
+   Phase B (0.15–0.40): Summary visible, portrait at full brightness
+   Phase C (0.40–0.55): Summary fades out
+   Phase D (0.55–0.70): Portrait dims to 20%, details start fading in
+   Phase E (0.70–0.90): Details fully visible over dimmed portrait
+   Phase F (0.90–1.00): Everything fades, morph to next portrait
+   ═══════════════════════════════════════════════════ */
+
+const computeFramePhases = (fp) => {
+  // fp = frameProgress 0..1 within the current frame
+  const summaryIn    = easeInOut(clamp(fp / 0.15, 0, 1));
+  const summaryOut   = 1 - easeInOut(clamp((fp - 0.40) / 0.15, 0, 1));
+  const summaryOp    = Math.min(summaryIn, summaryOut);
+
+  const detailsIn    = easeInOut(clamp((fp - 0.55) / 0.15, 0, 1));
+  const detailsOut   = 1 - easeInOut(clamp((fp - 0.90) / 0.10, 0, 1));
+  const detailsOp    = Math.min(detailsIn, detailsOut);
+
+  // Portrait brightness: full (1) until 0.50, then dims to 0.20 by 0.65
+  const dimProgress  = easeInOut(clamp((fp - 0.50) / 0.15, 0, 1));
+  const portraitBrightness = 1 - (dimProgress * 0.80); // 1.0 → 0.20
+
+  // Morph to next portrait starts at 0.90
+  const morphProgress = easeInOut(clamp((fp - 0.90) / 0.10, 0, 1));
+
+  return { summaryOp, detailsOp, portraitBrightness, morphProgress };
+};
+
 const updatePortraitMorph = (currentFrame, frameProgress, numFrames) => {
   if (!portraitLayers.length) return;
 
@@ -203,16 +326,31 @@ const updatePortraitMorph = (currentFrame, frameProgress, numFrames) => {
   const nextFrameEl = frames[nextFrameIndex];
   const currentPortrait = activeFrameEl?.dataset.portrait;
   const nextPortrait = nextFrameEl?.dataset.portrait || currentPortrait;
+  const litePortraits = syncPortraitAssets(currentFrame, numFrames);
   const reducedMotion = prefersReducedMotion.matches;
-  const transitionStart = reducedMotion ? 0.88 : 0.72;
-  const transitionEnd = reducedMotion ? 0.89 : 0.96;
 
-  let morph = 0;
-  if (currentFrame < numFrames - 1 && currentPortrait && currentPortrait !== nextPortrait) {
-    const rawMorph = clamp((frameProgress - transitionStart) / (transitionEnd - transitionStart), 0, 1);
-    morph = reducedMotion ? (rawMorph >= 0.5 ? 1 : 0) : easeInOut(rawMorph);
+  const phases = computeFramePhases(frameProgress);
+
+  // Set CSS custom properties on each frame for summary/details opacity
+  frames.forEach((frame, idx) => {
+    if (idx === currentFrame) {
+      frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
+      frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
+      frame.style.setProperty('--frame-active', '1');
+    } else {
+      frame.style.setProperty('--summary-opacity', '0');
+      frame.style.setProperty('--details-opacity', '0');
+      frame.style.setProperty('--frame-active', '0');
+    }
+  });
+
+  // Portrait dim overlay
+  const stickyEl = document.querySelector('.narrative-sticky');
+  if (stickyEl) {
+    stickyEl.style.setProperty('--portrait-brightness', phases.portraitBrightness.toFixed(4));
   }
 
+  // Reset all portrait layers
   portraitLayers.forEach((layer) => {
     setPortraitState(layer, {
       opacity: 0,
@@ -225,6 +363,20 @@ const updatePortraitMorph = (currentFrame, frameProgress, numFrames) => {
 
   const currentLayer = portraitLayerMap.get(currentPortrait);
   const nextLayer = portraitLayerMap.get(nextPortrait);
+  const morph = phases.morphProgress;
+
+  if (litePortraits) {
+    if (currentLayer) {
+      setPortraitState(currentLayer, {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        blur: 0,
+        zIndex: 3
+      });
+    }
+    return;
+  }
 
   if (currentPortrait === nextPortrait || currentFrame === numFrames - 1) {
     if (currentLayer) {
@@ -265,7 +417,9 @@ if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
   let activeFrameIndex = -1;
   let isTicking = false;
-  scrollSection.style.height = `${numFrames * 120}vh`;
+  scrollSection.style.height = `${numFrames * 150}vh`;
+  syncPortraitAssets(0, numFrames);
+  syncGalleryMedia(0);
 
   const updateScroll = () => {
     const rect = scrollSection.getBoundingClientRect();
@@ -285,30 +439,29 @@ if (scrollSection && frames.length > 0) {
     const frameProgress = currentFrame === numFrames - 1 ? 1 : frameProgressValue - currentFrame;
     const activeFrameEl = frames[currentFrame];
 
+    syncGalleryMedia(currentFrame);
     updatePortraitMorph(currentFrame, frameProgress, numFrames);
+
+    // Continuous frame activation (no binary toggle)
+    const isActive = (idx) => idx === currentFrame;
+
+    frames.forEach((frame, idx) => {
+      frame.classList.toggle('active', isActive(idx));
+    });
 
     if (currentFrame !== activeFrameIndex) {
       activeFrameIndex = currentFrame;
 
-      // 1. Activate Text Frame
-      frames.forEach((frame, idx) => {
-        if (idx === currentFrame) {
-          frame.classList.add('active');
-        } else {
-          frame.classList.remove('active');
-        }
-      });
-
-      // 2b. Trigger metric counters on Creator/Entertainer frames
+      // Trigger metric counters on Creator/Entertainer frames
       if (activeFrameEl.querySelector('.metric-value')) {
         animateMetrics();
       }
 
-      // 3. Activate Overlays
+      // Activate Overlays
       const overlayId = activeFrameEl.getAttribute('data-overlay');
       overlays.forEach(overlay => {
         if (overlayId && overlay.id === overlayId) {
-          overlay.style.opacity = 0.5; // subtle opacity for overlays
+          overlay.style.opacity = 0.5;
         } else {
           overlay.style.opacity = 0;
         }

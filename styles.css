@@ -154,6 +154,17 @@ body.modal-open {
   -webkit-user-drag: none;
 }
 
+body.lite-portraits .portrait-layer {
+  filter: none;
+  will-change: opacity;
+}
+
+body.lite-portraits .portrait-layer img {
+  filter: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+
 .portrait-layer[data-portrait="leadership"] {
   --portrait-image-scale: 0.95;
   --portrait-offset-x: 3vw;
@@ -237,6 +248,27 @@ body.modal-open {
     --portrait-offset-x: 3vw;
     --portrait-offset-y: 3vh;
   }
+
+  body.lite-portraits .portrait-layer {
+    --portrait-width: min(92vw, 680px);
+    --portrait-height: min(52vh, 620px);
+    padding: 4.75rem 0.75rem 6rem;
+  }
+}
+
+/* ─── Portrait Dim Overlay (phased scroll) ─── */
+.narrative-sticky {
+  --portrait-brightness: 1;
+}
+.portrait-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  opacity: calc(1 - var(--portrait-brightness, 1));
+  z-index: 2;
+  pointer-events: none;
+  will-change: opacity;
 }
 
 /* ─── Overlays (Data Nodes, Charts, etc) ─── */
@@ -315,15 +347,18 @@ body.modal-open {
 }
 
 .narrative-frame {
+  --summary-opacity: 0;
+  --details-opacity: 0;
+  --frame-active: 0;
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   padding: 5vh 5vw;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end; /* Text sits mostly near bottom */
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out);
+  justify-content: flex-end;
+  opacity: 1;
+  transform: none;
+  pointer-events: none;
 }
 .narrative-frame:not(.active),
 .narrative-frame:not(.active) * {
@@ -331,8 +366,6 @@ body.modal-open {
 }
 
 .narrative-frame.active {
-  opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
 }
 .narrative-frame.active * {
@@ -352,6 +385,9 @@ body.modal-open {
   gap: 0.55rem;
   align-self: start;
   max-width: min(38rem, 100%);
+  opacity: var(--summary-opacity, 0);
+  transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
+  will-change: opacity, transform;
 }
 
 .frame-summary .label {
@@ -372,6 +408,9 @@ body.modal-open {
   margin-top: 0;
   position: relative;
   z-index: 12;
+  opacity: var(--details-opacity, 0);
+  transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
+  will-change: opacity, transform;
 }
 
 .left-align.split-layout .frame-summary,
@@ -1013,6 +1052,33 @@ body.modal-open {
   text-shadow: 0 0 30px var(--accent-1), 0 0 10px rgba(255,255,255,1);
 }
 
+/* ─── Phased Reveal: Hero & Final frames ─── */
+/* Hero (frame 0): giant text + manifesto follow summary timing, chips follow details */
+.narrative-frame[data-frame="0"] .giant-text,
+.narrative-frame[data-frame="0"] .manifesto-line {
+  opacity: var(--summary-opacity, 0);
+  transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
+  will-change: opacity, transform;
+}
+.narrative-frame[data-frame="0"] .identity-teaser {
+  opacity: var(--details-opacity, 0);
+  transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
+  will-change: opacity, transform;
+}
+
+/* Final (frame 10): giant text + subtitle follow summary, final links follow details */
+.narrative-frame[data-frame="10"] .giant-text,
+.narrative-frame[data-frame="10"] .subtitle {
+  opacity: var(--summary-opacity, 0);
+  transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
+  will-change: opacity, transform;
+}
+.narrative-frame[data-frame="10"] .final-links {
+  opacity: var(--details-opacity, 0);
+  transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
+  will-change: opacity, transform;
+}
+
 /* Push hero frame text above scroll prompt */
 .narrative-frame[data-frame="0"] {
   padding-bottom: 7rem;
@@ -1108,12 +1174,11 @@ body.modal-open {
 .text-sm { font-size: 0.875rem; line-height: 1.5; }
 .text-3xl { font-size: clamp(1.5rem, 3vw, 2rem); line-height: 1.2; }
 
-.fade-delay {
-  opacity: 0;
-  animation: fadeIn 1s var(--ease-out) 0.4s forwards;
-}
-@keyframes fadeIn {
-  to { opacity: 1; }
+/* fade-delay classes disabled — phased scroll handles all reveals now */
+.fade-delay,
+.fade-delay-2 {
+  opacity: inherit;
+  animation: none;
 }
 
 /* ═══════════════════════════════════════════════════
@@ -1324,11 +1389,6 @@ body.modal-open {
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
-.fade-delay-2 {
-  opacity: 0;
-  animation: fadeIn 1s var(--ease-out) 0.8s forwards;
-}
-
 @media (max-width: 1024px) {
   .identity-teaser {
     gap: 0.4rem;
