@@ -1085,10 +1085,11 @@ body.lite-portraits .portrait-layer img {
 }
 
 /* ─── Phased Reveal: Hero & Final frames ─── */
-/* Hero (frame 0): title always visible, manifesto fades in on scroll, chips follow */
+/* Hero (frame 0): title visible on load, fades out with manifesto + chips on scroll */
 .narrative-frame[data-frame="0"] .giant-text {
-  opacity: 1;
-  transform: none;
+  opacity: var(--hero-title-opacity, 1);
+  transform: translateY(calc((1 - var(--hero-title-opacity, 1)) * -16px));
+  will-change: opacity, transform;
 }
 .narrative-frame[data-frame="0"] .manifesto-line {
   opacity: var(--summary-opacity, 0);
