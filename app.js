@@ -454,12 +454,26 @@ if (scrollSection && frames.length > 0) {
       });
 
       if (videoMode === 'fullscreen') {
-        // Fullscreen: video fills entire scroll, text phases still work
-        const phases = computeFramePhases(frameProgress);
+        // Fullscreen hero: manifesto fades in after a short scroll delay,
+        // chips follow later, then both fade out before section ends
+        const fp = frameProgress;
+        const eio = (v) => v * v * (3 - 2 * v);
+        const cl = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+        // Manifesto: invisible at start, fades in at 8-20%, out at 70-85%
+        const summaryIn = eio(cl((fp - 0.08) / 0.12, 0, 1));
+        const summaryOut = 1 - eio(cl((fp - 0.70) / 0.15, 0, 1));
+        const summaryOp = Math.min(summaryIn, summaryOut);
+
+        // Identity chips: fade in at 20-35%, out at 75-90%
+        const detailsIn = eio(cl((fp - 0.20) / 0.15, 0, 1));
+        const detailsOut = 1 - eio(cl((fp - 0.75) / 0.15, 0, 1));
+        const detailsOp = Math.min(detailsIn, detailsOut);
+
         frames.forEach((frame, idx) => {
           if (idx === currentFrame) {
-            frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
-            frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
+            frame.style.setProperty('--summary-opacity', summaryOp.toFixed(4));
+            frame.style.setProperty('--details-opacity', detailsOp.toFixed(4));
             frame.style.setProperty('--frame-active', '1');
           } else {
             frame.style.setProperty('--summary-opacity', '0');

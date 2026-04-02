@@ -1085,12 +1085,19 @@ body.lite-portraits .portrait-layer img {
 }
 
 /* ─── Phased Reveal: Hero & Final frames ─── */
-/* Hero (frame 0): giant text + manifesto follow summary timing, chips follow details */
-.narrative-frame[data-frame="0"] .giant-text,
+/* Hero (frame 0): title always visible, manifesto fades in on scroll, chips follow */
+.narrative-frame[data-frame="0"] .giant-text {
+  opacity: 1;
+  transform: none;
+}
 .narrative-frame[data-frame="0"] .manifesto-line {
   opacity: var(--summary-opacity, 0);
   transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
   will-change: opacity, transform;
+}
+.narrative-frame[data-frame="0"] .manifesto-line em {
+  font-style: italic;
+  font-weight: 600;
 }
 .narrative-frame[data-frame="0"] .identity-teaser {
   opacity: var(--details-opacity, 0);
