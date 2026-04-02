@@ -330,13 +330,19 @@
       <li><a href="/">Home</a></li>
       <li><a href="/insight/">Insights</a></li>
       <li><a href="/tools/" class="active">Tools</a></li>
+      <li><a href="/connect/">Connect</a></li>
+      <li><a href="/contact/">Contact</a></li>
     </ul>
   </nav>
 
-  <section class="hero">
-    <span class="hero-label">Built in Public</span>
-    <h1>Tools &amp; Solutions</h1>
-    <p>AI-powered tools and systems built at the intersection of HR strategy, workforce intelligence, and civic innovation.</p>
+  <section class="video-hero" style="position:relative;height:80vh;overflow:hidden;">
+    <canvas id="page-video-hero" data-frames="tools" data-count="121" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;"></canvas>
+    <div style="position:absolute;inset:0;background:rgba(15,10,26,0.55);z-index:1;"></div>
+    <div class="hero" style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding-top:80px;">
+      <span class="hero-label">Built in Public</span>
+      <h1>Tools &amp; Solutions</h1>
+      <p>AI-powered tools and systems built at the intersection of HR strategy, workforce intelligence, and civic innovation.</p>
+    </div>
   </section>
 
   <div class="filters">
@@ -492,6 +498,7 @@
       });
     });
   </script>
+  <script src="../page-video-hero.js"></script>
 
 </body>
 </html>
