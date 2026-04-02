@@ -441,27 +441,79 @@ if (scrollSection && frames.length > 0) {
 
     syncGalleryMedia(currentFrame);
 
-    // Scroll-driven video scrubber — if this section has video, hide portrait
+    // Scroll-driven video scrubber
     const hasVideo = typeof ScrollVideo !== 'undefined' && ScrollVideo.hasSection(currentFrame);
+    const videoMode = hasVideo ? ScrollVideo.getMode(currentFrame) : null;
+
     if (hasVideo) {
       ScrollVideo.update(currentFrame, frameProgress);
-      // Hide all portrait layers when video is active
+
+      // Hide portrait layers — video canvas replaces them
       portraitLayers.forEach(layer => {
         layer.style.setProperty('--morph-opacity', '0');
       });
-      // Keep text phases working
-      const phases = computeFramePhases(frameProgress);
-      frames.forEach((frame, idx) => {
-        if (idx === currentFrame) {
-          frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
-          frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
-          frame.style.setProperty('--frame-active', '1');
+
+      if (videoMode === 'fullscreen') {
+        // Fullscreen: video fills entire scroll, text phases still work
+        const phases = computeFramePhases(frameProgress);
+        frames.forEach((frame, idx) => {
+          if (idx === currentFrame) {
+            frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
+            frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
+            frame.style.setProperty('--frame-active', '1');
+          } else {
+            frame.style.setProperty('--summary-opacity', '0');
+            frame.style.setProperty('--details-opacity', '0');
+            frame.style.setProperty('--frame-active', '0');
+          }
+        });
+      } else if (videoMode === 'intro' || videoMode === 'carryover') {
+        const fp = frameProgress;
+        const eio = (v) => v * v * (3 - 2 * v);
+        const cl = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+        let phases;
+        if (videoMode === 'carryover') {
+          // Carryover: frame is already frozen from start.
+          // Dim immediately (0–0.15), summary (0.05–0.20), details (0.20–0.35).
+          const dimProgress = eio(cl(fp / 0.15, 0, 1));
+          const portraitBrightness = 1 - (dimProgress * 0.80);
+          const summaryIn = eio(cl((fp - 0.05) / 0.15, 0, 1));
+          const summaryOut = 1 - eio(cl((fp - 0.80) / 0.10, 0, 1));
+          const summaryOp = Math.min(summaryIn, summaryOut);
+          const detailsIn = eio(cl((fp - 0.20) / 0.15, 0, 1));
+          const detailsOut = 1 - eio(cl((fp - 0.85) / 0.10, 0, 1));
+          const detailsOp = Math.min(detailsIn, detailsOut);
+          phases = { summaryOp, detailsOp, portraitBrightness };
         } else {
-          frame.style.setProperty('--summary-opacity', '0');
-          frame.style.setProperty('--details-opacity', '0');
-          frame.style.setProperty('--frame-active', '0');
+          // Intro: video scrubs first ~45%, then freezes.
+          // Dim (0.45–0.60), summary (0.50–0.65), details (0.60–0.75).
+          const dimProgress = eio(cl((fp - 0.45) / 0.15, 0, 1));
+          const portraitBrightness = 1 - (dimProgress * 0.80);
+          const summaryIn = eio(cl((fp - 0.50) / 0.15, 0, 1));
+          const summaryOut = 1 - eio(cl((fp - 0.85) / 0.10, 0, 1));
+          const summaryOp = Math.min(summaryIn, summaryOut);
+          const detailsIn = eio(cl((fp - 0.60) / 0.15, 0, 1));
+          const detailsOut = 1 - eio(cl((fp - 0.90) / 0.10, 0, 1));
+          const detailsOp = Math.min(detailsIn, detailsOut);
+          phases = { summaryOp, detailsOp, portraitBrightness };
         }
-      });
+        const stickyEl = document.querySelector('.narrative-sticky');
+        if (stickyEl) {
+          stickyEl.style.setProperty('--portrait-brightness', phases.portraitBrightness.toFixed(4));
+        }
+        frames.forEach((frame, idx) => {
+          if (idx === currentFrame) {
+            frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
+            frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
+            frame.style.setProperty('--frame-active', '1');
+          } else {
+            frame.style.setProperty('--summary-opacity', '0');
+            frame.style.setProperty('--details-opacity', '0');
+            frame.style.setProperty('--frame-active', '0');
+          }
+        });
+      }
     } else {
       if (typeof ScrollVideo !== 'undefined') ScrollVideo.update(currentFrame, frameProgress);
       updatePortraitMorph(currentFrame, frameProgress, numFrames);
