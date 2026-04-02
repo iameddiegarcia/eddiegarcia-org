@@ -440,7 +440,32 @@ if (scrollSection && frames.length > 0) {
     const activeFrameEl = frames[currentFrame];
 
     syncGalleryMedia(currentFrame);
-    updatePortraitMorph(currentFrame, frameProgress, numFrames);
+
+    // Scroll-driven video scrubber — if this section has video, hide portrait
+    const hasVideo = typeof ScrollVideo !== 'undefined' && ScrollVideo.hasSection(currentFrame);
+    if (hasVideo) {
+      ScrollVideo.update(currentFrame, frameProgress);
+      // Hide all portrait layers when video is active
+      portraitLayers.forEach(layer => {
+        layer.style.setProperty('--morph-opacity', '0');
+      });
+      // Keep text phases working
+      const phases = computeFramePhases(frameProgress);
+      frames.forEach((frame, idx) => {
+        if (idx === currentFrame) {
+          frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
+          frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
+          frame.style.setProperty('--frame-active', '1');
+        } else {
+          frame.style.setProperty('--summary-opacity', '0');
+          frame.style.setProperty('--details-opacity', '0');
+          frame.style.setProperty('--frame-active', '0');
+        }
+      });
+    } else {
+      if (typeof ScrollVideo !== 'undefined') ScrollVideo.update(currentFrame, frameProgress);
+      updatePortraitMorph(currentFrame, frameProgress, numFrames);
+    }
 
     // Continuous frame activation (no binary toggle)
     const isActive = (idx) => idx === currentFrame;
