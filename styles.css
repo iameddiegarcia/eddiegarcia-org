@@ -166,20 +166,20 @@ body.lite-portraits .portrait-layer img {
 }
 
 .portrait-layer[data-portrait="leadership"] {
-  --portrait-image-scale: 0.95;
-  --portrait-offset-x: 3vw;
+  --portrait-image-scale: 0.88;
+  --portrait-offset-x: 12vw;
   --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="thought-leader"] {
-  --portrait-image-scale: 0.95;
-  --portrait-offset-x: 6vw;
+  --portrait-image-scale: 0.90;
+  --portrait-offset-x: -10vw;
   --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="strategic-architect"] {
-  --portrait-image-scale: 0.94;
-  --portrait-offset-x: 2vw;
+  --portrait-image-scale: 0.89;
+  --portrait-offset-x: -8vw;
   --portrait-offset-y: 3vh;
 }
 
@@ -190,14 +190,14 @@ body.lite-portraits .portrait-layer img {
 }
 
 .portrait-layer[data-portrait="vibe-coder"] {
-  --portrait-image-scale: 0.98;
-  --portrait-offset-x: 7vw;
+  --portrait-image-scale: 0.92;
+  --portrait-offset-x: -8vw;
   --portrait-offset-y: 3vh;
 }
 
 .portrait-layer[data-portrait="builder-of-people"] {
-  --portrait-image-scale: 0.95;
-  --portrait-offset-x: 1vw;
+  --portrait-image-scale: 0.90;
+  --portrait-offset-x: -6vw;
   --portrait-offset-y: 3vh;
 }
 
@@ -388,6 +388,15 @@ body.lite-portraits .portrait-layer img {
   opacity: var(--summary-opacity, 0);
   transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
   will-change: opacity, transform;
+  position: relative;
+  z-index: 12;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .frame-summary .label {
@@ -396,7 +405,7 @@ body.lite-portraits .portrait-layer img {
 
 .frame-summary .title,
 .frame-summary .blurb {
-  text-shadow: none;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
 }
 
 .frame-summary .blurb {
@@ -1226,6 +1235,11 @@ body.lite-portraits .portrait-layer img {
   .frame-details {
     max-width: 100%;
     width: 100%;
+  }
+
+  .frame-summary {
+    padding: 1rem 1.25rem;
+    border-radius: 12px;
   }
 
   /* ── Scale down oversized type ──────────────────────────────
