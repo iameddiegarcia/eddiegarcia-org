@@ -365,6 +365,13 @@ function InsightModal({data,label,onClose,onNext}){
   );
 }
 
+/* ── Sanitize AI text: allow only bold markdown, strip all HTML ── */
+function safeBold(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+}
+
 /* ── Main App ── */
 function App(){
   const [phase,setPhase]=useState("hero"); // hero | loading | results
@@ -713,7 +720,7 @@ Return ONLY JSON.`,
               </div>
               <div>
                 <div className="brief-label">Gap Interpretation</div>
-                <div className="brief-txt" dangerouslySetInnerHTML={{__html:(sk.manager_insight||"").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>")}}/>
+                <div className="brief-txt" dangerouslySetInnerHTML={{__html:safeBold(sk.manager_insight)}}/>
               </div>
             </div>
           </div>

@@ -550,10 +550,10 @@ function renderModal(data) {
   else { qEl.style.display='none'; }
   const skEl = document.getElementById('mSkills');
   if (data.skills && data.skills.length) {
-    skEl.innerHTML = data.skills.map(s=>`<div class="sk-row"><span class="sk-name">${s.name}</span><div class="sk-track"><div class="sk-fill ${s.color}" style="width:0%" data-pct="${s.pct}"></div></div><span class="sk-score">${s.score}</span></div>`).join('');
+    skEl.innerHTML = data.skills.map(s=>`<div class="sk-row"><span class="sk-name">${escHtml(s.name)}</span><div class="sk-track"><div class="sk-fill ${escHtml(s.color)}" style="width:0%" data-pct="${escHtml(String(s.pct))}"></div></div><span class="sk-score">${escHtml(String(s.score))}</span></div>`).join('');
     setTimeout(()=>{ skEl.querySelectorAll('.sk-fill').forEach(b=>b.style.width=b.dataset.pct+'%'); }, 60);
   } else { skEl.innerHTML=''; }
-  document.getElementById('mTags').innerHTML = (data.tags||[]).map(t=>`<span class="tag ${data.tagColor||'purple'}">#${t.toLowerCase().replace(/\s+/g,'-')}</span>`).join('');
+  document.getElementById('mTags').innerHTML = (data.tags||[]).map(t=>`<span class="tag ${escHtml(data.tagColor||'purple')}">#${escHtml(t.toLowerCase().replace(/\s+/g,'-'))}</span>`).join('');
 }
 
 function closeModal() {

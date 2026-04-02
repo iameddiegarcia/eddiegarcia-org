@@ -1,14 +1,23 @@
+const VALID_PATH = /^\/online\/[a-zA-Z0-9\/_.\-]+$/;
+const ALLOWED_PARAMS = new Set(['keyword', 'start', 'end', 'sort', 'order']);
+
 module.exports = async function handler(req, res) {
   const { path, ...rest } = req.query;
 
-  if (!path || !path.startsWith('/online/')) {
+  if (!path || !VALID_PATH.test(path)) {
     return res.status(400).json({ error: 'Invalid path' });
   }
 
-  const qs = new URLSearchParams(rest).toString();
-  const url = `https://api-v2.onetcenter.org${path}${qs ? '?' + qs : ''}`;
+  // Only allow known query parameters
+  const sanitized = {};
+  for (const [k, v] of Object.entries(rest)) {
+    if (ALLOWED_PARAMS.has(k) && typeof v === 'string' && v.length < 200) {
+      sanitized[k] = v;
+    }
+  }
 
-  console.log('[onet] key defined:', !!process.env.ONET_API_KEY, '| url:', url);
+  const qs = new URLSearchParams(sanitized).toString();
+  const url = `https://api-v2.onetcenter.org${path}${qs ? '?' + qs : ''}`;
 
   try {
     const r = await fetch(url, {
@@ -20,8 +29,6 @@ module.exports = async function handler(req, res) {
     });
 
     if (!r.ok) {
-      const body = await r.text().catch(() => '');
-      console.log('[onet] status:', r.status, '| body:', body.slice(0, 200));
       return res.status(r.status).json({ error: `O*NET error: ${r.status}` });
     }
 
@@ -31,6 +38,6 @@ module.exports = async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=86400');
     res.json(data);
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
+};

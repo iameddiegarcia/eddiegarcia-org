@@ -1,8 +1,17 @@
+const MAX_TOKENS_CAP = 4000;
+const ALLOWED_MODEL = 'gpt-4o-mini';
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
 
   try {
-    const { system, user, max = 1500 } = req.body || {};
+    const { system, user, max: rawMax = 1500 } = req.body || {};
+
+    if (!user || typeof user !== 'string' || user.length > 10000) {
+      return res.status(400).json({ error: 'Invalid or missing user input' });
+    }
+
+    const max = Math.min(Number(rawMax) || 1500, MAX_TOKENS_CAP);
     const schema = {
       type: 'object',
       additionalProperties: false,
@@ -138,10 +147,10 @@ module.exports = async function handler(req, res) {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: ALLOWED_MODEL,
         input: [
-          { role: 'system', content: [{ type: 'input_text', text: system || '' }] },
-          { role: 'user', content: [{ type: 'input_text', text: user || '' }] },
+          { role: 'system', content: [{ type: 'input_text', text: String(system || '').slice(0, 8000) }] },
+          { role: 'user', content: [{ type: 'input_text', text: String(user).slice(0, 10000) }] },
         ],
         max_output_tokens: max,
         text: {
@@ -166,6 +175,6 @@ module.exports = async function handler(req, res) {
       output_text: outputText,
     });
   } catch (e) {
-    res.status(500).json({ error: e.message });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
