@@ -438,7 +438,10 @@ if (scrollSection && frames.length > 0) {
     entries.forEach(entry => {
       entry.target.style.visibility = entry.isIntersecting ? 'visible' : 'hidden';
     });
-  }, { threshold: 0.01 });
+  }, { 
+    threshold: 0.01,
+    rootMargin: '100px 0px 100px 0px' // Buffer to prevent pop-in
+  });
 
   frames.forEach(frame => visibilityObserver.observe(frame));
 
