@@ -29,6 +29,8 @@ const ScrollVideo = (() => {
     8: { path: 'frame-8', count: 121, ext: 'jpg', mode: 'intro', scrubEnd: 0.45 },
     9: { path: 'frame-9', count: 121, ext: 'jpg', mode: 'intro', scrubEnd: 0.45 },
     10: { path: 'frame-10', count: 121, ext: 'jpg', mode: 'intro', scrubEnd: 0.45 },
+    11: { path: 'tools', count: 121, ext: 'jpg', mode: 'intro', scrubEnd: 0.45 },
+    12: { path: 'contact', count: 121, ext: 'jpg', mode: 'intro', scrubEnd: 0.45 },
   };
 
   const frameCache = new Map();

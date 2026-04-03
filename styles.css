@@ -1159,14 +1159,14 @@ body.lite-portraits .portrait-layer img {
   border-top: none;
 }
 
-/* Final (frame 10): giant text + subtitle follow summary, final links follow details */
-.narrative-frame[data-frame="10"] .giant-text,
-.narrative-frame[data-frame="10"] .subtitle {
+/* Final frames: giant text + subtitle follow summary, final links follow details */
+.narrative-frame.final-frame .giant-text,
+.narrative-frame.final-frame .subtitle {
   opacity: var(--summary-opacity, 0);
   transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
   will-change: opacity, transform;
 }
-.narrative-frame[data-frame="10"] .final-links {
+.narrative-frame.final-frame .final-links {
   opacity: var(--details-opacity, 0);
   transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
   will-change: opacity, transform;
@@ -1977,6 +1977,29 @@ body.lite-portraits .portrait-layer img {
   margin: 2.5rem 0;
   width: 100%;
   max-width: 900px;
+}
+
+.final-frame .frame-summary,
+.final-frame .frame-details {
+  align-self: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.final-frame .frame-summary {
+  max-width: min(44rem, 100%);
+}
+
+.final-frame .frame-details {
+  width: min(100%, 900px);
+}
+
+.final-engines-single {
+  grid-template-columns: minmax(280px, 560px);
+  justify-content: center;
+  max-width: 560px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .insight-engine-card {
