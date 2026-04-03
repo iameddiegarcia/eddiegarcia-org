@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Fit Analyzer — Eddie Garcia</title>
+<meta name="description" content="Paste a position description and see how Eddie Garcia's experience, skills, and leadership map to your role.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f9fafb;
+  --white:#ffffff;
+  --border:rgba(0,0,0,0.08);
+  --border2:rgba(0,0,0,0.12);
+  --text:#111827;
+  --text2:#374151;
+  --text3:#6b7280;
+  --text4:#9ca3af;
+  --purple:#7c6aef;
+  --purple2:#c06aef;
+  --pink:#ef6a9a;
+  --green:#22c55e;
+  --amber:#f59e0b;
+  --red:#ef4444;
+  --grad:linear-gradient(135deg,#7c6aef,#c06aef,#ef6a9a);
+  --grad-soft:linear-gradient(135deg,rgba(124,106,239,0.08),rgba(192,106,239,0.05));
+  --hero-glow:radial-gradient(circle,rgba(124,106,239,0.12) 0%,rgba(192,106,239,0.06) 40%,rgba(0,0,0,0) 70%);
+  --radius:14px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg:0 20px 60px rgba(0,0,0,0.12),0 8px 24px rgba(0,0,0,0.08);
+}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh;-webkit-font-smoothing:antialiased;}
+*{font-family:inherit;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.15);border-radius:3px;}
+
+/* ── NAV ── */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;position:sticky;top:0;background:rgba(249,250,251,0.9);backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--border);}
+.nav-back{display:flex;align-items:center;gap:6px;color:var(--text3);font-size:12px;font-weight:500;text-decoration:none;letter-spacing:0.05em;text-transform:uppercase;transition:color 0.15s;}
+.nav-back:hover{color:var(--text);}
+.nav-back svg{width:14px;height:14px;}
+.nav-title{font-size:12px;font-weight:500;color:var(--text3);letter-spacing:0.04em;text-transform:uppercase;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.nav-badge{font-size:11px;font-weight:500;color:var(--purple);background:rgba(124,106,239,0.08);border:1px solid rgba(124,106,239,0.2);border-radius:20px;padding:3px 10px;letter-spacing:0.03em;}
+
+/* ── HERO ── */
+.hero{position:relative;text-align:center;padding:80px 32px 64px;overflow:hidden;}
+.hero-glow{position:absolute;top:-20%;left:50%;transform:translateX(-50%);width:800px;height:600px;background:var(--hero-glow);pointer-events:none;z-index:0;}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto;}
+.hero-label{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--purple);margin-bottom:20px;}
+.hero-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(42px,6vw,68px);font-weight:700;line-height:1.1;color:var(--text);margin-bottom:20px;letter-spacing:-0.01em;}
+.hero-title em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.hero-sub{font-size:15px;color:var(--text3);font-weight:300;line-height:1.7;max-width:460px;margin:0 auto 32px;}
+.hero-cta{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text3);cursor:pointer;border:none;background:none;transition:color 0.15s;}
+.hero-cta:hover{color:var(--text);}
+.hero-cta svg{width:14px;height:14px;}
+
+/* ── INPUT SECTION ── */
+.input-section{max-width:680px;margin:0 auto;padding:0 32px 64px;}
+.input-section-title{font-family:'Playfair Display',Georgia,serif;font-size:26px;font-weight:600;color:var(--text);text-align:center;margin-bottom:6px;}
+.input-section-sub{font-size:13px;color:var(--text3);text-align:center;margin-bottom:24px;}
+.input-wrap{position:relative;}
+textarea.main-input{
+  width:100%;background:var(--white);border:1px solid var(--border2);border-radius:var(--radius);
+  color:var(--text);font-size:14px;font-weight:300;line-height:1.7;padding:18px 20px;
+  resize:none;height:180px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+  box-shadow:var(--shadow);font-family:'Inter',sans-serif;
+}
+textarea.main-input::placeholder{color:var(--text4);}
+textarea.main-input:focus{border-color:rgba(124,106,239,0.4);box-shadow:0 0 0 3px rgba(124,106,239,0.08),var(--shadow);}
+.input-actions{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:8px;}
+.btn-run{display:inline-flex;align-items:center;gap:8px;padding:11px 28px;background:var(--grad);color:#fff;border:none;border-radius:40px;font-size:13px;font-weight:600;cursor:pointer;transition:opacity 0.15s,transform 0.15s;letter-spacing:0.02em;box-shadow:0 4px 14px rgba(124,106,239,0.3);}
+.btn-run:hover:not(:disabled){opacity:0.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(124,106,239,0.4);}
+.btn-run:disabled{opacity:0.4;cursor:not-allowed;transform:none;}
+.kbd{font-size:11px;color:var(--text4);background:rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-family:monospace;}
+.char-count{font-size:11px;color:var(--text4);}
+
+/* ── LOADING ── */
+.loading-wrap{text-align:center;padding:48px 0;}
+.loading-spinner{width:32px;height:32px;border:2px solid rgba(124,106,239,0.15);border-top-color:var(--purple);border-radius:50%;animation:spin 0.7s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-track{width:200px;height:2px;background:rgba(0,0,0,0.06);border-radius:1px;margin:12px auto 0;overflow:hidden;}
+.loading-fill{height:100%;background:var(--grad);animation:scan 1.8s ease-in-out infinite;}
+@keyframes scan{0%{width:0;margin-left:0}50%{width:50%;margin-left:25%}100%{width:0;margin-left:100%}}
+.loading-msg{font-size:12px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-top:8px;}
+
+/* ── ERROR ── */
+.error-msg{max-width:480px;margin:0 auto;padding:14px 18px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);font-size:13px;color:#dc2626;}
+
+/* ── RESULTS ── */
+.results-wrap{max-width:960px;margin:0 auto;padding:0 32px 80px;}
+
+/* ── FIT SCORE HERO ── */
+.fit-hero{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--shadow);}
+.fit-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--grad);}
+.fit-hero-inner{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;}
+.fit-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:10px;}
+.fit-title{font-family:'Playfair Display',Georgia,serif;font-size:clamp(22px,3vw,32px);font-weight:700;line-height:1.15;color:var(--text);margin-bottom:10px;}
+.fit-summary{font-size:13px;color:var(--text3);font-weight:300;line-height:1.7;max-width:540px;}
+.fit-score{text-align:center;flex-shrink:0;}
+.score-num{font-family:'Playfair Display',Georgia,serif;font-size:56px;font-weight:700;line-height:1;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.score-lbl{font-size:11px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px;}
+.score-bar{height:3px;width:80px;background:rgba(0,0,0,0.06);border-radius:2px;margin:8px auto 0;overflow:hidden;}
+.score-fill{height:100%;background:var(--grad);border-radius:2px;transition:width 0.8s ease;}
+.fit-verdict{display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 12px;border-radius:20px;margin-top:8px;}
+.v-strong{background:rgba(34,197,94,0.1);color:#16a34a;border:1px solid rgba(34,197,94,0.2);}
+.v-good{background:rgba(124,106,239,0.08);color:var(--purple);border:1px solid rgba(124,106,239,0.2);}
+.v-partial{background:rgba(245,158,11,0.08);color:#d97706;border:1px solid rgba(245,158,11,0.2);}
+.v-stretch{background:rgba(239,68,68,0.08);color:#dc2626;border:1px solid rgba(239,68,68,0.2);}
+
+/* ── SECTION HEADER ── */
+.sec-hd{margin-bottom:16px;}
+.sec-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:4px;}
+.sec-title{font-family:'Playfair Display',Georgia,serif;font-size:22px;font-weight:600;color:var(--text);}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+.panel{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);}
+.panel-title{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--purple);margin-bottom:14px;}
+
+/* ── STRENGTH / GAP ROWS ── */
+.sg-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.sg-row:first-child{padding-top:0;}
+.sg-row:last-child{border-bottom:none;padding-bottom:0;}
+.sg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.dot-green{background:#22c55e;}
+.dot-amber{background:#f59e0b;}
+.dot-red{background:#ef4444;}
+.dot-purple{background:var(--purple);}
+.sg-body{flex:1;}
+.sg-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.sg-desc{font-size:12px;color:var(--text3);font-weight:300;line-height:1.55;}
+.sg-evidence{font-size:11px;color:var(--text4);line-height:1.5;margin-top:4px;font-style:italic;}
+.sg-badge{font-size:9px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:2px 7px;border-radius:10px;border:1px solid;flex-shrink:0;margin-top:3px;}
+.b-strong{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);color:#16a34a;}
+.b-partial{background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);color:#d97706;}
+.b-gap{background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);color:#dc2626;}
+
+/* ── DEV ACTIONS ── */
+.dev-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:24px;box-shadow:var(--shadow);}
+.dev-row{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid rgba(0,0,0,0.05);}
+.dev-row:first-child{padding-top:0;}
+.dev-row:last-child{border-bottom:none;padding-bottom:0;}
+.dev-num{font-size:11px;font-weight:600;color:var(--purple);width:22px;flex-shrink:0;padding-top:2px;font-variant-numeric:tabular-nums;}
+.dev-body{flex:1;}
+.dev-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.dev-desc{font-size:12px;color:var(--text3);line-height:1.55;font-weight:300;}
+.dev-tag{font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:20px;border:1px solid;flex-shrink:0;margin-top:2px;}
+.t-high{background:rgba(124,106,239,0.07);border-color:rgba(124,106,239,0.2);color:var(--purple);}
+.t-med{background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2);color:#d97706;}
+.t-low{background:rgba(107,114,128,0.07);border-color:rgba(107,114,128,0.2);color:var(--text3);}
+
+/* ── BRIEF CARD ── */
+.brief-card{background:var(--grad);border-radius:var(--radius);padding:32px;margin-bottom:24px;box-shadow:0 8px 32px rgba(124,106,239,0.25);}
+.brief-inner{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+.brief-label{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);margin-bottom:12px;}
+.brief-headline{font-family:'Playfair Display',Georgia,serif;font-size:20px;font-weight:600;color:#fff;line-height:1.4;}
+.brief-txt{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.8;font-weight:300;}
+.brief-txt strong{color:#fff;font-weight:600;}
+
+/* ── FOOTER ── */
+.foot{text-align:center;padding:24px 32px 48px;font-size:12px;color:var(--text4);}
+.foot a{color:var(--text3);text-decoration:none;}
+.foot a:hover{color:var(--purple);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:720px){
+  .two-col{grid-template-columns:1fr;}
+  .fit-hero-inner{grid-template-columns:1fr;}
+  .fit-score{display:flex;align-items:center;gap:12px;}
+  .brief-inner{grid-template-columns:1fr;}
+}
+@media(max-width:480px){.nav{padding:16px 20px;}}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.fu{animation:fadeUp 0.4s ease-out both;}
+.fu1{animation-delay:0.04s;}
+.fu2{animation-delay:0.1s;}
+.fu3{animation-delay:0.16s;}
+.fu4{animation-delay:0.22s;}
+.fu5{animation-delay:0.28s;}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef, useEffect, useCallback } = React;
+
+const MSGS = [
+  "READING POSITION DESCRIPTION...",
+  "MAPPING TO EDDIE'S EXPERIENCE...",
+  "EVALUATING LEADERSHIP ALIGNMENT...",
+  "ANALYZING SKILL COVERAGE...",
+  "IDENTIFYING GAPS & STRETCH AREAS...",
+  "BUILDING FIT REPORT..."
+];
+
+const EDDIE_PROFILE = `CANDIDATE PROFILE — EDDIE GARCIA
+
+CURRENT ROLE: Senior Management Analyst II, Strategy Technology & Performance (STP) Section, Human Resources Division — Los Angeles World Airports (LAWA / City of Los Angeles)
+
+CAREER SUMMARY:
+Eddie Garcia is a senior public-sector strategist operating at the intersection of workforce transformation, HR technology modernization, data infrastructure, automation, and organizational design. He leads the STP section within LAWA HR — a strategic transformation unit responsible for HR systems, workforce analytics, reporting, process design, and technology adoption.
+
+CORE COMPETENCIES:
+- Strategic workforce planning and organizational design
+- HR technology evaluation and modernization (Oracle HCM, Workday, enterprise platforms)
+- Data architecture, workforce analytics, and dashboard/reporting systems
+- Process redesign, operational efficiency, and business process modernization
+- AI strategy and integration (workforce augmentation, not displacement)
+- Change management and digital transformation in government
+- Executive communication, completed staff work, stakeholder influence
+- Policy analysis, compliance, ADA/accessibility, governance
+- Cross-divisional coordination in complex institutional environments
+- Team leadership, section culture design, staff development
+- Public speaking, thought leadership, webinar facilitation
+- Budget/position control and vacancy management strategy
+
+LEADERSHIP PHILOSOPHY:
+12 operating principles: Initiative, Completed Staff Work, Responsibility, Accountability, Ownership, Adaptability, Communication, Collaboration, Responsiveness, Innovation, Integrity, Continuous Learning.
+Core doctrine: "Fix structure → Fix process → Fix system." Modernization is not mainly a software problem — it is a systems, governance, and operating-model problem.
+
+STRATEGIC FRAMEWORKS:
+- Workforce Planning Operating Model: Replace automatic vacancy backfill with strategic decision model (backfill / upgrade / downgrade / eliminate / reallocate / redesign)
+- HR Maturity Model: Operational → Strategic → Predictive
+- AI Adoption: Frame as capacity expansion, not job replacement. AI fills operational gaps from professionals wearing ten hats.
+- Data Architecture: Single source of truth, automated reporting, reduced manual burden
+
+TECHNICAL SKILLS:
+- Proficient: Python, SQL, data visualization, API integration, AI/LLM tools
+- Platforms: Workday, Oracle HCM, enterprise HR systems, Vercel, GitHub
+- Built: AI-powered portfolio engines (Position Intelligence, Raise the Bar, Insight Engine, Fit Analyzer), automated knowledge systems, nightly data pipelines
+- Web: Full-stack web development (HTML/CSS/JS, React, Node.js, serverless)
+
+EDUCATION:
+- BA, Communication Studies — California State University, Northridge (CSUN)
+- Certified: PSHRA-CP (Public Sector HR Certification)
+- Multiple professional development credentials in HR, analytics, leadership
+
+CREATIVE / ENTREPRENEURIAL BACKGROUND:
+- Founded "OMGitsEddieG" (2013–17): Facebook 294K followers, YouTube 42.7K subscribers, Instagram 35.4K followers — Spanish-language entertainment content
+- Founded "ShowDeTiburcio" (2017–20): Facebook 781K followers, YouTube 74.9K subscribers, Instagram 35.4K, TikTok 67K — entertainment brand
+- Music artist as "DIGITO": Spotify-published, AI-assisted music exploring technology, memory, and humanity
+- Demonstrates: audience building, content strategy, brand development, creative direction, production, cultural fluency
+
+KEY PROJECTS (Current):
+1. LAWA HR Transformation — Modernizing workforce data, reporting, analytics, and HR systems across a major public airport authority
+2. HR + AI Strategy — Developing presentations and organizational narrative around AI in public-sector HR
+3. Personal Knowledge System — AI-assisted strategic brain built in Claude with automated insight capture, nightly digests, and web-published insight engine
+4. DIGITO Creative Universe — AI-generated storytelling and music
+
+DIFFERENTIATORS:
+- Rare blend of public-sector institutional knowledge + modern technical execution
+- Builds production-quality tools, not just presentations
+- Thinks in systems and leverage, not tasks and checklists
+- Comfortable operating at both executive strategy level and hands-on technical level
+- Cultural fluency across English and Spanish, corporate and creative contexts
+- Track record of building audiences and brands from scratch`;
+
+function safeJSON(raw) {
+  let t = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+  try { return JSON.parse(t); } catch {}
+  const s = t.indexOf('{'), e = t.lastIndexOf('}');
+  if (s !== -1 && e !== -1) { try { return JSON.parse(t.slice(s, e + 1)); } catch {} }
+  if (s !== -1) {
+    let a = t.slice(s);
+    for (let i = a.length; i > 0; i--) {
+      try {
+        const p = a.slice(0, i); let br = 0, bk = 0, inS = false, esc = false;
+        for (const c of p) { if (esc) { esc = false; continue; } if (c === '\\') { esc = true; continue; } if (c === '"') inS = !inS; if (!inS) { if (c === '{') br++; if (c === '}') br--; if (c === '[') bk++; if (c === ']') bk--; } }
+        return JSON.parse(p + '}'.repeat(Math.max(0, br)) + ']'.repeat(Math.max(0, bk)));
+      } catch { continue; }
+    }
+  }
+  throw new Error("Could not parse JSON");
+}
+
+async function callClaude(system, user, max = 2000) {
+  const r = await fetch("/api/claude", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: max,
+      system,
+      messages: [{ role: "user", content: user }]
+    })
+  });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({ error: `HTTP ${r.status}` }));
+    throw new Error(err.error || err.message || `Request failed: ${r.status}`);
+  }
+  const d = await r.json();
+  return d.content?.find(b => b.type === "text")?.text || "{}";
+}
+
+function verdictClass(score) {
+  if (score >= 85) return "v-strong";
+  if (score >= 70) return "v-good";
+  if (score >= 50) return "v-partial";
+  return "v-stretch";
+}
+function verdictLabel(score) {
+  if (score >= 85) return "Strong Fit";
+  if (score >= 70) return "Good Fit";
+  if (score >= 50) return "Partial Fit";
+  return "Stretch";
+}
+function alignDot(a) {
+  if (a === "strong") return "dot-green";
+  if (a === "partial") return "dot-amber";
+  return "dot-red";
+}
+function alignBadge(a) {
+  if (a === "strong") return "b-strong";
+  if (a === "partial") return "b-partial";
+  return "b-gap";
+}
+function priBadge(p) {
+  if (p === "high") return "t-high";
+  if (p === "medium") return "t-med";
+  return "t-low";
+}
+
+/* ── Main App ── */
+function App() {
+  const [phase, setPhase] = useState("hero");
+  const [input, setInput] = useState("");
+  const [loadMsg, setLoadMsg] = useState(MSGS[0]);
+  const [err, setErr] = useState(null);
+  const [report, setReport] = useState(null);
+  const tmr = useRef(null);
+
+  const scrollToInput = () => document.getElementById("input-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  const analyze = useCallback(async () => {
+    const val = input.trim();
+    if (!val) return;
+    setPhase("loading"); setErr(null); setReport(null);
+    let i = 0;
+    tmr.current = setInterval(() => { i = (i + 1) % MSGS.length; setLoadMsg(MSGS[i]); }, 1400);
+    try {
+      const rr = await callClaude(
+        `You are a candidate-fit analyst. You have the following candidate profile:
+
+${EDDIE_PROFILE}
+
+Your task: Given a position description (or job title), evaluate how well this candidate fits the role. Be honest and specific — highlight genuine strengths with evidence, and call out real gaps without sugarcoating. This tool is meant to help hiring managers and recruiters understand fit quickly.
+
+Return ONLY compact JSON in this exact structure:
+{
+  "position_title": "The role title extracted or inferred from the input",
+  "organization": "Organization name if mentioned, otherwise null",
+  "fit_score": 82,
+  "fit_summary": "2-3 sentence executive summary of overall fit. Be specific about why this score.",
+  "strengths": [
+    {"name": "Competency name", "alignment": "strong", "evidence": "Specific evidence from Eddie's background that maps to this requirement", "requirement": "What the position asks for"}
+  ],
+  "gaps": [
+    {"name": "Gap area", "severity": "moderate", "explanation": "Why this is a gap", "mitigation": "How Eddie could address this or what transferable experience applies", "requirement": "What the position asks for"}
+  ],
+  "development_areas": [
+    {"name": "Area", "priority": "high", "action": "Specific development action", "timeline": "Suggested timeline"}
+  ],
+  "talking_points": [
+    "Key talking point Eddie should emphasize in an interview for this role"
+  ],
+  "risk_factors": [
+    "Honest risk factor a hiring manager might flag"
+  ],
+  "hiring_manager_brief": "2-3 sentence brief for the hiring manager explaining Eddie's value proposition for this specific role."
+}
+
+Rules:
+- fit_score: 0-100 integer. Be calibrated: 90+ means near-perfect match, 70-89 means strong with minor gaps, 50-69 means partial fit with notable gaps, below 50 means significant stretch.
+- strengths: 4-6 items. alignment must be "strong" or "partial". Include concrete evidence.
+- gaps: 2-4 items. severity must be "critical", "moderate", or "minor". Be honest.
+- development_areas: 2-3 items. priority must be "high", "medium", or "low".
+- talking_points: 3-4 items. Specific to THIS role, not generic.
+- risk_factors: 1-3 items. What a hiring manager might worry about.
+- Map requirements to Eddie's ACTUAL experience. Don't inflate or fabricate.
+- If the input is just a title with no description, infer typical requirements but note reduced confidence.
+Return ONLY JSON. No markdown, no explanation.`,
+        `Analyze fit for the following position:\n\n${val}`,
+        2500
+      );
+      const data = safeJSON(rr);
+      setReport(data);
+      setPhase("results");
+    } catch (e) {
+      setErr(e.message);
+      setPhase("results");
+    } finally { clearInterval(tmr.current); }
+  }, [input]);
+
+  useEffect(() => {
+    const h = (e) => { if ((e.ctrlKey || e.metaKey) && e.key === "Enter") analyze(); };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [analyze]);
+
+  return (
+    <div>
+      {/* NAV */}
+      <nav className="nav">
+        <a href="/" className="nav-back">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Eddie Garcia
+        </a>
+        <span className="nav-title">Fit Analyzer</span>
+        <div className="nav-right">
+          <span className="nav-badge">AI-Powered</span>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <div className="hero">
+        <div className="hero-glow"/>
+        <div className="hero-inner">
+          <div className="hero-label">Candidate Fit Analysis</div>
+          <h1 className="hero-title">Is Eddie the <em>right fit?</em></h1>
+          <p className="hero-sub">
+            Paste a position description and get an instant strength &amp; gap analysis mapped against Eddie's experience, skills, and leadership profile.
+          </p>
+          <button className="hero-cta" onClick={scrollToInput}>
+            Paste a position description
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      {/* INPUT */}
+      <div className="input-section" id="input-anchor">
+        <div className="input-section-title">Position Description</div>
+        <div className="input-section-sub">Paste the full job posting, description, or even just a title</div>
+        <div className="input-wrap">
+          <textarea
+            className="main-input"
+            placeholder="Paste a position description here — duties, qualifications, requirements, the whole thing..."
+            value={input}
+            onChange={e => setInput(e.target.value)}
+          />
+        </div>
+        <div className="input-actions">
+          <button className="btn-run" onClick={analyze} disabled={!input.trim() || phase === "loading"}>
+            Analyze Fit
+            <span className="kbd">⌘↵</span>
+          </button>
+          <span className="char-count">{input.length > 0 ? `${input.length.toLocaleString()} chars` : ''}</span>
+        </div>
+      </div>
+
+      {/* LOADING */}
+      {phase === "loading" && (
+        <div className="loading-wrap">
+          <div className="loading-spinner"/>
+          <div className="loading-track"><div className="loading-fill"/></div>
+          <div className="loading-msg">{loadMsg}</div>
+        </div>
+      )}
+
+      {/* ERROR */}
+      {err && <div className="error-msg" style={{margin:'0 auto 24px',maxWidth:'480px',padding:'14px 18px'}}>{err}</div>}
+
+      {/* RESULTS */}
+      {phase === "results" && report && (
+        <div className="results-wrap">
+
+          {/* Fit Score Hero */}
+          <div className="fit-hero fu">
+            <div className="fit-hero-inner">
+              <div>
+                <div className="fit-label">{report.organization || "Position Analysis"}</div>
+                <div className="fit-title">{report.position_title || "Role Analysis"}</div>
+                <div className="fit-summary">{report.fit_summary}</div>
+              </div>
+              <div className="fit-score">
+                <div className="score-num">{report.fit_score}</div>
+                <div className="score-lbl">Fit Score</div>
+                <div className="score-bar"><div className="score-fill" style={{width:`${report.fit_score}%`}}/></div>
+                <div className={`fit-verdict ${verdictClass(report.fit_score)}`}>{verdictLabel(report.fit_score)}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Strengths & Gaps */}
+          <div className="two-col fu fu1">
+            <div className="panel">
+              <div className="panel-title">Strengths</div>
+              {(report.strengths || []).map((s, i) => (
+                <div key={i} className="sg-row">
+                  <div className={`sg-dot ${alignDot(s.alignment)}`}/>
+                  <div className="sg-body">
+                    <div className="sg-name">{s.name}</div>
+                    <div className="sg-desc">{s.requirement}</div>
+                    <div className="sg-evidence">{s.evidence}</div>
+                  </div>
+                  <span className={`sg-badge ${alignBadge(s.alignment)}`}>{s.alignment}</span>
+                </div>
+              ))}
+            </div>
+            <div className="panel">
+              <div className="panel-title">Gaps</div>
+              {(report.gaps || []).map((g, i) => (
+                <div key={i} className="sg-row">
+                  <div className={`sg-dot ${g.severity === 'critical' ? 'dot-red' : g.severity === 'moderate' ? 'dot-amber' : 'dot-purple'}`}/>
+                  <div className="sg-body">
+                    <div className="sg-name">{g.name}</div>
+                    <div className="sg-desc">{g.explanation}</div>
+                    <div className="sg-evidence">{g.mitigation}</div>
+                  </div>
+                  <span className={`sg-badge ${g.severity === 'critical' ? 'b-gap' : g.severity === 'moderate' ? 'b-partial' : 'b-strong'}`}>{g.severity}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Development Areas */}
+          {report.development_areas && report.development_areas.length > 0 && (
+            <div className="fu fu2">
+              <div className="sec-hd"><div className="sec-label">Development</div><div className="sec-title">Growth Areas</div></div>
+              <div className="dev-card">
+                {report.development_areas.map((d, i) => (
+                  <div key={i} className="dev-row">
+                    <div className="dev-num">{String(i + 1).padStart(2, '0')}</div>
+                    <div className="dev-body">
+                      <div className="dev-name">{d.name}</div>
+                      <div className="dev-desc">{d.action}{d.timeline ? ` — ${d.timeline}` : ''}</div>
+                    </div>
+                    <span className={`dev-tag ${priBadge(d.priority)}`}>{d.priority}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Talking Points & Risk Factors */}
+          <div className="two-col fu fu3">
+            <div className="panel">
+              <div className="panel-title">Interview Talking Points</div>
+              {(report.talking_points || []).map((tp, i) => (
+                <div key={i} className="sg-row">
+                  <div className="sg-dot dot-purple"/>
+                  <div className="sg-body">
+                    <div className="sg-desc" style={{color:'var(--text2)',fontWeight:400}}>{tp}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="panel">
+              <div className="panel-title">Risk Factors</div>
+              {(report.risk_factors || []).map((rf, i) => (
+                <div key={i} className="sg-row">
+                  <div className="sg-dot dot-amber"/>
+                  <div className="sg-body">
+                    <div className="sg-desc" style={{color:'var(--text2)',fontWeight:400}}>{rf}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Hiring Manager Brief */}
+          {report.hiring_manager_brief && (
+            <div className="brief-card fu fu4">
+              <div className="brief-inner">
+                <div>
+                  <div className="brief-label">Hiring Manager Brief</div>
+                  <div className="brief-headline">Why Eddie Garcia</div>
+                </div>
+                <div>
+                  <div className="brief-txt">{report.hiring_manager_brief}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Try Another */}
+          <div style={{textAlign:'center',padding:'16px 0 0'}}>
+            <button className="btn-run" onClick={() => { setPhase("hero"); setReport(null); setErr(null); setInput(""); window.scrollTo({top:0,behavior:'smooth'}); }}>
+              Analyze Another Role
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* FOOTER */}
+      <footer className="foot">
+        <a href="/">eddiegarcia.org</a> · Fit Analyzer · Powered by Claude
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script>
+</body>
+</html>
