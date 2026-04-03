@@ -2063,9 +2063,47 @@ body.lite-portraits .portrait-layer img {
   margin-top: 1rem;
 }
 
+/* ─── LinkedIn Bio Panel (Final Frame) ─── */
+.linkedin-bio-panel {
+  max-width: 600px;
+  margin: 0 auto 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(124, 106, 239, 0.2);
+  border-radius: 16px;
+  text-align: left;
+}
+.bio-headline {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+}
+.bio-role {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-1);
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+}
+.bio-text {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
 @media (max-width: 768px) {
   .center-align .final-engines {
     grid-template-columns: 1fr;
     max-width: 100%;
+  }
+  .linkedin-bio-panel {
+    max-width: 100%;
+    padding: 1rem 1.15rem;
   }
 }
