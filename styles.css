@@ -95,6 +95,7 @@ body.modal-open {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
+  contain: paint; /* Performance: Isolate repaints to this container */
 }
 
 /* ─── Scroll Video Canvas ─── */
@@ -152,7 +153,7 @@ body.modal-open {
   opacity: var(--morph-opacity);
   transform: translate3d(0, var(--morph-y), 0) scale(var(--morph-scale));
   filter: blur(var(--morph-blur));
-  will-change: opacity, transform, filter;
+  will-change: opacity, transform; /* Removed filter from will-change to save memory */
 }
 
 .portrait-layer img {
@@ -408,10 +409,17 @@ body.lite-portraits .portrait-layer img {
   padding: 1.5rem 2rem;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
   box-shadow: 0 2px 24px rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.5);
+  /* Optimization: Disable expensive backdrop-filter unless frame is active */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: backdrop-filter 0.3s ease;
+}
+
+.narrative-frame.active .frame-summary {
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
 }
 
 .frame-summary .label {
@@ -438,11 +446,17 @@ body.lite-portraits .portrait-layer img {
   padding: 1.25rem 1.5rem;
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.5);
   overflow-x: hidden;
+  /* Optimization: Disable expensive backdrop-filter unless frame is active */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.narrative-frame.active .frame-details {
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
 }
 
 .left-align.split-layout .frame-summary,

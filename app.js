@@ -417,21 +417,40 @@ if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
   let activeFrameIndex = -1;
   let isTicking = false;
+  
+  // Cache layout values to avoid getBoundingClientRect in hot loop
+  let cachedSectionTop = 0;
+  let cachedSectionHeight = 0;
+  let cachedScrollDistance = 0;
+
+  const refreshOffsets = () => {
+    const rect = scrollSection.getBoundingClientRect();
+    cachedSectionTop = rect.top + window.scrollY;
+    cachedSectionHeight = scrollSection.offsetHeight;
+    cachedScrollDistance = cachedSectionHeight - window.innerHeight;
+  };
+
   scrollSection.style.height = `${numFrames * 150}vh`;
+  refreshOffsets();
+
+  // Use IntersectionObserver to cull off-screen frames (reduces paint/composite cost)
+  const visibilityObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      entry.target.style.visibility = entry.isIntersecting ? 'visible' : 'hidden';
+    });
+  }, { threshold: 0.01 });
+
+  frames.forEach(frame => visibilityObserver.observe(frame));
+
   syncPortraitAssets(0, numFrames);
   syncGalleryMedia(0);
 
   const updateScroll = () => {
-    const rect = scrollSection.getBoundingClientRect();
-    const sectionTop = rect.top;
-    const sectionHeight = rect.height;
+    const scrollY = window.scrollY;
+    const sectionRelativeTop = scrollY - cachedSectionTop;
     
-    const windowHeight = window.innerHeight;
-    const scrollDistance = sectionHeight - windowHeight;
-    
-    let progress = -sectionTop / scrollDistance;
-    if (progress < 0) progress = 0;
-    if (progress > 1) progress = 1;
+    let progress = sectionRelativeTop / cachedScrollDistance;
+    progress = Math.max(0, Math.min(1, progress));
 
     const frameProgressValue = progress * numFrames;
     let currentFrame = Math.floor(frameProgressValue);
@@ -439,7 +458,33 @@ if (scrollSection && frames.length > 0) {
     const frameProgress = currentFrame === numFrames - 1 ? 1 : frameProgressValue - currentFrame;
     const activeFrameEl = frames[currentFrame];
 
-    syncGalleryMedia(currentFrame);
+    // Throttled Asset Sync: Only run when frame actually changes
+    if (currentFrame !== activeFrameIndex) {
+      syncGalleryMedia(currentFrame);
+      
+      // Trigger metric counters on Creator/Entertainer frames
+      if (activeFrameEl.querySelector('.metric-value')) {
+        animateMetrics();
+      }
+
+      // Activate Overlays
+      const overlayId = activeFrameEl.getAttribute('data-overlay');
+      overlays.forEach(overlay => {
+        overlay.style.opacity = (overlayId && overlay.id === overlayId) ? 0.5 : 0;
+      });
+
+      // Update Persistent Tracker
+      let bestTrackerTarget = 0;
+      trackers.forEach(t => {
+        const target = parseInt(t.getAttribute('data-target-frame'), 10);
+        if (currentFrame >= target) bestTrackerTarget = target;
+      });
+      trackers.forEach(t => {
+        t.classList.toggle('active', parseInt(t.getAttribute('data-target-frame'), 10) === bestTrackerTarget);
+      });
+
+      activeFrameIndex = currentFrame;
+    }
 
     // Scroll-driven video scrubber
     const hasVideo = typeof ScrollVideo !== 'undefined' && ScrollVideo.hasSection(currentFrame);
@@ -449,31 +494,17 @@ if (scrollSection && frames.length > 0) {
       ScrollVideo.update(currentFrame, frameProgress);
 
       // Hide portrait layers — video canvas replaces them
-      portraitLayers.forEach(layer => {
-        layer.style.setProperty('--morph-opacity', '0');
-      });
+      portraitLayers.forEach(layer => layer.style.setProperty('--morph-opacity', '0'));
 
       if (videoMode === 'fullscreen') {
-        // Fullscreen hero sequence:
-        //   0-8%:   Title visible, nothing else
-        //   8-20%:  Manifesto fades in
-        //   20-35%: Chips fade in
-        //   35-50%: All visible together
-        //   40-55%: Everything fades out (chair pull begins)
-        //   55%+:   Clean video only through end of section
         const fp = frameProgress;
         const eio = (v) => v * v * (3 - 2 * v);
         const cl = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
 
-        // Title: visible at start (1), fades out at 40-55%
         const titleOp = 1 - eio(cl((fp - 0.40) / 0.15, 0, 1));
-
-        // Manifesto: fades in at 8-20%, out at 40-55%
         const summaryIn = eio(cl((fp - 0.08) / 0.12, 0, 1));
         const summaryOut = 1 - eio(cl((fp - 0.40) / 0.15, 0, 1));
         const summaryOp = Math.min(summaryIn, summaryOut);
-
-        // Chips: fade in at 20-35%, out at 42-55%
         const detailsIn = eio(cl((fp - 0.20) / 0.15, 0, 1));
         const detailsOut = 1 - eio(cl((fp - 0.42) / 0.13, 0, 1));
         const detailsOp = Math.min(detailsIn, detailsOut);
@@ -484,7 +515,8 @@ if (scrollSection && frames.length > 0) {
             frame.style.setProperty('--summary-opacity', summaryOp.toFixed(4));
             frame.style.setProperty('--details-opacity', detailsOp.toFixed(4));
             frame.style.setProperty('--frame-active', '1');
-          } else {
+          } else if (frame.style.getPropertyValue('--frame-active') === '1') {
+             // Reset inactive frames only if they were active
             frame.style.setProperty('--hero-title-opacity', '0');
             frame.style.setProperty('--summary-opacity', '0');
             frame.style.setProperty('--details-opacity', '0');
@@ -498,40 +530,27 @@ if (scrollSection && frames.length > 0) {
 
         let phases;
         if (videoMode === 'carryover') {
-          // Carryover: frame is already frozen from start.
-          // Dim immediately (0–0.15), summary (0.05–0.20), details (0.20–0.35).
           const dimProgress = eio(cl(fp / 0.15, 0, 1));
           const portraitBrightness = 1 - (dimProgress * 0.80);
-          const summaryIn = eio(cl((fp - 0.05) / 0.15, 0, 1));
-          const summaryOut = 1 - eio(cl((fp - 0.80) / 0.10, 0, 1));
-          const summaryOp = Math.min(summaryIn, summaryOut);
-          const detailsIn = eio(cl((fp - 0.20) / 0.15, 0, 1));
-          const detailsOut = 1 - eio(cl((fp - 0.85) / 0.10, 0, 1));
-          const detailsOp = Math.min(detailsIn, detailsOut);
+          const summaryOp = Math.min(eio(cl((fp - 0.05) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.80) / 0.10, 0, 1)));
+          const detailsOp = Math.min(eio(cl((fp - 0.20) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.85) / 0.10, 0, 1)));
           phases = { summaryOp, detailsOp, portraitBrightness };
         } else {
-          // Intro: video scrubs first ~45%, then freezes.
-          // Dim (0.45–0.60), summary (0.50–0.65), details (0.60–0.75).
           const dimProgress = eio(cl((fp - 0.45) / 0.15, 0, 1));
           const portraitBrightness = 1 - (dimProgress * 0.80);
-          const summaryIn = eio(cl((fp - 0.50) / 0.15, 0, 1));
-          const summaryOut = 1 - eio(cl((fp - 0.85) / 0.10, 0, 1));
-          const summaryOp = Math.min(summaryIn, summaryOut);
-          const detailsIn = eio(cl((fp - 0.60) / 0.15, 0, 1));
-          const detailsOut = 1 - eio(cl((fp - 0.90) / 0.10, 0, 1));
-          const detailsOp = Math.min(detailsIn, detailsOut);
+          const summaryOp = Math.min(eio(cl((fp - 0.50) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.85) / 0.10, 0, 1)));
+          const detailsOp = Math.min(eio(cl((fp - 0.60) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.90) / 0.10, 0, 1)));
           phases = { summaryOp, detailsOp, portraitBrightness };
         }
         const stickyEl = document.querySelector('.narrative-sticky');
-        if (stickyEl) {
-          stickyEl.style.setProperty('--portrait-brightness', phases.portraitBrightness.toFixed(4));
-        }
+        if (stickyEl) stickyEl.style.setProperty('--portrait-brightness', phases.portraitBrightness.toFixed(4));
+        
         frames.forEach((frame, idx) => {
           if (idx === currentFrame) {
             frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
             frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
             frame.style.setProperty('--frame-active', '1');
-          } else {
+          } else if (frame.style.getPropertyValue('--frame-active') === '1') {
             frame.style.setProperty('--summary-opacity', '0');
             frame.style.setProperty('--details-opacity', '0');
             frame.style.setProperty('--frame-active', '0');
@@ -543,53 +562,16 @@ if (scrollSection && frames.length > 0) {
       updatePortraitMorph(currentFrame, frameProgress, numFrames);
     }
 
-    // Continuous frame activation (no binary toggle)
-    const isActive = (idx) => idx === currentFrame;
-
     frames.forEach((frame, idx) => {
-      frame.classList.toggle('active', isActive(idx));
+      if (idx === currentFrame) frame.classList.add('active');
+      else frame.classList.remove('active');
     });
 
-    if (currentFrame !== activeFrameIndex) {
-      activeFrameIndex = currentFrame;
-
-      // Trigger metric counters on Creator/Entertainer frames
-      if (activeFrameEl.querySelector('.metric-value')) {
-        animateMetrics();
-      }
-
-      // Activate Overlays
-      const overlayId = activeFrameEl.getAttribute('data-overlay');
-      overlays.forEach(overlay => {
-        if (overlayId && overlay.id === overlayId) {
-          overlay.style.opacity = 0.5;
-        } else {
-          overlay.style.opacity = 0;
-        }
-      });
-    }
-
-    // 4. Update Persistent Tracker
-    let bestTrackerTarget = 0;
-    trackers.forEach(t => {
-      const target = parseInt(t.getAttribute('data-target-frame'), 10);
-      if (currentFrame >= target) bestTrackerTarget = target;
-    });
-    trackers.forEach(t => {
-      if (parseInt(t.getAttribute('data-target-frame'), 10) === bestTrackerTarget) {
-        t.classList.add('active');
-      } else {
-        t.classList.remove('active');
-      }
-    });
-
-    // 5. Scroll Prompt fade-out
     if (scrollPrompt) {
       if (progress > 0.02) scrollPrompt.classList.add('fade-out');
       else scrollPrompt.classList.remove('fade-out');
     }
 
-    // 6. Progress bar
     if (progressBar) progressBar.style.width = (progress * 100) + '%';
   };
 
@@ -603,31 +585,21 @@ if (scrollSection && frames.length > 0) {
   };
 
   window.addEventListener('scroll', requestScrollUpdate, { passive: true });
-  window.addEventListener('resize', requestScrollUpdate);
+  window.addEventListener('resize', () => {
+    refreshOffsets();
+    requestScrollUpdate();
+  });
   
-  // Custom navigation link logic
   trackers.forEach(link => {
     link.addEventListener('click', (event) => {
       const targetFrame = parseInt(event.currentTarget.getAttribute('data-target-frame'), 10);
       if (!isNaN(targetFrame)) {
         const targetProgress = (targetFrame + 0.1) / numFrames; 
-        
-        const rect = scrollSection.getBoundingClientRect();
-        const sectionTopAbsolute = rect.top + window.scrollY;
-        const sectionHeight = scrollSection.clientHeight;
-        const windowHeight = window.innerHeight;
-        const scrollDistance = sectionHeight - windowHeight;
-        
-        const targetScrollY = sectionTopAbsolute + (targetProgress * scrollDistance);
-        
-        window.scrollTo({
-          top: targetScrollY,
-          behavior: 'smooth'
-        });
+        const targetScrollY = cachedSectionTop + (targetProgress * cachedScrollDistance);
+        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
       }
     });
   });
 
-  // Init
   updateScroll();
 }
