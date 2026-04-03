@@ -412,6 +412,76 @@ const updatePortraitMorph = (currentFrame, frameProgress, numFrames) => {
   }
 };
 
+const applyActiveFrameVisuals = (currentFrame, {
+  summaryOp = 0,
+  detailsOp = 0,
+  portraitBrightness = 1,
+  heroTitleOp = 0
+} = {}) => {
+  frames.forEach((frame, idx) => {
+    if (idx === currentFrame) {
+      frame.style.setProperty('--summary-opacity', summaryOp.toFixed(4));
+      frame.style.setProperty('--details-opacity', detailsOp.toFixed(4));
+      frame.style.setProperty('--hero-title-opacity', heroTitleOp.toFixed(4));
+      frame.style.setProperty('--frame-active', '1');
+    } else {
+      frame.style.setProperty('--summary-opacity', '0');
+      frame.style.setProperty('--details-opacity', '0');
+      frame.style.setProperty('--hero-title-opacity', '0');
+      frame.style.setProperty('--frame-active', '0');
+    }
+  });
+
+  const stickyEl = document.querySelector('.narrative-sticky');
+  if (stickyEl) {
+    stickyEl.style.setProperty('--portrait-brightness', clamp(portraitBrightness, 0.2, 1).toFixed(4));
+  }
+};
+
+const computeHeroVideoPhases = (fp) => {
+  const heroTitleOp = 1 - easeInOut(clamp((fp - 0.52) / 0.16, 0, 1));
+  const summaryIn = easeInOut(clamp((fp - 0.05) / 0.16, 0, 1));
+  const summaryOut = 1 - easeInOut(clamp((fp - 0.54) / 0.12, 0, 1));
+  const detailsIn = easeInOut(clamp((fp - 0.14) / 0.18, 0, 1));
+  const detailsOut = 1 - easeInOut(clamp((fp - 0.58) / 0.12, 0, 1));
+
+  return {
+    heroTitleOp,
+    summaryOp: Math.min(summaryIn, summaryOut),
+    detailsOp: Math.min(detailsIn, detailsOut),
+    portraitBrightness: 1
+  };
+};
+
+const computeCarryoverVideoPhases = (fp, isTerminal = false) => {
+  const summaryIn = easeInOut(clamp((fp - 0.02) / 0.12, 0, 1));
+  const detailsIn = easeInOut(clamp((fp - 0.10) / 0.18, 0, 1));
+  const summaryOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.84) / 0.10, 0, 1));
+  const detailsOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.88) / 0.08, 0, 1));
+  const undimProgress = isTerminal ? 0 : easeInOut(clamp((fp - 0.86) / 0.14, 0, 1));
+
+  return {
+    summaryOp: Math.min(summaryIn, summaryOut),
+    detailsOp: Math.min(detailsIn, detailsOut),
+    portraitBrightness: 0.2 + (undimProgress * 0.8)
+  };
+};
+
+const computeIntroVideoPhases = (fp, isTerminal = false) => {
+  const dimProgress = easeInOut(clamp((fp - 0.40) / 0.18, 0, 1));
+  const undimProgress = isTerminal ? 0 : easeInOut(clamp((fp - 0.90) / 0.10, 0, 1));
+  const summaryIn = easeInOut(clamp((fp - 0.52) / 0.14, 0, 1));
+  const detailsIn = easeInOut(clamp((fp - 0.60) / 0.16, 0, 1));
+  const summaryOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.86) / 0.10, 0, 1));
+  const detailsOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.90) / 0.08, 0, 1));
+
+  return {
+    summaryOp: Math.min(summaryIn, summaryOut),
+    detailsOp: Math.min(detailsIn, detailsOut),
+    portraitBrightness: (1 - (dimProgress * 0.8)) + (undimProgress * 0.8)
+  };
+};
+
 // ─── Main Scroll Controller ───
 if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
@@ -500,65 +570,11 @@ if (scrollSection && frames.length > 0) {
       portraitLayers.forEach(layer => layer.style.setProperty('--morph-opacity', '0'));
 
       if (videoMode === 'fullscreen') {
-        const fp = frameProgress;
-        const eio = (v) => v * v * (3 - 2 * v);
-        const cl = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-
-        const titleOp = 1 - eio(cl((fp - 0.40) / 0.15, 0, 1));
-        const summaryIn = eio(cl((fp - 0.08) / 0.12, 0, 1));
-        const summaryOut = 1 - eio(cl((fp - 0.40) / 0.15, 0, 1));
-        const summaryOp = Math.min(summaryIn, summaryOut);
-        const detailsIn = eio(cl((fp - 0.20) / 0.15, 0, 1));
-        const detailsOut = 1 - eio(cl((fp - 0.42) / 0.13, 0, 1));
-        const detailsOp = Math.min(detailsIn, detailsOut);
-
-        frames.forEach((frame, idx) => {
-          if (idx === currentFrame) {
-            frame.style.setProperty('--hero-title-opacity', titleOp.toFixed(4));
-            frame.style.setProperty('--summary-opacity', summaryOp.toFixed(4));
-            frame.style.setProperty('--details-opacity', detailsOp.toFixed(4));
-            frame.style.setProperty('--frame-active', '1');
-          } else if (frame.style.getPropertyValue('--frame-active') === '1') {
-             // Reset inactive frames only if they were active
-            frame.style.setProperty('--hero-title-opacity', '0');
-            frame.style.setProperty('--summary-opacity', '0');
-            frame.style.setProperty('--details-opacity', '0');
-            frame.style.setProperty('--frame-active', '0');
-          }
-        });
-      } else if (videoMode === 'intro' || videoMode === 'carryover') {
-        const fp = frameProgress;
-        const eio = (v) => v * v * (3 - 2 * v);
-        const cl = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
-
-        let phases;
-        if (videoMode === 'carryover') {
-          const dimProgress = eio(cl(fp / 0.15, 0, 1));
-          const portraitBrightness = 1 - (dimProgress * 0.80);
-          const summaryOp = Math.min(eio(cl((fp - 0.05) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.80) / 0.10, 0, 1)));
-          const detailsOp = Math.min(eio(cl((fp - 0.20) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.85) / 0.10, 0, 1)));
-          phases = { summaryOp, detailsOp, portraitBrightness };
-        } else {
-          const dimProgress = eio(cl((fp - 0.45) / 0.15, 0, 1));
-          const portraitBrightness = 1 - (dimProgress * 0.80);
-          const summaryOp = Math.min(eio(cl((fp - 0.50) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.85) / 0.10, 0, 1)));
-          const detailsOp = Math.min(eio(cl((fp - 0.60) / 0.15, 0, 1)), 1 - eio(cl((fp - 0.90) / 0.10, 0, 1)));
-          phases = { summaryOp, detailsOp, portraitBrightness };
-        }
-        const stickyEl = document.querySelector('.narrative-sticky');
-        if (stickyEl) stickyEl.style.setProperty('--portrait-brightness', phases.portraitBrightness.toFixed(4));
-        
-        frames.forEach((frame, idx) => {
-          if (idx === currentFrame) {
-            frame.style.setProperty('--summary-opacity', phases.summaryOp.toFixed(4));
-            frame.style.setProperty('--details-opacity', phases.detailsOp.toFixed(4));
-            frame.style.setProperty('--frame-active', '1');
-          } else if (frame.style.getPropertyValue('--frame-active') === '1') {
-            frame.style.setProperty('--summary-opacity', '0');
-            frame.style.setProperty('--details-opacity', '0');
-            frame.style.setProperty('--frame-active', '0');
-          }
-        });
+        applyActiveFrameVisuals(currentFrame, computeHeroVideoPhases(frameProgress));
+      } else if (videoMode === 'carryover') {
+        applyActiveFrameVisuals(currentFrame, computeCarryoverVideoPhases(frameProgress, currentFrame === numFrames - 1));
+      } else {
+        applyActiveFrameVisuals(currentFrame, computeIntroVideoPhases(frameProgress, currentFrame === numFrames - 1));
       }
     } else {
       if (typeof ScrollVideo !== 'undefined') ScrollVideo.update(currentFrame, frameProgress);

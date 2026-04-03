@@ -49,41 +49,10 @@
     <div class="narrative-sticky">
       
       <div class="portrait-stage" aria-hidden="true">
-        <canvas id="scroll-video-canvas" class="scroll-video-canvas"></canvas>
         <div class="portrait-stage-backdrop"></div>
+        <div id="scroll-video-stage" class="scroll-video-stage"></div>
         <div class="portrait-stage-glow portrait-stage-glow-a"></div>
         <div class="portrait-stage-glow portrait-stage-glow-b"></div>
-
-        <figure class="portrait-layer" data-portrait="leadership">
-          <img src="images/scroll-portraits/1. Principled Leader.png" alt="" decoding="async" fetchpriority="high" width="896" height="1200">
-        </figure>
-        <figure class="portrait-layer" data-portrait="thought-leader">
-          <img data-src="images/scroll-portraits/2. Thought Leader Book.png" alt="" decoding="async" width="896" height="1200">
-        </figure>
-        <figure class="portrait-layer" data-portrait="strategic-architect">
-          <img data-src="images/scroll-portraits/3. Strategic Architect of Organizations.png" alt="" decoding="async" width="1792" height="2400">
-        </figure>
-        <figure class="portrait-layer" data-portrait="technologist">
-          <img data-src="images/scroll-portraits/4. Technologist.png" alt="" decoding="async" width="1792" height="2400">
-        </figure>
-        <figure class="portrait-layer" data-portrait="vibe-coder">
-          <img data-src="images/scroll-portraits/5. Flow-coder.jpg" alt="" decoding="async" width="1792" height="2400">
-        </figure>
-        <figure class="portrait-layer" data-portrait="builder-of-people">
-          <img data-src="images/scroll-portraits/6. Builder of People.jpg" alt="" decoding="async" width="1792" height="2400">
-        </figure>
-        <figure class="portrait-layer" data-portrait="creator">
-          <img data-src="images/scroll-portraits/7. Video creator.jpg" alt="" decoding="async" width="1792" height="2400">
-        </figure>
-        <figure class="portrait-layer" data-portrait="entertainer">
-          <img data-src="images/scroll-portraits/8.Entertainer Tiburcio.jpeg" alt="" decoding="async" width="1792" height="2400">
-        </figure>
-        <figure class="portrait-layer" data-portrait="artist-producer">
-          <img data-src="images/scroll-portraits/9. artist-producer.png" alt="" decoding="async" width="896" height="1200">
-        </figure>
-        <figure class="portrait-layer" data-portrait="organization-of-one">
-          <img data-src="images/scroll-portraits/91. organization of 1.png" alt="" decoding="async" width="1152" height="1536">
-        </figure>
       </div>
 
       <!-- Overlay Animations -->
@@ -124,7 +93,7 @@
       <div class="text-narrative-container">
         
         <!-- Frame 0: HERO -->
-        <div class="narrative-frame left-align" data-frame="0" data-bg="0" data-portrait="leadership">
+        <div class="narrative-frame center-align" data-frame="0" data-bg="0" data-portrait="leadership">
           <h1 class="giant-text font-syne">WHO IS EDDIE GARCIA?</h1>
           <p class="manifesto-line fade-delay">We are not <em>defined</em> by our job titles. We are defined by what we do and what we stand for.</p>
           <div class="identity-teaser fade-delay-2">
@@ -140,7 +109,7 @@
         </div>
 
         <!-- Frame 1: Principled Leadership -->
-        <div class="narrative-frame left-align split-layout" data-frame="1" data-bg="0"  data-portrait="leadership">
+        <div class="narrative-frame center-align split-layout" data-frame="1" data-bg="0"  data-portrait="leadership">
           <div class="frame-summary">
             <div class="label">SECTION 01</div>
             <h2 class="title font-syne">Principled Leadership</h2>
@@ -174,7 +143,7 @@
         </div>
 
         <!-- Frame 2: Thought Leader -->
-        <div class="narrative-frame right-align split-layout" data-frame="2" data-bg="1"  data-portrait="thought-leader">
+        <div class="narrative-frame center-align split-layout" data-frame="2" data-bg="1"  data-portrait="thought-leader">
           <div class="frame-summary">
             <div class="label">SECTION 02</div>
             <h2 class="title font-syne">Thought Leader</h2>
@@ -196,7 +165,7 @@
         </div>
 
         <!-- Frame 3: Strategic Architect -->
-        <div class="narrative-frame right-align split-layout" data-frame="3" data-bg="2"  data-portrait="strategic-architect">
+        <div class="narrative-frame center-align split-layout" data-frame="3" data-bg="2"  data-portrait="strategic-architect">
           <div class="frame-summary">
             <div class="label">SECTION 03</div>
             <h2 class="title font-syne">Strategic Architect</h2>
@@ -230,7 +199,7 @@
         </div>
 
         <!-- Frame 4: Technologist -->
-        <div class="narrative-frame left-align split-layout" data-frame="4" data-bg="5"  data-portrait="technologist">
+        <div class="narrative-frame center-align split-layout" data-frame="4" data-bg="5"  data-portrait="technologist">
           <div class="frame-summary">
             <div class="label">SECTION 04</div>
             <h2 class="title font-syne">Technologist</h2>
@@ -269,7 +238,7 @@
         </div>
 
         <!-- Frame 5: Vibe Coder -->
-        <div class="narrative-frame right-align split-layout" data-frame="5" data-bg="2"  data-portrait="vibe-coder">
+        <div class="narrative-frame center-align split-layout" data-frame="5" data-bg="2"  data-portrait="vibe-coder">
           <div class="frame-summary">
             <div class="label">SECTION 05</div>
             <h2 class="title font-syne">Vibe Coder</h2>
@@ -303,7 +272,7 @@
         </div>
 
         <!-- Frame 6: Builder of People -->
-        <div class="narrative-frame right-align split-layout" data-frame="6" data-bg="2"  data-portrait="builder-of-people">
+        <div class="narrative-frame center-align split-layout" data-frame="6" data-bg="2"  data-portrait="builder-of-people">
           <div class="frame-summary">
             <div class="label">SECTION 06</div>
             <h2 class="title font-syne">Builder of People</h2>
@@ -334,7 +303,7 @@
         </div>
 
         <!-- Frame 7: Creator (OMGitsEddieG) -->
-        <div class="narrative-frame left-align split-layout" data-frame="7" data-bg="3"  data-portrait="creator">
+        <div class="narrative-frame center-align split-layout" data-frame="7" data-bg="3"  data-portrait="creator">
           <div class="frame-summary">
             <div class="label">SECTION 07</div>
             <h2 class="title font-syne">Creator <span class="era-tag">(2013–17)</span></h2>
@@ -357,7 +326,7 @@
         </div>
 
         <!-- Frame 8: Entertainer (ShowDeTiburcio) -->
-        <div class="narrative-frame left-align split-layout" data-frame="8" data-bg="3"  data-portrait="entertainer">
+        <div class="narrative-frame center-align split-layout" data-frame="8" data-bg="3"  data-portrait="entertainer">
           <div class="frame-summary">
             <div class="label">SECTION 08</div>
             <h2 class="title font-syne">Entertainer <span class="era-tag">(2017–20)</span></h2>
@@ -393,7 +362,7 @@
         </div>
 
         <!-- Frame 9: Artist & Producer -->
-        <div class="narrative-frame left-align split-layout" data-frame="9" data-bg="4"  data-portrait="artist-producer">
+        <div class="narrative-frame center-align split-layout" data-frame="9" data-bg="4"  data-portrait="artist-producer">
           <div class="frame-summary">
             <div class="label">SECTION 09</div>
             <h2 class="title font-syne">Artist &amp; Producer</h2>

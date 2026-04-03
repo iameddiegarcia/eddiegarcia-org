@@ -17,6 +17,12 @@
   --font-serif: 'Playfair Display', serif;
   --font-display: 'Syne', sans-serif;
 
+  --glass-fill: rgba(255, 255, 255, 0.52);
+  --glass-fill-strong: rgba(255, 255, 255, 0.66);
+  --glass-stroke: rgba(255, 255, 255, 0.62);
+  --glass-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
+  --glass-shadow-soft: 0 10px 34px rgba(15, 23, 42, 0.06);
+
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -98,8 +104,8 @@ body.modal-open {
   contain: paint; /* Performance: Isolate repaints to this container */
 }
 
-/* ─── Scroll Video Canvas ─── */
-.scroll-video-canvas {
+/* ─── Scroll Video Stage ─── */
+.scroll-video-stage {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -107,9 +113,27 @@ body.modal-open {
   z-index: 4;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.45s ease;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 44%, transparent 72%);
 }
-.scroll-video-canvas.active {
+.scroll-video-stage.active {
+  opacity: 1;
+}
+
+.scroll-video-clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  opacity: 0;
+  transition: opacity 0.32s ease;
+  filter: saturate(0.98) contrast(1.02);
+}
+
+.scroll-video-clip.active {
   opacity: 1;
 }
 
@@ -130,7 +154,9 @@ body.modal-open {
 }
 
 .portrait-stage-backdrop {
-  background: #ffffff;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.58) 56%, rgba(255,255,255,0.94) 100%),
+    linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(255,255,255,0.8) 38%, rgba(255,255,255,0.88) 100%);
 }
 
 .portrait-stage-glow {
@@ -349,8 +375,10 @@ body.lite-portraits .portrait-layer img {
 .bottom-gradient {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  height: 44vh;
-  background: linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.94) 20%, rgba(255,255,255,0.62) 46%, rgba(255,255,255,0.18) 74%, transparent 100%);
+  height: 100%;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.16) 32%, rgba(255,255,255,0.44) 64%, rgba(255,255,255,0.78) 100%),
+    linear-gradient(to top, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.14) 44%, rgba(255,255,255,0.04) 78%, transparent 100%);
   z-index: 3;
 }
 
@@ -389,37 +417,41 @@ body.lite-portraits .portrait-layer img {
 }
 
 .narrative-frame.split-layout {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  align-content: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(1rem, 2.2vh, 1.6rem);
   padding-top: clamp(5.75rem, 10vh, 7.25rem);
-  padding-bottom: clamp(1.5rem, 3.5vh, 2.5rem);
+  padding-bottom: clamp(2.25rem, 6vh, 4rem);
 }
 
 .frame-summary {
   display: grid;
   gap: 0.55rem;
-  align-self: start;
-  max-width: min(38rem, 100%);
+  align-self: center;
+  width: min(100%, 52rem);
+  max-width: min(52rem, 100%);
   opacity: var(--summary-opacity, 0);
   transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
   will-change: opacity, transform;
   position: relative;
   z-index: 12;
   padding: 1.5rem 2rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 2px 24px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
+  background: var(--glass-fill);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-stroke);
   /* Optimization: Disable expensive backdrop-filter unless frame is active */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   transition: backdrop-filter 0.3s ease;
+  text-align: center;
 }
 
 .narrative-frame.active .frame-summary {
-  backdrop-filter: blur(18px) saturate(1.2);
-  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  backdrop-filter: blur(24px) saturate(1.16);
+  -webkit-backdrop-filter: blur(24px) saturate(1.16);
 }
 
 .frame-summary .label {
@@ -436,44 +468,43 @@ body.lite-portraits .portrait-layer img {
 }
 
 .frame-details {
-  align-self: end;
+  align-self: center;
   margin-top: 0;
   position: relative;
   z-index: 12;
   opacity: var(--details-opacity, 0);
   transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
   will-change: opacity, transform;
-  padding: 1.25rem 1.5rem;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.82);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  overflow-x: hidden;
+  width: min(100%, 62rem);
+  max-width: min(62rem, 100%);
+  max-height: min(48vh, 38rem);
+  padding: 1.4rem 1.55rem;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.62);
+  box-shadow: var(--glass-shadow-soft);
+  border: 1px solid var(--glass-stroke);
+  overflow: auto;
   /* Optimization: Disable expensive backdrop-filter unless frame is active */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  text-align: left;
 }
 
 .narrative-frame.active .frame-details {
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-}
-
-.left-align.split-layout .frame-summary,
-.left-align.split-layout .frame-details {
-  margin-right: auto;
-}
-
-.right-align.split-layout .frame-summary,
-.right-align.split-layout .frame-details {
-  margin-left: auto;
-  text-align: right;
+  backdrop-filter: blur(22px) saturate(1.14);
+  -webkit-backdrop-filter: blur(22px) saturate(1.14);
 }
 
 /* Alignments */
-.left-align   { align-items: flex-start; text-align: left; padding-left: max(5vw, 14rem); }
-.right-align  { align-items: flex-end; text-align: right; }
-.center-align { align-items: center; justify-content: center; text-align: center; padding-left: max(5vw, 14rem); padding-right: max(5vw, 14rem); }
+.left-align,
+.right-align,
+.center-align {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-left: clamp(2rem, 6vw, 7rem);
+  padding-right: clamp(2rem, 6vw, 7rem);
+}
 
 /* ─── Typography Defaults ─── */
 .font-syne { font-family: var(--font-display); }
@@ -557,6 +588,47 @@ body.lite-portraits .portrait-layer img {
 /* ─── Embedded Blocks ─── */
 .embedded-content {
   margin-top: 2rem;
+}
+
+.frame-details > *,
+.frame-details .embedded-content,
+.frame-details .gallery-shell,
+.frame-details .principles-shell,
+.frame-details .arc-panel,
+.frame-details .architecture-panel,
+.frame-details .presentation-card,
+.frame-details .instruction-card,
+.frame-details .linkedin-bio-panel {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.frame-details .social-links-row,
+.frame-details .metrics-row,
+.frame-details .impact-chips,
+.frame-details .cert-row,
+.frame-details .tech-stack,
+.frame-details .cta-actions,
+.frame-details .gallery-toolbar,
+.frame-details .instruction-steps {
+  justify-content: center;
+}
+
+.frame-details .signal-grid,
+.frame-details .engine-suite,
+.frame-details .final-engines,
+.frame-details .final-contact {
+  justify-content: center;
+}
+
+.frame-details .presentation-card,
+.frame-details .signal-card,
+.frame-details .principle-panel,
+.frame-details .gallery-shell,
+.frame-details .arc-panel,
+.frame-details .architecture-panel,
+.frame-details .linkedin-bio-panel {
+  text-align: left;
 }
 
 /* Insights Fragments */
@@ -1039,6 +1111,7 @@ body.lite-portraits .portrait-layer img {
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  justify-content: center;
   pointer-events: auto;
 }
 .btn-sm {
@@ -1099,10 +1172,12 @@ body.lite-portraits .portrait-layer img {
 }
 
 /* ─── Phased Reveal: Hero & Final frames ─── */
-/* Hero (frame 0): glass backdrop behind all text, positioned at bottom-left */
 .narrative-frame[data-frame="0"] {
-  justify-content: flex-end;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding-top: clamp(6rem, 10vh, 8rem);
+  padding-bottom: 6.5rem;
 }
 
 .narrative-frame[data-frame="0"] .giant-text,
@@ -1110,34 +1185,40 @@ body.lite-portraits .portrait-layer img {
 .narrative-frame[data-frame="0"] .identity-teaser {
   position: relative;
   z-index: 2;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .narrative-frame[data-frame="0"] .giant-text {
   opacity: var(--hero-title-opacity, 1);
   transform: translateY(calc((1 - var(--hero-title-opacity, 1)) * -16px));
   will-change: opacity, transform;
-  padding: 1.25rem 1.75rem 0.5rem;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  border-radius: 16px 16px 0 0;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-bottom: none;
-  margin-bottom: 0;
+  padding: 1.4rem 2rem;
+  background: var(--glass-fill-strong);
+  backdrop-filter: blur(28px) saturate(1.18);
+  -webkit-backdrop-filter: blur(28px) saturate(1.18);
+  border-radius: 28px;
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--glass-shadow);
+  margin-bottom: 0.35rem;
   color: var(--text-primary, #111827);
+  text-align: center;
 }
 
 .narrative-frame[data-frame="0"] .manifesto-line {
   opacity: var(--summary-opacity, 0);
   transform: translateY(calc((1 - var(--summary-opacity, 0)) * 12px));
   will-change: opacity, transform;
-  padding: 0.5rem 1.75rem 0.75rem;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  border-left: 1px solid rgba(255, 255, 255, 0.5);
-  border-right: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 1rem 1.5rem;
+  width: min(100%, 44rem);
+  background: var(--glass-fill);
+  backdrop-filter: blur(24px) saturate(1.16);
+  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+  border: 1px solid var(--glass-stroke);
+  border-radius: 22px;
+  box-shadow: var(--glass-shadow-soft);
   color: var(--text-secondary, #4B5563);
+  text-align: center;
 }
 
 .narrative-frame[data-frame="0"] .manifesto-line em {
@@ -1150,13 +1231,14 @@ body.lite-portraits .portrait-layer img {
   opacity: var(--details-opacity, 0);
   transform: translateY(calc((1 - var(--details-opacity, 0)) * 12px));
   will-change: opacity, transform;
-  padding: 0.75rem 1.75rem 1.25rem;
-  background: rgba(255, 255, 255, 0.78);
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  border-radius: 0 0 16px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-top: none;
+  padding: 1rem 1.25rem;
+  width: min(100%, 48rem);
+  background: var(--glass-fill);
+  backdrop-filter: blur(24px) saturate(1.16);
+  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+  border-radius: 24px;
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--glass-shadow-soft);
 }
 
 /* Final frames: giant text + subtitle follow summary, final links follow details */
@@ -1170,11 +1252,6 @@ body.lite-portraits .portrait-layer img {
   opacity: var(--details-opacity, 0);
   transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
   will-change: opacity, transform;
-}
-
-/* Push hero frame text above scroll prompt */
-.narrative-frame[data-frame="0"] {
-  padding-bottom: 7rem;
 }
 
 /* Scroll Prompt */
@@ -1278,31 +1355,13 @@ body.lite-portraits .portrait-layer img {
    MOBILE RESPONSIVE FIXES
    ═══════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
-
-  /* ── THE MAIN FIX ──────────────────────────────────────────
-     .left-align and .center-align use padding-left: max(5vw, 14rem).
-     14rem = 224px. On a 375px phone, max() picks 224px — leaving
-     only ~150px for content and pushing everything off-screen.
-     The 14rem exists to clear the .persistent-tracker sidebar,
-     which is display:none on mobile. So override to small padding.
-     ──────────────────────────────────────────────────────────── */
-  .left-align {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    align-items: flex-start;
-    text-align: left;
-  }
-  .center-align {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    text-align: center;
-    align-items: center;
-  }
+  .left-align,
+  .center-align,
   .right-align {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    align-items: flex-start;
-    text-align: left;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    align-items: center;
+    text-align: center;
   }
 
   /* ── Reduce base frame padding ─────────────────────────── */
@@ -1311,8 +1370,8 @@ body.lite-portraits .portrait-layer img {
   }
 
   .narrative-frame.split-layout {
-    padding: 4.75rem 1.5rem 1.25rem;
-    grid-template-rows: auto 1fr auto;
+    padding: 4.75rem 1.25rem 1.5rem;
+    gap: 0.85rem;
   }
 
   .frame-summary,
@@ -1332,12 +1391,13 @@ body.lite-portraits .portrait-layer img {
 
   .frame-summary {
     padding: 1rem 1.25rem;
-    border-radius: 12px;
+    border-radius: 18px;
   }
 
   .frame-details {
     padding: 1rem 1.25rem;
-    border-radius: 12px;
+    border-radius: 18px;
+    max-height: min(52vh, 28rem);
   }
 
   /* ── Scale down oversized type ──────────────────────────────
@@ -1485,6 +1545,7 @@ body.lite-portraits .portrait-layer img {
 .identity-teaser {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.5rem;
   margin-top: 1.5rem;
   max-width: 780px;
@@ -1841,7 +1902,7 @@ body.lite-portraits .portrait-layer img {
 }
 /* Frame 0: ensure extra clearance is never overridden */
 .narrative-frame[data-frame="0"].active {
-  padding-bottom: 7rem;
+  padding-bottom: 6.5rem;
 }
 
 /* ── Bug 3: Frame 0 hero on mobile ── */
@@ -1854,19 +1915,19 @@ body.lite-portraits .portrait-layer img {
   }
 
   .narrative-frame[data-frame="0"] .giant-text {
-    font-size: clamp(1.75rem, 9vw, 3rem);
-    padding: 1rem 1.25rem 0.35rem;
-    border-radius: 12px 12px 0 0;
+    font-size: clamp(1.9rem, 9vw, 3.4rem);
+    padding: 1.05rem 1.2rem;
+    border-radius: 20px;
   }
 
   .narrative-frame[data-frame="0"] .manifesto-line {
     font-size: 0.9rem;
-    padding: 0.35rem 1.25rem 0.5rem;
+    padding: 0.8rem 1.05rem;
   }
 
   .narrative-frame[data-frame="0"] .identity-teaser {
-    padding: 0.5rem 1.25rem 1rem;
-    border-radius: 0 0 12px 12px;
+    padding: 0.9rem 1rem;
+    border-radius: 18px;
     gap: 0.35rem;
   }
 
@@ -1994,6 +2055,28 @@ body.lite-portraits .portrait-layer img {
   width: min(100%, 900px);
 }
 
+.final-frame .giant-text {
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  line-height: 0.94;
+}
+
+.final-frame .subtitle {
+  font-size: clamp(1.15rem, 2.6vw, 1.8rem);
+}
+
+.final-frame--tools .frame-details {
+  width: min(100%, 28rem);
+}
+
+.final-frame--cta .frame-summary {
+  max-width: min(52rem, 100%);
+  padding: 1.15rem 1.6rem;
+}
+
+.final-frame--cta .frame-details {
+  width: min(100%, 52rem);
+}
+
 .final-engines-single {
   grid-template-columns: minmax(280px, 560px);
   justify-content: center;
@@ -2015,6 +2098,11 @@ body.lite-portraits .portrait-layer img {
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   text-align: left;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+.insight-engine-card--featured {
+  width: 100%;
+  max-width: none;
 }
 
 .insight-engine-card:hover {
@@ -2074,6 +2162,10 @@ body.lite-portraits .portrait-layer img {
   border: 1px solid rgba(124, 106, 239, 0.2);
   border-radius: 16px;
   text-align: left;
+}
+
+.final-frame--cta .giant-text {
+  font-size: clamp(2.1rem, 4.5vw, 4rem);
 }
 .bio-headline {
   font-family: var(--font-display);
