@@ -17,9 +17,12 @@
   --font-serif: 'Playfair Display', serif;
   --font-display: 'Syne', sans-serif;
 
-  --glass-fill: rgba(255, 255, 255, 0.20);
-  --glass-fill-strong: rgba(255, 255, 255, 0.24);
-  --glass-stroke: rgba(255, 255, 255, 0.34);
+  --glass-fill: rgba(255, 255, 255, 0.18);
+  --glass-fill-strong: rgba(255, 255, 255, 0.22);
+  --glass-fill-panel: rgba(255, 255, 255, 0.28);
+  --glass-fill-panel-strong: rgba(255, 255, 255, 0.32);
+  --glass-fill-chip: rgba(255, 255, 255, 0.24);
+  --glass-stroke: rgba(255, 255, 255, 0.40);
   --glass-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
   --glass-shadow-soft: 0 10px 34px rgba(15, 23, 42, 0.06);
 
@@ -309,11 +312,14 @@ body.lite-portraits .portrait-layer img {
   content: '';
   position: absolute;
   inset: 0;
-  background: #ffffff;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.36) 0%, rgba(255,255,255,0.18) 34%, rgba(255,255,255,0.52) 100%),
+    linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.58) 100%);
   opacity: calc(1 - var(--portrait-brightness, 1));
   z-index: 5; /* Above video canvas (4) so dim covers frozen video frames */
   pointer-events: none;
   will-change: opacity;
+  transition: opacity 440ms var(--overlay-fade-ease);
 }
 
 /* ─── Overlays (Data Nodes, Charts, etc) ─── */
@@ -649,7 +655,7 @@ body.lite-portraits .portrait-layer img {
   border: 1px solid rgba(0,0,0,0.1);
   border-radius: 20px;
   color: var(--text-secondary);
-  background: rgba(255,255,255,0.5);
+  background: var(--glass-fill-panel);
   backdrop-filter: blur(5px);
 }
 
@@ -659,7 +665,7 @@ body.lite-portraits .portrait-layer img {
   flex-direction: column;
   gap: 0.5rem;
   padding: 1.25rem 1.5rem;
-  background: rgba(255,255,255,0.75);
+  background: var(--glass-fill-panel-strong);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(124, 106, 239, 0.25);
@@ -787,7 +793,7 @@ body.lite-portraits .portrait-layer img {
 .principle-pill {
   appearance: none;
   border: 1px solid rgba(124, 106, 239, 0.2);
-  background: rgba(255,255,255,0.72);
+  background: var(--glass-fill-chip);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
@@ -817,7 +823,7 @@ body.lite-portraits .portrait-layer img {
   outline-offset: 2px;
 }
 .principle-panel {
-  background: rgba(255,255,255,0.76);
+  background: var(--glass-fill-panel-strong);
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 16px;
   padding: 1.1rem 1.2rem;
@@ -855,7 +861,7 @@ body.lite-portraits .portrait-layer img {
   margin-top: 1rem;
 }
 .signal-card {
-  background: rgba(255,255,255,0.72);
+  background: var(--glass-fill-panel);
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 14px;
   padding: 1rem 1rem 1.05rem;
@@ -890,7 +896,7 @@ body.lite-portraits .portrait-layer img {
 
 .architecture-panel {
   margin-top: 1rem;
-  background: rgba(255,255,255,0.78);
+  background: var(--glass-fill-panel-strong);
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 18px;
   padding: 1rem 1.15rem;
@@ -918,7 +924,7 @@ body.lite-portraits .portrait-layer img {
   width: min(100%, 760px);
   padding: 1rem;
   border-radius: 18px;
-  background: rgba(255,255,255,0.76);
+  background: var(--glass-fill-panel-strong);
   border: 1px solid rgba(0,0,0,0.08);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -949,7 +955,7 @@ body.lite-portraits .portrait-layer img {
 .gallery-nav {
   appearance: none;
   border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.34);
   color: var(--text-primary);
   width: 2.35rem;
   height: 2.35rem;
@@ -979,7 +985,7 @@ body.lite-portraits .portrait-layer img {
 .gallery-slide {
   appearance: none;
   border: 1px solid rgba(0,0,0,0.08);
-  background: rgba(255,255,255,0.92);
+  background: rgba(255,255,255,0.30);
   border-radius: 16px;
   padding: 0;
   overflow: hidden;
@@ -1010,7 +1016,7 @@ body.lite-portraits .portrait-layer img {
 .arc-panel {
   width: min(100%, 760px);
   padding: 1.15rem 1.2rem;
-  background: rgba(255,255,255,0.76);
+  background: var(--glass-fill-panel-strong);
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 18px;
   backdrop-filter: blur(12px);
@@ -1702,7 +1708,7 @@ body.lite-portraits .portrait-layer img {
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: 20px;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--glass-fill-chip);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
 }
@@ -1879,7 +1885,7 @@ body.lite-portraits .portrait-layer img {
   gap: 0.5rem;
   padding: 1.1rem 1.25rem;
   margin-bottom: 0.85rem;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--glass-fill-panel-strong);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(124, 106, 239, 0.2);
@@ -2152,7 +2158,7 @@ body.lite-portraits .portrait-layer img {
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   padding: 0.75rem 1rem;
-  background: rgba(255, 255, 255, 0.5);
+  background: var(--glass-fill-panel);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
   border-radius: 8px;
@@ -2236,7 +2242,7 @@ body.lite-portraits .portrait-layer img {
   display: flex;
   flex-direction: column;
   padding: 1.75rem;
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--glass-fill-panel-strong);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.6);
@@ -2254,7 +2260,7 @@ body.lite-portraits .portrait-layer img {
 
 .insight-engine-card:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.40);
   box-shadow: 0 12px 32px rgba(124, 106, 239, 0.12);
   border-color: var(--accent-1);
 }
@@ -2303,7 +2309,7 @@ body.lite-portraits .portrait-layer img {
   max-width: 600px;
   margin: 0 auto 1.5rem;
   padding: 1.25rem 1.5rem;
-  background: rgba(255,255,255,0.78);
+  background: var(--glass-fill-panel-strong);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(124, 106, 239, 0.2);

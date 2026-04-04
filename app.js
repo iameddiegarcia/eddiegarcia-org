@@ -445,8 +445,10 @@ const applyActiveFrameVisuals = (currentFrame, {
 // ─── Chapter Controller ───
 if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
+  const REVEAL_SETTLE_MS = prefersReducedMotion.matches ? 0 : 240;
   let currentFrame = 0;
   let chapterPhase = 'preplay';
+  let revealTimerId = 0;
   const revealedFrames = new Set();
   const exploredFrames = new Set([0]);
   const storyBeatNotes = {
@@ -463,6 +465,13 @@ if (scrollSection && frames.length > 0) {
     10: 'This is the throughline: not a stack of roles, but one identity expressed in different rooms.',
     11: 'The story becomes tangible in the systems, engines, and products already built.',
     12: 'Everything converges here: strategy, systems, storytelling, and execution in one operator.'
+  };
+
+  const clearRevealTimer = () => {
+    if (revealTimerId) {
+      window.clearTimeout(revealTimerId);
+      revealTimerId = 0;
+    }
   };
 
   const getFrameSummaryTitle = (frame) => {
@@ -492,6 +501,9 @@ if (scrollSection && frames.length > 0) {
         ? 'Intro playing. You will land on the first trait when the frame holds.'
         : `Playing the next beat. ${storyBeatNotes[frameIndex] || 'The interface returns on the held end frame.'}`;
     }
+    if (phase === 'holding') {
+      return 'Holding on the end frame so the still lands naturally before the interface fades in.';
+    }
     if (frameIndex === 0) return 'Start the intro. Then Next keeps the story moving forward.';
     if (frameIndex === numFrames - 1) {
       return phase === 'revealed'
@@ -504,6 +516,7 @@ if (scrollSection && frames.length > 0) {
 
   const getNextLabel = (frameIndex, phase) => {
     if (phase === 'playing') return 'Playing...';
+    if (phase === 'holding') return 'Settling...';
     if (frameIndex === 0) return 'Start';
     if (frameIndex === numFrames - 1) return 'Complete';
     return 'Next';
@@ -515,10 +528,10 @@ if (scrollSection && frames.length > 0) {
     if (chapterDockTitle) chapterDockTitle.textContent = meta.title;
     if (chapterDockNote) chapterDockNote.textContent = getDockNote(currentFrame, chapterPhase);
 
-    if (chapterPrevButton) chapterPrevButton.disabled = currentFrame === 0 || chapterPhase === 'playing';
+    if (chapterPrevButton) chapterPrevButton.disabled = currentFrame === 0 || chapterPhase === 'playing' || chapterPhase === 'holding';
     if (chapterNextButton) {
       chapterNextButton.textContent = getNextLabel(currentFrame, chapterPhase);
-      chapterNextButton.disabled = chapterPhase === 'playing' || (currentFrame === numFrames - 1 && chapterPhase === 'revealed');
+      chapterNextButton.disabled = chapterPhase === 'playing' || chapterPhase === 'holding' || (currentFrame === numFrames - 1 && chapterPhase === 'revealed');
     }
   };
 
@@ -528,7 +541,7 @@ if (scrollSection && frames.length > 0) {
       const isVisible = exploredFrames.has(target);
       tracker.classList.toggle('is-visible', isVisible);
       tracker.classList.toggle('active', isVisible && target === currentFrame);
-      tracker.disabled = !isVisible || chapterPhase === 'playing';
+      tracker.disabled = !isVisible || chapterPhase === 'playing' || chapterPhase === 'holding';
       tracker.setAttribute('aria-hidden', String(!isVisible));
       tracker.tabIndex = isVisible ? 0 : -1;
     });
@@ -563,6 +576,16 @@ if (scrollSection && frames.length > 0) {
         detailsOp: 0,
         portraitBrightness: 1
       });
+    } else if (chapterPhase === 'holding') {
+      applyActiveFrameVisuals(currentFrame, {
+        heroTitleOp: 0,
+        summaryOp: 0,
+        detailsOp: 0,
+        portraitBrightness: 0.86
+      });
+      if (typeof ScrollVideo !== 'undefined') {
+        ScrollVideo.showFreeze(currentFrame, 'end');
+      }
     } else if (currentFrame === 0) {
       applyActiveFrameVisuals(0, {
         heroTitleOp: 1,
@@ -576,7 +599,7 @@ if (scrollSection && frames.length > 0) {
         heroTitleOp: 0,
         summaryOp: 1,
         detailsOp: 1,
-        portraitBrightness: 0.2
+        portraitBrightness: 0.58
       });
       if (typeof ScrollVideo !== 'undefined') {
         ScrollVideo.showFreeze(currentFrame, 'end');
@@ -602,6 +625,7 @@ if (scrollSection && frames.length > 0) {
 
   const goToFrame = (frameIndex, phase = getDefaultPhaseForFrame(frameIndex)) => {
     const nextFrame = clamp(frameIndex, 0, numFrames - 1);
+    clearRevealTimer();
     currentFrame = nextFrame;
     chapterPhase = phase;
     if (typeof ScrollVideo !== 'undefined') ScrollVideo.stop();
@@ -609,21 +633,31 @@ if (scrollSection && frames.length > 0) {
   };
 
   const handlePlaybackComplete = (targetFrame) => {
-    if (targetFrame === 0) {
-      exploredFrames.add(1);
-      revealedFrames.add(1);
-      goToFrame(1, 'revealed');
-      return;
-    }
+    const holdFrame = targetFrame === 0 ? 1 : targetFrame;
 
-    exploredFrames.add(targetFrame);
-    revealedFrames.add(targetFrame);
-    goToFrame(targetFrame, 'revealed');
+    clearRevealTimer();
+    currentFrame = holdFrame;
+    chapterPhase = 'holding';
+    renderFrameState();
+
+    revealTimerId = window.setTimeout(() => {
+      if (targetFrame === 0) {
+        exploredFrames.add(1);
+        revealedFrames.add(1);
+        goToFrame(1, 'revealed');
+        return;
+      }
+
+      exploredFrames.add(targetFrame);
+      revealedFrames.add(targetFrame);
+      goToFrame(targetFrame, 'revealed');
+    }, REVEAL_SETTLE_MS);
   };
 
   const startPlaybackForFrame = (frameIndex) => {
     const targetFrame = clamp(frameIndex, 0, numFrames - 1);
     const playbackFrame = targetFrame === 0 || targetFrame === 1 ? 0 : targetFrame;
+    clearRevealTimer();
     if (targetFrame > 0) exploredFrames.add(targetFrame);
 
     currentFrame = targetFrame;
@@ -641,7 +675,7 @@ if (scrollSection && frames.length > 0) {
   };
 
   const advanceJourney = () => {
-    if (chapterPhase === 'playing') return;
+    if (chapterPhase === 'playing' || chapterPhase === 'holding') return;
     if (currentFrame === 0) {
       startPlaybackForFrame(0);
       return;
@@ -651,7 +685,7 @@ if (scrollSection && frames.length > 0) {
   };
 
   chapterPrevButton?.addEventListener('click', () => {
-    if (chapterPhase === 'playing') return;
+    if (chapterPhase === 'playing' || chapterPhase === 'holding') return;
     goToFrame(currentFrame - 1);
   });
 
@@ -660,7 +694,7 @@ if (scrollSection && frames.length > 0) {
   trackers.forEach((tracker) => {
     tracker.addEventListener('click', (event) => {
       event.preventDefault();
-      if (chapterPhase === 'playing') return;
+      if (chapterPhase === 'playing' || chapterPhase === 'holding') return;
       const targetFrame = parseInt(tracker.getAttribute('data-target-frame'), 10);
       if (!Number.isNaN(targetFrame) && exploredFrames.has(targetFrame)) {
         goToFrame(targetFrame);
