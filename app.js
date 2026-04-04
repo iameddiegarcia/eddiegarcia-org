@@ -12,7 +12,6 @@ const chapterDockKicker = document.getElementById('chapter-dock-kicker');
 const chapterDockTitle = document.getElementById('chapter-dock-title');
 const chapterDockNote = document.getElementById('chapter-dock-note');
 const chapterPrevButton = document.getElementById('chapter-prev');
-const chapterPlayButton = document.getElementById('chapter-play');
 const chapterNextButton = document.getElementById('chapter-next');
 const portraitLayerMap = new Map(portraitLayers.map((layer) => [layer.dataset.portrait, layer]));
 const portraitImageMap = new Map(
@@ -448,7 +447,8 @@ if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
   let currentFrame = 0;
   let chapterPhase = 'preplay';
-  const revealedFrames = new Set([1]);
+  const revealedFrames = new Set();
+  const exploredFrames = new Set([0]);
 
   const getFrameSummaryTitle = (frame) => {
     return frame.querySelector('.title')?.textContent.trim()
@@ -468,23 +468,30 @@ if (scrollSection && frames.length > 0) {
 
   const getDefaultPhaseForFrame = (frameIndex) => {
     if (frameIndex === 0) return 'preplay';
-    if (frameIndex === 1) return 'revealed';
     return revealedFrames.has(frameIndex) ? 'revealed' : 'preplay';
   };
 
   const getDockNote = (frameIndex, phase) => {
-    if (phase === 'playing') return 'Playing at full speed. The section appears on the held end frame.';
-    if (frameIndex === 0) return 'Play the intro, then step through the chapters.';
-    if (frameIndex === 1) return 'Intro complete. Explore the section or replay the opening video.';
-    if (phase === 'revealed') return 'Chapter revealed. Replay it or move to the next chapter.';
-    return 'Freeze frame loaded. Play the chapter to reveal the section.';
+    if (phase === 'playing') {
+      return frameIndex === 0
+        ? 'Intro playing. You will land on the first trait when the frame holds.'
+        : 'Playing the next section at full speed. The interface returns on the held end frame.';
+    }
+    if (frameIndex === 0) return 'Start the intro. Then Next keeps the story moving forward.';
+    if (frameIndex === numFrames - 1) {
+      return phase === 'revealed'
+        ? 'Final section reached. Use Previous or the explored menu to revisit any section.'
+        : 'Next will play the final section and hold on the reveal.';
+    }
+    if (phase === 'revealed') return 'Explore this section, then tap Next to continue.';
+    return 'Ready to play. Next will run this section and hold on the reveal.';
   };
 
-  const getPlayLabel = (frameIndex, phase) => {
+  const getNextLabel = (frameIndex, phase) => {
     if (phase === 'playing') return 'Playing...';
-    if (frameIndex === 0) return 'Play Intro';
-    if (frameIndex === 1) return 'Replay Intro';
-    return phase === 'revealed' ? 'Replay Chapter' : 'Play Chapter';
+    if (frameIndex === 0) return 'Start';
+    if (frameIndex === numFrames - 1) return 'Complete';
+    return 'Next';
   };
 
   const updateDock = () => {
@@ -494,17 +501,21 @@ if (scrollSection && frames.length > 0) {
     if (chapterDockNote) chapterDockNote.textContent = getDockNote(currentFrame, chapterPhase);
 
     if (chapterPrevButton) chapterPrevButton.disabled = currentFrame === 0 || chapterPhase === 'playing';
-    if (chapterNextButton) chapterNextButton.disabled = currentFrame === numFrames - 1 || chapterPhase === 'playing';
-    if (chapterPlayButton) {
-      chapterPlayButton.textContent = getPlayLabel(currentFrame, chapterPhase);
-      chapterPlayButton.disabled = chapterPhase === 'playing';
+    if (chapterNextButton) {
+      chapterNextButton.textContent = getNextLabel(currentFrame, chapterPhase);
+      chapterNextButton.disabled = chapterPhase === 'playing' || (currentFrame === numFrames - 1 && chapterPhase === 'revealed');
     }
   };
 
   const updateTrackerState = () => {
     trackers.forEach((tracker) => {
       const target = parseInt(tracker.getAttribute('data-target-frame'), 10);
-      tracker.classList.toggle('active', target === currentFrame);
+      const isVisible = exploredFrames.has(target);
+      tracker.classList.toggle('is-visible', isVisible);
+      tracker.classList.toggle('active', isVisible && target === currentFrame);
+      tracker.disabled = !isVisible || chapterPhase === 'playing';
+      tracker.setAttribute('aria-hidden', String(!isVisible));
+      tracker.tabIndex = isVisible ? 0 : -1;
     });
   };
 
@@ -584,24 +595,44 @@ if (scrollSection && frames.length > 0) {
 
   const handlePlaybackComplete = (targetFrame) => {
     if (targetFrame === 0) {
+      exploredFrames.add(1);
+      revealedFrames.add(1);
       goToFrame(1, 'revealed');
       return;
     }
 
+    exploredFrames.add(targetFrame);
     revealedFrames.add(targetFrame);
     goToFrame(targetFrame, 'revealed');
   };
 
-  const playCurrentFrame = () => {
-    const playbackFrame = currentFrame === 1 ? 0 : currentFrame;
+  const startPlaybackForFrame = (frameIndex) => {
+    const targetFrame = clamp(frameIndex, 0, numFrames - 1);
+    const playbackFrame = targetFrame === 0 || targetFrame === 1 ? 0 : targetFrame;
+    if (targetFrame > 0) exploredFrames.add(targetFrame);
+
+    currentFrame = targetFrame;
     chapterPhase = 'playing';
     renderFrameState();
 
     if (typeof ScrollVideo !== 'undefined') {
       ScrollVideo.playChapter(playbackFrame, {
-        onEnded: () => handlePlaybackComplete(currentFrame)
+        onEnded: () => handlePlaybackComplete(targetFrame)
       });
+      return;
     }
+
+    handlePlaybackComplete(targetFrame);
+  };
+
+  const advanceJourney = () => {
+    if (chapterPhase === 'playing') return;
+    if (currentFrame === 0) {
+      startPlaybackForFrame(0);
+      return;
+    }
+    if (currentFrame >= numFrames - 1) return;
+    startPlaybackForFrame(currentFrame + 1);
   };
 
   chapterPrevButton?.addEventListener('click', () => {
@@ -609,19 +640,14 @@ if (scrollSection && frames.length > 0) {
     goToFrame(currentFrame - 1);
   });
 
-  chapterNextButton?.addEventListener('click', () => {
-    if (chapterPhase === 'playing') return;
-    goToFrame(currentFrame + 1);
-  });
-
-  chapterPlayButton?.addEventListener('click', playCurrentFrame);
+  chapterNextButton?.addEventListener('click', advanceJourney);
 
   trackers.forEach((tracker) => {
     tracker.addEventListener('click', (event) => {
       event.preventDefault();
       if (chapterPhase === 'playing') return;
       const targetFrame = parseInt(tracker.getAttribute('data-target-frame'), 10);
-      if (!Number.isNaN(targetFrame)) {
+      if (!Number.isNaN(targetFrame) && exploredFrames.has(targetFrame)) {
         goToFrame(targetFrame);
       }
     });
@@ -634,13 +660,13 @@ if (scrollSection && frames.length > 0) {
 
     if (event.key === 'ArrowRight') {
       event.preventDefault();
-      if (!chapterNextButton?.disabled) goToFrame(currentFrame + 1);
+      if (!chapterNextButton?.disabled) advanceJourney();
     } else if (event.key === 'ArrowLeft') {
       event.preventDefault();
       if (!chapterPrevButton?.disabled) goToFrame(currentFrame - 1);
-    } else if ((event.key === ' ' || event.key === 'Enter') && !chapterPlayButton?.disabled) {
+    } else if ((event.key === ' ' || event.key === 'Enter') && !chapterNextButton?.disabled) {
       event.preventDefault();
-      playCurrentFrame();
+      advanceJourney();
     }
   });
 
