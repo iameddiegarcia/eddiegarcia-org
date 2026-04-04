@@ -7,8 +7,13 @@ const frames = document.querySelectorAll('.narrative-frame');
 const portraitLayers = Array.from(document.querySelectorAll('.portrait-layer'));
 const overlays = document.querySelectorAll('.overlay-layer');
 const trackers = document.querySelectorAll('.tracker-item');
-const scrollPrompt = document.querySelector('.scroll-prompt');
 const progressBar = document.getElementById('scroll-progress-bar');
+const chapterDockKicker = document.getElementById('chapter-dock-kicker');
+const chapterDockTitle = document.getElementById('chapter-dock-title');
+const chapterDockNote = document.getElementById('chapter-dock-note');
+const chapterPrevButton = document.getElementById('chapter-prev');
+const chapterPlayButton = document.getElementById('chapter-play');
+const chapterNextButton = document.getElementById('chapter-next');
 const portraitLayerMap = new Map(portraitLayers.map((layer) => [layer.dataset.portrait, layer]));
 const portraitImageMap = new Map(
   portraitLayers.map((layer) => [layer.dataset.portrait, layer.querySelector('img')]).filter(([, image]) => image)
@@ -438,187 +443,206 @@ const applyActiveFrameVisuals = (currentFrame, {
   }
 };
 
-const computeHeroVideoPhases = (fp) => {
-  const heroTitleOp = 1 - easeInOut(clamp((fp - 0.52) / 0.16, 0, 1));
-  const summaryIn = easeInOut(clamp((fp - 0.05) / 0.16, 0, 1));
-  const summaryOut = 1 - easeInOut(clamp((fp - 0.54) / 0.12, 0, 1));
-  const detailsIn = easeInOut(clamp((fp - 0.14) / 0.18, 0, 1));
-  const detailsOut = 1 - easeInOut(clamp((fp - 0.58) / 0.12, 0, 1));
-
-  return {
-    heroTitleOp,
-    summaryOp: Math.min(summaryIn, summaryOut),
-    detailsOp: Math.min(detailsIn, detailsOut),
-    portraitBrightness: 1
-  };
-};
-
-const computeCarryoverVideoPhases = (fp, isTerminal = false) => {
-  const summaryIn = easeInOut(clamp((fp - 0.02) / 0.12, 0, 1));
-  const detailsIn = easeInOut(clamp((fp - 0.10) / 0.18, 0, 1));
-  const summaryOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.84) / 0.10, 0, 1));
-  const detailsOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.88) / 0.08, 0, 1));
-  const undimProgress = isTerminal ? 0 : easeInOut(clamp((fp - 0.86) / 0.14, 0, 1));
-
-  return {
-    summaryOp: Math.min(summaryIn, summaryOut),
-    detailsOp: Math.min(detailsIn, detailsOut),
-    portraitBrightness: 0.2 + (undimProgress * 0.8)
-  };
-};
-
-const computeIntroVideoPhases = (fp, isTerminal = false) => {
-  const dimProgress = easeInOut(clamp((fp - 0.40) / 0.18, 0, 1));
-  const undimProgress = isTerminal ? 0 : easeInOut(clamp((fp - 0.90) / 0.10, 0, 1));
-  const summaryIn = easeInOut(clamp((fp - 0.52) / 0.14, 0, 1));
-  const detailsIn = easeInOut(clamp((fp - 0.60) / 0.16, 0, 1));
-  const summaryOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.86) / 0.10, 0, 1));
-  const detailsOut = isTerminal ? 1 : 1 - easeInOut(clamp((fp - 0.90) / 0.08, 0, 1));
-
-  return {
-    summaryOp: Math.min(summaryIn, summaryOut),
-    detailsOp: Math.min(detailsIn, detailsOut),
-    portraitBrightness: (1 - (dimProgress * 0.8)) + (undimProgress * 0.8)
-  };
-};
-
-// ─── Main Scroll Controller ───
+// ─── Chapter Controller ───
 if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
-  let activeFrameIndex = -1;
-  let isTicking = false;
-  
-  // Cache layout values to avoid getBoundingClientRect in hot loop
-  let cachedSectionTop = 0;
-  let cachedSectionHeight = 0;
-  let cachedScrollDistance = 0;
+  let currentFrame = 0;
+  let chapterPhase = 'preplay';
+  const revealedFrames = new Set([1]);
 
-  const refreshOffsets = () => {
-    const rect = scrollSection.getBoundingClientRect();
-    cachedSectionTop = rect.top + window.scrollY;
-    cachedSectionHeight = scrollSection.offsetHeight;
-    cachedScrollDistance = cachedSectionHeight - window.innerHeight;
+  const getFrameSummaryTitle = (frame) => {
+    return frame.querySelector('.title')?.textContent.trim()
+      || Array.from(frame.querySelectorAll('.giant-text')).map((node) => node.textContent.trim()).join(' ').replace(/\s+/g, ' ');
   };
 
-  scrollSection.style.height = `${numFrames * 150}vh`;
-  refreshOffsets();
+  const getFrameMeta = (frameIndex) => {
+    const frame = frames[frameIndex];
+    const label = frame.querySelector('.label')?.textContent.trim();
+    const title = getFrameSummaryTitle(frame);
+    const fallbackTitle = trackers[frameIndex]?.textContent.trim() || `Chapter ${frameIndex}`;
+    return {
+      kicker: frameIndex === 0 ? 'INTRO' : (label || `CHAPTER ${String(frameIndex).padStart(2, '0')}`),
+      title: title || fallbackTitle
+    };
+  };
 
-  // Use IntersectionObserver to cull off-screen frames (reduces paint/composite cost)
-  const visibilityObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      entry.target.style.visibility = entry.isIntersecting ? 'visible' : 'hidden';
+  const getDefaultPhaseForFrame = (frameIndex) => {
+    if (frameIndex === 0) return 'preplay';
+    if (frameIndex === 1) return 'revealed';
+    return revealedFrames.has(frameIndex) ? 'revealed' : 'preplay';
+  };
+
+  const getDockNote = (frameIndex, phase) => {
+    if (phase === 'playing') return 'Playing at full speed. The section appears on the held end frame.';
+    if (frameIndex === 0) return 'Play the intro, then step through the chapters.';
+    if (frameIndex === 1) return 'Intro complete. Explore the section or replay the opening video.';
+    if (phase === 'revealed') return 'Chapter revealed. Replay it or move to the next chapter.';
+    return 'Freeze frame loaded. Play the chapter to reveal the section.';
+  };
+
+  const getPlayLabel = (frameIndex, phase) => {
+    if (phase === 'playing') return 'Playing...';
+    if (frameIndex === 0) return 'Play Intro';
+    if (frameIndex === 1) return 'Replay Intro';
+    return phase === 'revealed' ? 'Replay Chapter' : 'Play Chapter';
+  };
+
+  const updateDock = () => {
+    const meta = getFrameMeta(currentFrame);
+    if (chapterDockKicker) chapterDockKicker.textContent = meta.kicker;
+    if (chapterDockTitle) chapterDockTitle.textContent = meta.title;
+    if (chapterDockNote) chapterDockNote.textContent = getDockNote(currentFrame, chapterPhase);
+
+    if (chapterPrevButton) chapterPrevButton.disabled = currentFrame === 0 || chapterPhase === 'playing';
+    if (chapterNextButton) chapterNextButton.disabled = currentFrame === numFrames - 1 || chapterPhase === 'playing';
+    if (chapterPlayButton) {
+      chapterPlayButton.textContent = getPlayLabel(currentFrame, chapterPhase);
+      chapterPlayButton.disabled = chapterPhase === 'playing';
+    }
+  };
+
+  const updateTrackerState = () => {
+    trackers.forEach((tracker) => {
+      const target = parseInt(tracker.getAttribute('data-target-frame'), 10);
+      tracker.classList.toggle('active', target === currentFrame);
     });
-  }, { 
-    threshold: 0.01,
-    rootMargin: '100px 0px 100px 0px' // Buffer to prevent pop-in
-  });
+  };
 
-  frames.forEach(frame => visibilityObserver.observe(frame));
+  const updateOverlayState = (frameIndex) => {
+    const overlayId = frames[frameIndex]?.getAttribute('data-overlay');
+    overlays.forEach((overlay) => {
+      overlay.style.opacity = (overlayId && overlay.id === overlayId) ? 0.5 : 0;
+    });
+  };
 
-  syncPortraitAssets(0, numFrames);
-  syncGalleryMedia(0);
+  const renderFrameState = () => {
+    frames.forEach((frame, idx) => {
+      frame.classList.toggle('active', idx === currentFrame);
+    });
 
-  const updateScroll = () => {
-    const scrollY = window.scrollY;
-    const sectionRelativeTop = scrollY - cachedSectionTop;
-    
-    let progress = sectionRelativeTop / cachedScrollDistance;
-    progress = Math.max(0, Math.min(1, progress));
+    updateTrackerState();
+    updateOverlayState(currentFrame);
+    syncGalleryMedia(currentFrame);
 
-    const frameProgressValue = progress * numFrames;
-    let currentFrame = Math.floor(frameProgressValue);
-    if (currentFrame >= numFrames) currentFrame = numFrames - 1;
-    const frameProgress = currentFrame === numFrames - 1 ? 1 : frameProgressValue - currentFrame;
-    const activeFrameEl = frames[currentFrame];
-
-    // Throttled Asset Sync: Only run when frame actually changes
-    if (currentFrame !== activeFrameIndex) {
-      syncGalleryMedia(currentFrame);
-      
-      // Trigger metric counters on Creator/Entertainer frames
-      if (activeFrameEl.querySelector('.metric-value')) {
-        animateMetrics();
-      }
-
-      // Activate Overlays
-      const overlayId = activeFrameEl.getAttribute('data-overlay');
-      overlays.forEach(overlay => {
-        overlay.style.opacity = (overlayId && overlay.id === overlayId) ? 0.5 : 0;
-      });
-
-      // Update Persistent Tracker
-      let bestTrackerTarget = 0;
-      trackers.forEach(t => {
-        const target = parseInt(t.getAttribute('data-target-frame'), 10);
-        if (currentFrame >= target) bestTrackerTarget = target;
-      });
-      trackers.forEach(t => {
-        t.classList.toggle('active', parseInt(t.getAttribute('data-target-frame'), 10) === bestTrackerTarget);
-      });
-
-      activeFrameIndex = currentFrame;
+    if (currentFrame !== 0 && frames[currentFrame]?.querySelector('.metric-value') && chapterPhase === 'revealed') {
+      animateMetrics();
     }
 
-    // Scroll-driven video scrubber
-    const hasVideo = typeof ScrollVideo !== 'undefined' && ScrollVideo.hasSection(currentFrame);
-    const videoMode = hasVideo ? ScrollVideo.getMode(currentFrame) : null;
+    portraitLayers.forEach((layer) => layer.style.setProperty('--morph-opacity', '0'));
 
-    if (hasVideo) {
-      ScrollVideo.update(currentFrame, frameProgress);
-
-      // Hide portrait layers — video canvas replaces them
-      portraitLayers.forEach(layer => layer.style.setProperty('--morph-opacity', '0'));
-
-      if (videoMode === 'fullscreen') {
-        applyActiveFrameVisuals(currentFrame, computeHeroVideoPhases(frameProgress));
-      } else if (videoMode === 'carryover') {
-        applyActiveFrameVisuals(currentFrame, computeCarryoverVideoPhases(frameProgress, currentFrame === numFrames - 1));
-      } else {
-        applyActiveFrameVisuals(currentFrame, computeIntroVideoPhases(frameProgress, currentFrame === numFrames - 1));
+    if (chapterPhase === 'playing') {
+      applyActiveFrameVisuals(currentFrame, {
+        heroTitleOp: currentFrame === 0 ? 0 : 0,
+        summaryOp: 0,
+        detailsOp: 0,
+        portraitBrightness: 1
+      });
+    } else if (currentFrame === 0) {
+      applyActiveFrameVisuals(0, {
+        heroTitleOp: 1,
+        summaryOp: 1,
+        detailsOp: 1,
+        portraitBrightness: 1
+      });
+      if (typeof ScrollVideo !== 'undefined') ScrollVideo.showFreeze(0, 'start');
+    } else if (chapterPhase === 'revealed') {
+      applyActiveFrameVisuals(currentFrame, {
+        heroTitleOp: 0,
+        summaryOp: 1,
+        detailsOp: 1,
+        portraitBrightness: 0.2
+      });
+      if (typeof ScrollVideo !== 'undefined') {
+        ScrollVideo.showFreeze(currentFrame, 'end');
       }
     } else {
-      if (typeof ScrollVideo !== 'undefined') ScrollVideo.update(currentFrame, frameProgress);
-      updatePortraitMorph(currentFrame, frameProgress, numFrames);
+      applyActiveFrameVisuals(currentFrame, {
+        heroTitleOp: 0,
+        summaryOp: 0,
+        detailsOp: 0,
+        portraitBrightness: 1
+      });
+      if (typeof ScrollVideo !== 'undefined') {
+        ScrollVideo.showFreeze(currentFrame, 'start');
+      }
     }
 
-    frames.forEach((frame, idx) => {
-      if (idx === currentFrame) frame.classList.add('active');
-      else frame.classList.remove('active');
-    });
-
-    if (scrollPrompt) {
-      if (progress > 0.02) scrollPrompt.classList.add('fade-out');
-      else scrollPrompt.classList.remove('fade-out');
+    if (progressBar) {
+      progressBar.style.width = `${(currentFrame / Math.max(numFrames - 1, 1)) * 100}%`;
     }
 
-    if (progressBar) progressBar.style.width = (progress * 100) + '%';
+    updateDock();
   };
 
-  const requestScrollUpdate = () => {
-    if (isTicking) return;
-    isTicking = true;
-    requestAnimationFrame(() => {
-      updateScroll();
-      isTicking = false;
-    });
+  const goToFrame = (frameIndex, phase = getDefaultPhaseForFrame(frameIndex)) => {
+    const nextFrame = clamp(frameIndex, 0, numFrames - 1);
+    currentFrame = nextFrame;
+    chapterPhase = phase;
+    if (typeof ScrollVideo !== 'undefined') ScrollVideo.stop();
+    renderFrameState();
   };
 
-  window.addEventListener('scroll', requestScrollUpdate, { passive: true });
-  window.addEventListener('resize', () => {
-    refreshOffsets();
-    requestScrollUpdate();
+  const handlePlaybackComplete = (targetFrame) => {
+    if (targetFrame === 0) {
+      goToFrame(1, 'revealed');
+      return;
+    }
+
+    revealedFrames.add(targetFrame);
+    goToFrame(targetFrame, 'revealed');
+  };
+
+  const playCurrentFrame = () => {
+    const playbackFrame = currentFrame === 1 ? 0 : currentFrame;
+    chapterPhase = 'playing';
+    renderFrameState();
+
+    if (typeof ScrollVideo !== 'undefined') {
+      ScrollVideo.playChapter(playbackFrame, {
+        onEnded: () => handlePlaybackComplete(currentFrame)
+      });
+    }
+  };
+
+  chapterPrevButton?.addEventListener('click', () => {
+    if (chapterPhase === 'playing') return;
+    goToFrame(currentFrame - 1);
   });
-  
-  trackers.forEach(link => {
-    link.addEventListener('click', (event) => {
-      const targetFrame = parseInt(event.currentTarget.getAttribute('data-target-frame'), 10);
-      if (!isNaN(targetFrame)) {
-        const targetProgress = (targetFrame + 0.1) / numFrames; 
-        const targetScrollY = cachedSectionTop + (targetProgress * cachedScrollDistance);
-        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+
+  chapterNextButton?.addEventListener('click', () => {
+    if (chapterPhase === 'playing') return;
+    goToFrame(currentFrame + 1);
+  });
+
+  chapterPlayButton?.addEventListener('click', playCurrentFrame);
+
+  trackers.forEach((tracker) => {
+    tracker.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (chapterPhase === 'playing') return;
+      const targetFrame = parseInt(tracker.getAttribute('data-target-frame'), 10);
+      if (!Number.isNaN(targetFrame)) {
+        goToFrame(targetFrame);
       }
     });
   });
 
-  updateScroll();
+  document.addEventListener('keydown', (event) => {
+    if (/input|textarea|select/i.test(event.target.tagName) || event.metaKey || event.ctrlKey || event.altKey) {
+      return;
+    }
+
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      if (!chapterNextButton?.disabled) goToFrame(currentFrame + 1);
+    } else if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      if (!chapterPrevButton?.disabled) goToFrame(currentFrame - 1);
+    } else if ((event.key === ' ' || event.key === 'Enter') && !chapterPlayButton?.disabled) {
+      event.preventDefault();
+      playCurrentFrame();
+    }
+  });
+
+  renderFrameState();
 }
