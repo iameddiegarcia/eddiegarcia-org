@@ -17,6 +17,9 @@ const ScrollVideo = (() => {
 
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const DEFAULT_DURATION = 6.041667;
+  const FRAME_DURATION = 1 / 24;
+  const SEEK_TOLERANCE = 1 / 240;
+  const SEEK_SETTLE_MS = 240;
   const SECTION_CONFIG = {
     0: { mode: 'fullscreen', src: 'videos/scroll/0.mp4', poster: 'images/scroll-video/frame-0/frame_0001.jpg' },
     1: { mode: 'carryover', fromSection: 0 },
@@ -62,19 +65,21 @@ const ScrollVideo = (() => {
     video.src = config.src;
 
     const syncVideoState = () => {
+      let pendingSeek = Promise.resolve();
+
       if (Number.isFinite(video.duration) && video.duration > 0) {
         config.duration = video.duration;
       }
 
       const pendingTime = Number(video.dataset.pendingTime);
       if (Number.isFinite(pendingTime)) {
-        setTime(video, config, pendingTime);
+        pendingSeek = setTime(video, config, pendingTime);
         delete video.dataset.pendingTime;
       }
 
       if (video.dataset.pendingPlay === 'true' && video.readyState >= 2) {
         delete video.dataset.pendingPlay;
-        playCurrentVideo(video).catch(() => {});
+        pendingSeek.then(() => playCurrentVideo(video)).catch(() => {});
       }
     };
 
@@ -127,22 +132,48 @@ const ScrollVideo = (() => {
 
   function setTime(video, config, targetTime) {
     const duration = getDuration(config, video);
-    const safeTime = clamp(targetTime, 0, Math.max(duration - (1 / 60), 0));
+    const safeTime = clamp(targetTime, 0, Math.max(duration - FRAME_DURATION, 0));
 
     if (video.readyState < 1) {
       video.dataset.pendingTime = String(safeTime);
-      return;
+      return Promise.resolve();
     }
 
-    try {
-      if (typeof video.fastSeek === 'function' && Math.abs(video.currentTime - safeTime) > 0.25) {
-        video.fastSeek(safeTime);
-      } else {
-        video.currentTime = safeTime;
-      }
-    } catch (error) {
-      video.dataset.pendingTime = String(safeTime);
+    if (Math.abs(video.currentTime - safeTime) <= SEEK_TOLERANCE) {
+      return Promise.resolve();
     }
+
+    return new Promise((resolve) => {
+      let settled = false;
+      let timeoutId = null;
+
+      const cleanup = () => {
+        if (settled) return;
+        settled = true;
+        video.removeEventListener('seeked', handleSeeked);
+        if (timeoutId !== null) {
+          window.clearTimeout(timeoutId);
+        }
+        resolve();
+      };
+
+      const handleSeeked = () => {
+        cleanup();
+      };
+
+      video.addEventListener('seeked', handleSeeked, { once: true });
+
+      try {
+        // Freeze frames must land on exact decoded frames, not nearby keyframes.
+        video.currentTime = safeTime;
+      } catch (error) {
+        video.dataset.pendingTime = String(safeTime);
+        cleanup();
+        return;
+      }
+
+      timeoutId = window.setTimeout(cleanup, SEEK_SETTLE_MS);
+    });
   }
 
   const stop = () => {
@@ -164,11 +195,11 @@ const ScrollVideo = (() => {
     setActiveSource(sourceSection);
 
     if (edge === 'end') {
-      setTime(video, config, getDuration(config, video) - (1 / 24));
+      void setTime(video, config, getDuration(config, video) - FRAME_DURATION);
       return;
     }
 
-    setTime(video, config, 0);
+    void setTime(video, config, 0);
   };
 
   async function playCurrentVideo(video) {
@@ -188,22 +219,24 @@ const ScrollVideo = (() => {
 
     stop();
     setActiveSource(sourceSection);
-    setTime(video, config, 0);
 
     const token = ++playbackToken;
     video.onended = () => {
       if (token !== playbackToken) return;
-      setTime(video, config, getDuration(config, video) - (1 / 24));
-      if (typeof onEnded === 'function') onEnded();
+      setTime(video, config, getDuration(config, video) - FRAME_DURATION).then(() => {
+        if (token !== playbackToken) return;
+        if (typeof onEnded === 'function') onEnded();
+      });
     };
 
     if (video.readyState < 2) {
+      video.dataset.pendingTime = '0';
       video.dataset.pendingPlay = 'true';
       video.load();
       return;
     }
 
-    playCurrentVideo(video);
+    setTime(video, config, 0).then(() => playCurrentVideo(video));
   };
 
   setActiveSource(0);
