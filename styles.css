@@ -17,14 +17,14 @@
   --font-serif: 'Playfair Display', serif;
   --font-display: 'Syne', sans-serif;
 
-  --glass-fill: rgba(255, 255, 255, 0.18);
-  --glass-fill-strong: rgba(255, 255, 255, 0.22);
-  --glass-fill-panel: rgba(255, 255, 255, 0.28);
-  --glass-fill-panel-strong: rgba(255, 255, 255, 0.32);
-  --glass-fill-chip: rgba(255, 255, 255, 0.24);
-  --glass-stroke: rgba(255, 255, 255, 0.40);
-  --glass-shadow: 0 24px 80px rgba(15, 23, 42, 0.08);
-  --glass-shadow-soft: 0 10px 34px rgba(15, 23, 42, 0.06);
+  --glass-fill: rgba(255, 255, 255, 0.06);
+  --glass-fill-strong: rgba(255, 255, 255, 0.08);
+  --glass-fill-panel: rgba(255, 255, 255, 0.10);
+  --glass-fill-panel-strong: rgba(255, 255, 255, 0.12);
+  --glass-fill-chip: rgba(255, 255, 255, 0.08);
+  --glass-stroke: rgba(255, 255, 255, 0.28);
+  --glass-shadow: 0 24px 80px rgba(15, 23, 42, 0.05);
+  --glass-shadow-soft: 0 10px 34px rgba(15, 23, 42, 0.04);
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
@@ -313,8 +313,8 @@ body.lite-portraits .portrait-layer img {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.36) 0%, rgba(255,255,255,0.18) 34%, rgba(255,255,255,0.52) 100%),
-    linear-gradient(180deg, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.58) 100%);
+    radial-gradient(circle at 50% 38%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0.10) 34%, rgba(255,255,255,0.34) 100%),
+    linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.28) 100%);
   opacity: calc(1 - var(--portrait-brightness, 1));
   z-index: 5; /* Above video canvas (4) so dim covers frozen video frames */
   pointer-events: none;
@@ -462,8 +462,8 @@ body.lite-portraits .portrait-layer img {
 }
 
 .narrative-frame.active .frame-summary {
-  backdrop-filter: blur(24px) saturate(1.16);
-  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+  backdrop-filter: blur(14px) saturate(1.05);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
 }
 
 .frame-summary .label {
@@ -507,8 +507,8 @@ body.lite-portraits .portrait-layer img {
 }
 
 .narrative-frame.active .frame-details {
-  backdrop-filter: blur(22px) saturate(1.14);
-  -webkit-backdrop-filter: blur(22px) saturate(1.14);
+  backdrop-filter: blur(13px) saturate(1.04);
+  -webkit-backdrop-filter: blur(13px) saturate(1.04);
 }
 
 /* Alignments */
@@ -666,8 +666,8 @@ body.lite-portraits .portrait-layer img {
   gap: 0.5rem;
   padding: 1.25rem 1.5rem;
   background: var(--glass-fill-panel-strong);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(124, 106, 239, 0.25);
   border-radius: 14px;
   text-decoration: none;
@@ -794,8 +794,8 @@ body.lite-portraits .portrait-layer img {
   appearance: none;
   border: 1px solid rgba(124, 106, 239, 0.2);
   background: var(--glass-fill-chip);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border-radius: 12px;
   padding: 0.7rem 0.75rem;
   font-size: 0.72rem;
@@ -827,8 +827,8 @@ body.lite-portraits .portrait-layer img {
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 16px;
   padding: 1.1rem 1.2rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .principle-panel-kicker {
   font-size: 0.68rem;
@@ -865,8 +865,8 @@ body.lite-portraits .portrait-layer img {
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 14px;
   padding: 1rem 1rem 1.05rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   min-height: 126px;
 }
 .signal-kicker {
@@ -900,8 +900,8 @@ body.lite-portraits .portrait-layer img {
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 18px;
   padding: 1rem 1.15rem;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .architecture-row + .architecture-row {
   margin-top: 0.9rem;
@@ -926,8 +926,8 @@ body.lite-portraits .portrait-layer img {
   border-radius: 18px;
   background: var(--glass-fill-panel-strong);
   border: 1px solid rgba(0,0,0,0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 .gallery-intro {
   font-size: 0.92rem;
@@ -1231,8 +1231,8 @@ body.lite-portraits .portrait-layer img {
     transform var(--overlay-fade-duration) var(--overlay-fade-ease);
   padding: 1.4rem 2rem;
   background: var(--glass-fill-strong);
-  backdrop-filter: blur(28px) saturate(1.18);
-  -webkit-backdrop-filter: blur(28px) saturate(1.18);
+  backdrop-filter: blur(16px) saturate(1.05);
+  -webkit-backdrop-filter: blur(16px) saturate(1.05);
   border-radius: 28px;
   border: 1px solid var(--glass-stroke);
   box-shadow: var(--glass-shadow);
@@ -1251,8 +1251,8 @@ body.lite-portraits .portrait-layer img {
   padding: 1rem 1.5rem;
   width: min(100%, 44rem);
   background: var(--glass-fill);
-  backdrop-filter: blur(24px) saturate(1.16);
-  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+  backdrop-filter: blur(14px) saturate(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
   border: 1px solid var(--glass-stroke);
   border-radius: 22px;
   box-shadow: var(--glass-shadow-soft);
@@ -1276,8 +1276,8 @@ body.lite-portraits .portrait-layer img {
   padding: 1rem 1.25rem;
   width: min(100%, 48rem);
   background: var(--glass-fill);
-  backdrop-filter: blur(24px) saturate(1.16);
-  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+  backdrop-filter: blur(14px) saturate(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
   border-radius: 24px;
   border: 1px solid var(--glass-stroke);
   box-shadow: var(--glass-shadow-soft);
@@ -1318,8 +1318,8 @@ body.lite-portraits .portrait-layer img {
   padding: 1rem 1.15rem;
   border-radius: 24px;
   background: var(--glass-fill);
-  backdrop-filter: blur(24px) saturate(1.12);
-  -webkit-backdrop-filter: blur(24px) saturate(1.12);
+  backdrop-filter: blur(14px) saturate(1.04);
+  -webkit-backdrop-filter: blur(14px) saturate(1.04);
   border: 1px solid var(--glass-stroke);
   box-shadow: var(--glass-shadow-soft);
   pointer-events: auto;
@@ -1401,9 +1401,9 @@ body.lite-portraits .portrait-layer img {
 
 /* ─── Final CTA Section ─── */
 .glass-panel {
-  background: rgba(255,255,255,0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--glass-fill-panel-strong);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 4rem;
   border-radius: 24px;
   border: 1px solid rgba(0,0,0,0.05);
@@ -1852,11 +1852,11 @@ body.lite-portraits .portrait-layer img {
   font-size: 0.7rem;
   font-weight: 600;
   color: var(--text-secondary);
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--glass-fill-panel);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 20px;
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   letter-spacing: 0.02em;
 }
 .right-align .tech-stack {
@@ -1868,9 +1868,9 @@ body.lite-portraits .portrait-layer img {
   font-size: 0.85rem;
   font-weight: 600;
   color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--glass-fill-panel);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   padding: 0.75rem 1.1rem;
   border-radius: 10px;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -1886,8 +1886,8 @@ body.lite-portraits .portrait-layer img {
   padding: 1.1rem 1.25rem;
   margin-bottom: 0.85rem;
   background: var(--glass-fill-panel-strong);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(124, 106, 239, 0.2);
   border-radius: 14px;
   text-decoration: none;
@@ -2260,7 +2260,7 @@ body.lite-portraits .portrait-layer img {
 
 .insight-engine-card:hover {
   transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.40);
+  background: rgba(255, 255, 255, 0.18);
   box-shadow: 0 12px 32px rgba(124, 106, 239, 0.12);
   border-color: var(--accent-1);
 }
@@ -2310,8 +2310,8 @@ body.lite-portraits .portrait-layer img {
   margin: 0 auto 1.5rem;
   padding: 1.25rem 1.5rem;
   background: var(--glass-fill-panel-strong);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(9px);
+  -webkit-backdrop-filter: blur(9px);
   border: 1px solid rgba(124, 106, 239, 0.2);
   border-radius: 16px;
   text-align: left;

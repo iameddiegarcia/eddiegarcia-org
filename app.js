@@ -581,7 +581,7 @@ if (scrollSection && frames.length > 0) {
         heroTitleOp: 0,
         summaryOp: 0,
         detailsOp: 0,
-        portraitBrightness: 0.86
+        portraitBrightness: 0.97
       });
       if (typeof ScrollVideo !== 'undefined') {
         ScrollVideo.showFreeze(currentFrame, 'end');
@@ -599,7 +599,7 @@ if (scrollSection && frames.length > 0) {
         heroTitleOp: 0,
         summaryOp: 1,
         detailsOp: 1,
-        portraitBrightness: 0.58
+        portraitBrightness: 0.9
       });
       if (typeof ScrollVideo !== 'undefined') {
         ScrollVideo.showFreeze(currentFrame, 'end');
