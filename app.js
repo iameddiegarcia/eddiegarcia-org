@@ -449,6 +449,21 @@ if (scrollSection && frames.length > 0) {
   let chapterPhase = 'preplay';
   const revealedFrames = new Set();
   const exploredFrames = new Set([0]);
+  const storyBeatNotes = {
+    0: 'The story starts with principle, then expands into thought, systems, tools, people, and creative force.',
+    1: 'Start with the principles. They anchor everything that follows.',
+    2: 'From principle comes perspective: how leadership, systems, and institutions are interpreted.',
+    3: 'Then the ideas become structure, operating design, and durable systems.',
+    4: 'The structure stays alive through curiosity about technology and what it unlocks.',
+    5: 'That curiosity turns into practical tools people can actually use.',
+    6: 'The point of better systems is better people, stronger capability, and multiplied confidence.',
+    7: 'Before the formal titles, there was the discipline of building audience and identity from scratch.',
+    8: 'Then comes the ability to hold timing, energy, and trust in front of large audiences.',
+    9: 'Underneath it all is artistry: writing, producing, and giving emotion its architecture.',
+    10: 'This is the throughline: not a stack of roles, but one identity expressed in different rooms.',
+    11: 'The story becomes tangible in the systems, engines, and products already built.',
+    12: 'Everything converges here: strategy, systems, storytelling, and execution in one operator.'
+  };
 
   const getFrameSummaryTitle = (frame) => {
     return frame.querySelector('.title')?.textContent.trim()
@@ -475,16 +490,16 @@ if (scrollSection && frames.length > 0) {
     if (phase === 'playing') {
       return frameIndex === 0
         ? 'Intro playing. You will land on the first trait when the frame holds.'
-        : 'Playing the next section at full speed. The interface returns on the held end frame.';
+        : `Playing the next beat. ${storyBeatNotes[frameIndex] || 'The interface returns on the held end frame.'}`;
     }
     if (frameIndex === 0) return 'Start the intro. Then Next keeps the story moving forward.';
     if (frameIndex === numFrames - 1) {
       return phase === 'revealed'
-        ? 'Final section reached. Use Previous or the explored menu to revisit any section.'
+        ? storyBeatNotes[frameIndex]
         : 'Next will play the final section and hold on the reveal.';
     }
-    if (phase === 'revealed') return 'Explore this section, then tap Next to continue.';
-    return 'Ready to play. Next will run this section and hold on the reveal.';
+    if (phase === 'revealed') return storyBeatNotes[frameIndex] || 'Explore this section, then tap Next to continue.';
+    return `Ready to play. ${storyBeatNotes[frameIndex] || 'Next will run this section and hold on the reveal.'}`;
   };
 
   const getNextLabel = (frameIndex, phase) => {
