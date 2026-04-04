@@ -88,7 +88,7 @@ const syncPortraitAssets = (currentFrame, numFrames) => {
 const PRINCIPLES = {
   initiative: {
     title: 'Initiative',
-    text: "Employees should be proactive in identifying opportunities and challenges. Taking the initiative to address issues and propose solutions demonstrates a commitment to the team's objectives and drives progress. In our section, this principle encourages employees to think creatively and take action to improve processes, technologies, and performance."
+    text: 'I was raised to work hard, step up, and carry my weight. Initiative means not waiting to be told what matters. It means seeing the need, moving toward it, and taking responsibility for making things better for the people depending on you.'
   },
   completed_staff_work: {
     title: 'Completed Staff Work',
@@ -104,7 +104,7 @@ const PRINCIPLES = {
   },
   ownership: {
     title: 'Ownership',
-    text: 'Employees should take ownership of their work, treating it as if it were their own. This principle encourages a sense of pride and dedication, leading to higher quality outcomes and greater job satisfaction. It also means being invested in the success of the project and going above and beyond to ensure its success, which is vital for achieving our strategic goals.'
+    text: 'Ownership means your name is attached to how you show up. It comes from family, faith, and a Mexican-American upbringing that taught me to take pride in the work, protect the people affected by it, and follow through without excuses.'
   },
   adaptability: {
     title: 'Adaptability',
@@ -128,11 +128,11 @@ const PRINCIPLES = {
   },
   integrity: {
     title: 'Integrity',
-    text: 'Employees should act with integrity, maintaining honesty and ethical standards in all their dealings. This principle builds a strong foundation of trust and respect within the team and with external partners. In our section, integrity ensures that we uphold our values and make decisions that are in the best interest of the organization and its stakeholders.'
+    text: 'Integrity starts with Christian values: honesty, humility, service, and doing what is right even when it costs something. It is the foundation of trust, and it governs how I lead, how I make decisions, and how I want my children to see me live.'
   },
   continuous_learning: {
     title: 'Continuous Learning',
-    text: 'Employees should be committed to continuous learning and development. This involves staying updated with the latest industry trends, technologies, and best practices, ensuring that the team remains competitive and innovative. In our section, continuous learning helps employees grow professionally and contributes to the overall success of the organization.'
+    text: 'Continuous learning is part of staying useful, staying humble, and staying ready. Hard work is not just effort; it is the discipline to keep growing, keep listening, and keep sharpening your judgment so you can serve at a higher level.'
   },
 };
 
@@ -452,17 +452,17 @@ if (scrollSection && frames.length > 0) {
   const revealedFrames = new Set();
   const exploredFrames = new Set([0]);
   const storyBeatNotes = {
-    0: 'The story starts with principle, then expands into thought, systems, tools, people, and creative force.',
-    1: 'Start with the principles. They anchor everything that follows.',
+    0: 'The story starts with faith, family, hard work, and principle, then expands into thought, systems, tools, people, and creative force.',
+    1: 'The foundation is Christian values, Mexican-American roots, hard work, and service.',
     2: 'From principle comes perspective: how leadership, systems, and institutions are interpreted.',
     3: 'Then the ideas become structure, operating design, and durable systems.',
     4: 'The structure stays alive through curiosity about technology and what it unlocks.',
-    5: 'That curiosity turns into practical tools people can actually use.',
-    6: 'The point of better systems is better people, stronger capability, and multiplied confidence.',
+    5: 'That curiosity turns into useful AI products and practical tools people can actually use.',
+    6: 'The point of better systems is better people, stronger capability, and the kind of example set at work and at home.',
     7: 'Before the formal titles, there was the discipline of building audience and identity from scratch.',
     8: 'Then comes the ability to hold timing, energy, and trust in front of large audiences.',
     9: 'Underneath it all is artistry: writing, producing, and giving emotion its architecture.',
-    10: 'This is the throughline: not a stack of roles, but one identity expressed in different rooms.',
+    10: 'This is the throughline: Christian values, Mexican-American roots, fatherhood, and one identity expressed in different rooms.',
     11: 'The story becomes tangible in the systems, engines, and products already built.',
     12: 'Everything converges here: strategy, systems, storytelling, and execution in one operator.'
   };

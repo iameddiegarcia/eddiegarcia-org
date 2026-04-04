@@ -17,20 +17,24 @@
   --font-serif: 'Playfair Display', serif;
   --font-display: 'Syne', sans-serif;
 
-  --glass-fill: rgba(255, 255, 255, 0.06);
-  --glass-fill-strong: rgba(255, 255, 255, 0.08);
-  --glass-fill-panel: rgba(255, 255, 255, 0.10);
-  --glass-fill-panel-strong: rgba(255, 255, 255, 0.12);
-  --glass-fill-chip: rgba(255, 255, 255, 0.08);
-  --glass-stroke: rgba(255, 255, 255, 0.28);
-  --glass-shadow: 0 24px 80px rgba(15, 23, 42, 0.05);
-  --glass-shadow-soft: 0 10px 34px rgba(15, 23, 42, 0.04);
+  --glass-fill: rgba(255, 255, 255, 0.92);
+  --glass-fill-strong: rgba(255, 255, 255, 0.96);
+  --glass-fill-panel: rgba(255, 255, 255, 0.88);
+  --glass-fill-panel-strong: rgba(255, 255, 255, 0.94);
+  --glass-fill-chip: rgba(255, 255, 255, 0.82);
+  --glass-stroke: rgba(15, 23, 42, 0.08);
+  --glass-shadow: 0 22px 60px rgba(15, 23, 42, 0.10);
+  --glass-shadow-soft: 0 14px 38px rgba(15, 23, 42, 0.08);
+  --chrome-surface: rgba(255, 255, 255, 0.76);
+  --chrome-surface-strong: rgba(255, 255, 255, 0.88);
+  --chrome-stroke: rgba(255, 255, 255, 0.72);
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
   --overlay-fade-duration: 320ms;
   --overlay-fade-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --mobile-dock-space: clamp(10.5rem, 30vh, 14rem);
+  --desktop-dock-space: clamp(7.5rem, 12vh, 9rem);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -386,8 +390,8 @@ body.lite-portraits .portrait-layer img {
   bottom: 0; left: 0; right: 0;
   height: 100%;
   background:
-    radial-gradient(circle at center, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.16) 32%, rgba(255,255,255,0.44) 64%, rgba(255,255,255,0.78) 100%),
-    linear-gradient(to top, rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.14) 44%, rgba(255,255,255,0.04) 78%, transparent 100%);
+    radial-gradient(circle at center, rgba(255,255,255,0.01) 0%, rgba(255,255,255,0.12) 32%, rgba(255,255,255,0.28) 64%, rgba(255,255,255,0.54) 100%),
+    linear-gradient(to top, rgba(255,255,255,0.58) 0%, rgba(255,255,255,0.08) 44%, rgba(255,255,255,0.02) 78%, transparent 100%);
   z-index: 3;
 }
 
@@ -426,44 +430,43 @@ body.lite-portraits .portrait-layer img {
 }
 
 .narrative-frame.split-layout {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(1rem, 2.2vh, 1.6rem);
-  padding-top: clamp(5.75rem, 10vh, 7.25rem);
-  padding-bottom: clamp(2.25rem, 6vh, 4rem);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+  align-items: stretch;
+  justify-items: center;
+  gap: clamp(0.9rem, 2vh, 1.3rem);
+  padding-top: clamp(5.5rem, 9vh, 6.75rem);
+  padding-bottom: calc(var(--desktop-dock-space) + 1rem);
 }
 
 .frame-summary {
   display: grid;
   gap: 0.55rem;
   align-self: center;
-  width: min(100%, 52rem);
-  max-width: min(52rem, 100%);
+  width: min(100%, 46rem);
+  max-width: min(46rem, 100%);
   opacity: var(--summary-opacity, 0);
   transform: translateY(calc((1 - var(--summary-opacity, 0)) * 24px));
   will-change: opacity, transform;
   position: relative;
   z-index: 12;
-  padding: 1.5rem 2rem;
-  border-radius: 24px;
-  background: var(--glass-fill);
+  padding: 1.35rem 1.7rem;
+  border-radius: 28px;
+  background: var(--glass-fill-panel-strong);
   box-shadow: var(--glass-shadow);
-  border: 1px solid var(--glass-stroke);
-  /* Optimization: Disable expensive backdrop-filter unless frame is active */
+  border: 1px solid rgba(255, 255, 255, 0.88);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   transition:
     opacity var(--overlay-fade-duration) var(--overlay-fade-ease),
-    transform var(--overlay-fade-duration) var(--overlay-fade-ease),
-    backdrop-filter 0.3s ease;
+    transform var(--overlay-fade-duration) var(--overlay-fade-ease);
   text-align: center;
 }
 
 .narrative-frame.active .frame-summary {
-  backdrop-filter: blur(14px) saturate(1.05);
-  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .frame-summary .label {
@@ -472,7 +475,7 @@ body.lite-portraits .portrait-layer img {
 
 .frame-summary .title,
 .frame-summary .blurb {
-  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
+  text-shadow: none;
 }
 
 .frame-summary .blurb {
@@ -480,35 +483,40 @@ body.lite-portraits .portrait-layer img {
 }
 
 .frame-details {
-  align-self: center;
+  align-self: stretch;
   margin-top: 0;
   position: relative;
   z-index: 12;
   opacity: var(--details-opacity, 0);
   transform: translateY(calc((1 - var(--details-opacity, 0)) * 20px));
   will-change: opacity, transform;
-  width: min(100%, 62rem);
-  max-width: min(62rem, 100%);
-  max-height: min(48vh, 38rem);
-  padding: 1.4rem 1.55rem;
-  border-radius: 24px;
+  width: min(100%, 54rem);
+  max-width: min(54rem, 100%);
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  padding: 1.2rem 1.3rem;
+  border-radius: 26px;
   background: var(--glass-fill);
   box-shadow: var(--glass-shadow-soft);
-  border: 1px solid var(--glass-stroke);
-  overflow: auto;
-  /* Optimization: Disable expensive backdrop-filter unless frame is active */
+  border: 1px solid rgba(255, 255, 255, 0.84);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  scrollbar-width: thin;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   text-align: left;
   transition:
     opacity var(--overlay-fade-duration) var(--overlay-fade-ease),
-    transform var(--overlay-fade-duration) var(--overlay-fade-ease),
-    backdrop-filter 0.3s ease;
+    transform var(--overlay-fade-duration) var(--overlay-fade-ease);
 }
 
 .narrative-frame.active .frame-details {
-  backdrop-filter: blur(13px) saturate(1.04);
-  -webkit-backdrop-filter: blur(13px) saturate(1.04);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* Alignments */
@@ -537,11 +545,11 @@ body.lite-portraits .portrait-layer img {
   margin-bottom: 1rem;
 }
 .title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(2.15rem, 4.4vw, 3.6rem);
   line-height: 1.1;
   color: var(--text-primary);
   margin-bottom: 0.5rem;
-  text-shadow: 0 0 20px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,1);
+  text-shadow: none;
 }
 .title-link {
   color: inherit;
@@ -552,12 +560,12 @@ body.lite-portraits .portrait-layer img {
   opacity: 0.75;
 }
 .blurb {
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-size: clamp(1rem, 2vw, 1.35rem);
   color: var(--text-secondary);
   max-width: 600px;
-  line-height: 1.4;
-  margin-bottom: 2rem;
-  text-shadow: 0 0 10px rgba(255,255,255,0.9);
+  line-height: 1.45;
+  margin-bottom: 1.25rem;
+  text-shadow: none;
 }
 .giant-text {
   font-size: clamp(3rem, 6vw, 5.5rem);
@@ -576,7 +584,7 @@ body.lite-portraits .portrait-layer img {
   font-size: clamp(1.25rem, 2.5vw, 2rem);
   color: var(--text-secondary);
   max-width: 800px;
-  text-shadow: 0 0 10px rgba(255,255,255,0.9);
+  text-shadow: none;
 }
 .manifesto-line {
   font-size: clamp(0.95rem, 1.8vw, 1.2rem);
@@ -584,7 +592,7 @@ body.lite-portraits .portrait-layer img {
   max-width: 760px;
   margin-top: 1rem;
   line-height: 1.6;
-  text-shadow: 0 0 10px rgba(255,255,255,0.9);
+  text-shadow: none;
 }
 .mt-4 { margin-top: 1rem; }
 .mb-4 { margin-bottom: 1rem; }
@@ -603,7 +611,11 @@ body.lite-portraits .portrait-layer img {
 
 /* ─── Embedded Blocks ─── */
 .embedded-content {
-  margin-top: 2rem;
+  margin-top: 1.1rem;
+}
+
+.frame-details.embedded-content {
+  margin-top: 0;
 }
 
 .frame-details > *,
@@ -781,6 +793,24 @@ body.lite-portraits .portrait-layer img {
 .principle-note {
   margin-top: 0.4rem;
   color: var(--text-muted);
+}
+.principle-values {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0.8rem 0 0.1rem;
+}
+.principle-value {
+  padding: 0.32rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-secondary);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
 }
 .principle-grid {
   display: grid;
@@ -1305,7 +1335,7 @@ body.lite-portraits .portrait-layer img {
 /* Chapter Dock */
 .chapter-dock {
   position: absolute;
-  bottom: 2rem;
+  bottom: 1.1rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 20;
@@ -1313,14 +1343,14 @@ body.lite-portraits .portrait-layer img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  width: min(100% - 2rem, 62rem);
-  padding: 1rem 1.15rem;
-  border-radius: 24px;
-  background: var(--glass-fill);
-  backdrop-filter: blur(14px) saturate(1.04);
-  -webkit-backdrop-filter: blur(14px) saturate(1.04);
-  border: 1px solid var(--glass-stroke);
+  gap: 0.85rem;
+  width: min(100% - 2rem, 54rem);
+  padding: 0.82rem 1rem;
+  border-radius: 22px;
+  background: var(--chrome-surface);
+  backdrop-filter: blur(10px) saturate(1.02);
+  -webkit-backdrop-filter: blur(10px) saturate(1.02);
+  border: 1px solid var(--chrome-stroke);
   box-shadow: var(--glass-shadow-soft);
   pointer-events: auto;
 }
@@ -1346,7 +1376,7 @@ body.lite-portraits .portrait-layer img {
 }
 
 .chapter-dock-note {
-  font-size: 0.82rem;
+  font-size: 0.76rem;
   line-height: 1.45;
   color: var(--text-secondary);
 }
@@ -1361,12 +1391,12 @@ body.lite-portraits .portrait-layer img {
 .chapter-button {
   appearance: none;
   border: 1px solid rgba(17, 24, 39, 0.14);
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.72);
   color: var(--text-primary);
-  min-width: 6.5rem;
-  padding: 0.78rem 1rem;
+  min-width: 5.75rem;
+  padding: 0.72rem 0.95rem;
   border-radius: 999px;
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1377,7 +1407,7 @@ body.lite-portraits .portrait-layer img {
 .chapter-button:hover:not(:disabled) {
   transform: translateY(-1px);
   border-color: rgba(124, 106, 239, 0.35);
-  background: rgba(255, 255, 255, 0.18);
+  background: var(--chrome-surface-strong);
 }
 
 .chapter-button:disabled {
@@ -1395,6 +1425,61 @@ body.lite-portraits .portrait-layer img {
   background: rgba(17, 24, 39, 1);
 }
 
+@media (min-width: 1025px) and (max-height: 1100px) {
+  .narrative-frame.split-layout {
+    gap: 0.8rem;
+    padding-top: clamp(4.9rem, 7vh, 5.8rem);
+    padding-bottom: calc(var(--desktop-dock-space) + 0.35rem);
+  }
+
+  .frame-summary {
+    width: min(100%, 42rem);
+    max-width: min(42rem, 100%);
+    padding: 1.1rem 1.45rem;
+  }
+
+  .frame-details {
+    width: min(100%, 50rem);
+    max-width: min(50rem, 100%);
+    padding: 1rem 1.1rem;
+  }
+
+  .title {
+    font-size: clamp(1.95rem, 3.8vw, 3rem);
+  }
+
+  .blurb {
+    font-size: clamp(0.95rem, 1.6vw, 1.15rem);
+    max-width: 42rem;
+  }
+
+  .chapter-dock {
+    width: min(100% - 2rem, 50rem);
+    bottom: 0.9rem;
+    padding: 0.7rem 0.9rem;
+  }
+
+  .chapter-dock-note {
+    font-size: 0.72rem;
+    line-height: 1.35;
+  }
+
+  .chapter-button {
+    min-width: 5.2rem;
+    padding: 0.66rem 0.85rem;
+    font-size: 0.7rem;
+  }
+
+  .persistent-tracker {
+    gap: 0.15rem;
+  }
+
+  .tracker-item {
+    font-size: 0.74rem;
+    max-width: 150px;
+  }
+}
+
 @media (max-width: 1024px) {
   .hidden-mobile { display: none; }
 }
@@ -1402,8 +1487,8 @@ body.lite-portraits .portrait-layer img {
 /* ─── Final CTA Section ─── */
 .glass-panel {
   background: var(--glass-fill-panel-strong);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   padding: 4rem;
   border-radius: 24px;
   border: 1px solid rgba(0,0,0,0.05);
@@ -1411,6 +1496,13 @@ body.lite-portraits .portrait-layer img {
   pointer-events: auto;
 }
 .cta-actions { display: flex; gap: 1rem; justify-content: center; }
+
+.identity-throughline {
+  max-width: none;
+  font-size: clamp(0.98rem, 1.8vw, 1.3rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
 .btn {
   padding: 0.75rem 1.5rem;
@@ -2045,8 +2137,8 @@ body.lite-portraits .portrait-layer img {
    BUG FIXES — AUDIT ROUND 2
    ═══════════════════════════════════════════════════ */
 
-/* ── Bug 2: Cap embedded content so it never overflows the gradient ── */
-.embedded-content {
+/* ── Bug 2: Cap standalone embedded content without overriding frame scroll containers ── */
+.embedded-content:not(.frame-details) {
   max-height: 62vh;
   overflow: visible;
 }
@@ -2340,6 +2432,24 @@ body.lite-portraits .portrait-layer img {
   line-height: 1.65;
   color: var(--text-secondary);
   margin: 0;
+}
+
+.fake-chip,
+.insight-engine-card,
+.principle-pill,
+.principle-panel,
+.signal-card,
+.architecture-panel,
+.gallery-shell,
+.arc-panel,
+.presentation-card,
+.training-history,
+.linkedin-bio-panel,
+.id-chip,
+.tech-chip,
+.workforce-stat {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 @media (max-width: 768px) {
