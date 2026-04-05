@@ -31,7 +31,7 @@
 
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
-  --overlay-fade-duration: 320ms;
+  --overlay-fade-duration: 560ms;
   --overlay-fade-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --mobile-dock-space: clamp(10.5rem, 30vh, 14rem);
   --desktop-dock-space: clamp(7.5rem, 12vh, 9rem);
@@ -1001,7 +1001,7 @@ body.lite-portraits .portrait-layer img {
 .gallery-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(220px, 26vw);
+  grid-auto-columns: minmax(200px, calc((100% - 1.7rem) / 3));
   gap: 0.85rem;
   overflow-x: auto;
   overscroll-behavior-x: contain;

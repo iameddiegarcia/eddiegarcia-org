@@ -445,7 +445,32 @@ const applyActiveFrameVisuals = (currentFrame, {
 // ─── Chapter Controller ───
 if (scrollSection && frames.length > 0) {
   const numFrames = frames.length;
-  const REVEAL_SETTLE_MS = prefersReducedMotion.matches ? 0 : 240;
+  const parseDurationMs = (rawValue, fallback) => {
+    const value = String(rawValue || '').trim();
+    if (!value) return fallback;
+
+    if (value.endsWith('ms')) {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    }
+
+    if (value.endsWith('s')) {
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed * 1000 : fallback;
+    }
+
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
+  const overlayFadeMs = prefersReducedMotion.matches
+    ? 0
+    : parseDurationMs(getComputedStyle(document.documentElement).getPropertyValue('--overlay-fade-duration'), 560);
+  const EXIT_FADE_MS = prefersReducedMotion.matches ? 0 : Math.max(260, Math.round(overlayFadeMs * 0.72));
+  const REVEAL_SETTLE_MS = prefersReducedMotion.matches ? 0 : Math.max(320, Math.round(overlayFadeMs * 0.78));
+  const storyLinks = Array.from(document.querySelectorAll(
+    'a[href^="/insight/"], a[href^="/position/"], a[href^="/raise-the-bar/"], a[href^="/raise-the-bar-openai/"], a[href^="/tools/"]'
+  ));
   let currentFrame = 0;
   let chapterPhase = 'preplay';
   let revealTimerId = 0;
@@ -496,6 +521,9 @@ if (scrollSection && frames.length > 0) {
   };
 
   const getDockNote = (frameIndex, phase) => {
+    if (phase === 'departing') {
+      return 'Letting this chapter clear and fade before the next video starts.';
+    }
     if (phase === 'playing') {
       return frameIndex === 0
         ? 'Intro playing. You will land on the first trait when the frame holds.'
@@ -515,6 +543,7 @@ if (scrollSection && frames.length > 0) {
   };
 
   const getNextLabel = (frameIndex, phase) => {
+    if (phase === 'departing') return 'Opening...';
     if (phase === 'playing') return 'Playing...';
     if (phase === 'holding') return 'Settling...';
     if (frameIndex === 0) return 'Start';
@@ -528,10 +557,12 @@ if (scrollSection && frames.length > 0) {
     if (chapterDockTitle) chapterDockTitle.textContent = meta.title;
     if (chapterDockNote) chapterDockNote.textContent = getDockNote(currentFrame, chapterPhase);
 
-    if (chapterPrevButton) chapterPrevButton.disabled = currentFrame === 0 || chapterPhase === 'playing' || chapterPhase === 'holding';
+    const controlsLocked = chapterPhase === 'departing' || chapterPhase === 'playing' || chapterPhase === 'holding';
+
+    if (chapterPrevButton) chapterPrevButton.disabled = currentFrame === 0 || controlsLocked;
     if (chapterNextButton) {
       chapterNextButton.textContent = getNextLabel(currentFrame, chapterPhase);
-      chapterNextButton.disabled = chapterPhase === 'playing' || chapterPhase === 'holding' || (currentFrame === numFrames - 1 && chapterPhase === 'revealed');
+      chapterNextButton.disabled = controlsLocked || (currentFrame === numFrames - 1 && chapterPhase === 'revealed');
     }
   };
 
@@ -541,7 +572,7 @@ if (scrollSection && frames.length > 0) {
       const isVisible = exploredFrames.has(target);
       tracker.classList.toggle('is-visible', isVisible);
       tracker.classList.toggle('active', isVisible && target === currentFrame);
-      tracker.disabled = !isVisible || chapterPhase === 'playing' || chapterPhase === 'holding';
+      tracker.disabled = !isVisible || chapterPhase === 'departing' || chapterPhase === 'playing' || chapterPhase === 'holding';
       tracker.setAttribute('aria-hidden', String(!isVisible));
       tracker.tabIndex = isVisible ? 0 : -1;
     });
@@ -569,7 +600,17 @@ if (scrollSection && frames.length > 0) {
 
     portraitLayers.forEach((layer) => layer.style.setProperty('--morph-opacity', '0'));
 
-    if (chapterPhase === 'playing') {
+    if (chapterPhase === 'departing') {
+      applyActiveFrameVisuals(currentFrame, {
+        heroTitleOp: 0,
+        summaryOp: 0,
+        detailsOp: 0,
+        portraitBrightness: 0.96
+      });
+      if (typeof ScrollVideo !== 'undefined') {
+        ScrollVideo.showFreeze(currentFrame, currentFrame === 0 ? 'start' : 'end');
+      }
+    } else if (chapterPhase === 'playing') {
       applyActiveFrameVisuals(currentFrame, {
         heroTitleOp: currentFrame === 0 ? 0 : 0,
         summaryOp: 0,
@@ -657,25 +698,44 @@ if (scrollSection && frames.length > 0) {
   const startPlaybackForFrame = (frameIndex) => {
     const targetFrame = clamp(frameIndex, 0, numFrames - 1);
     const playbackFrame = targetFrame === 0 || targetFrame === 1 ? 0 : targetFrame;
+    const departingFrame = currentFrame;
+
+    const beginPlayback = () => {
+      clearRevealTimer();
+      if (targetFrame > 0) exploredFrames.add(targetFrame);
+
+      currentFrame = targetFrame;
+      chapterPhase = 'playing';
+      renderFrameState();
+
+      if (typeof ScrollVideo !== 'undefined') {
+        ScrollVideo.playChapter(playbackFrame, {
+          onEnded: () => handlePlaybackComplete(targetFrame)
+        });
+        return;
+      }
+
+      handlePlaybackComplete(targetFrame);
+    };
+
     clearRevealTimer();
-    if (targetFrame > 0) exploredFrames.add(targetFrame);
 
-    currentFrame = targetFrame;
-    chapterPhase = 'playing';
-    renderFrameState();
+    if (!prefersReducedMotion.matches) {
+      chapterPhase = 'departing';
+      renderFrameState();
 
-    if (typeof ScrollVideo !== 'undefined') {
-      ScrollVideo.playChapter(playbackFrame, {
-        onEnded: () => handlePlaybackComplete(targetFrame)
-      });
+      revealTimerId = window.setTimeout(() => {
+        if (currentFrame !== departingFrame || chapterPhase !== 'departing') return;
+        beginPlayback();
+      }, EXIT_FADE_MS);
       return;
     }
 
-    handlePlaybackComplete(targetFrame);
+    beginPlayback();
   };
 
   const advanceJourney = () => {
-    if (chapterPhase === 'playing' || chapterPhase === 'holding') return;
+    if (chapterPhase === 'departing' || chapterPhase === 'playing' || chapterPhase === 'holding') return;
     if (currentFrame === 0) {
       startPlaybackForFrame(0);
       return;
@@ -685,7 +745,7 @@ if (scrollSection && frames.length > 0) {
   };
 
   chapterPrevButton?.addEventListener('click', () => {
-    if (chapterPhase === 'playing' || chapterPhase === 'holding') return;
+    if (chapterPhase === 'departing' || chapterPhase === 'playing' || chapterPhase === 'holding') return;
     goToFrame(currentFrame - 1);
   });
 
@@ -694,13 +754,57 @@ if (scrollSection && frames.length > 0) {
   trackers.forEach((tracker) => {
     tracker.addEventListener('click', (event) => {
       event.preventDefault();
-      if (chapterPhase === 'playing' || chapterPhase === 'holding') return;
+      if (chapterPhase === 'departing' || chapterPhase === 'playing' || chapterPhase === 'holding') return;
       const targetFrame = parseInt(tracker.getAttribute('data-target-frame'), 10);
       if (!Number.isNaN(targetFrame) && exploredFrames.has(targetFrame)) {
         goToFrame(targetFrame);
       }
     });
   });
+
+  const buildStoryContextUrl = (baseHref) => {
+    const url = new URL(baseHref, window.location.origin);
+    url.searchParams.set('storyFrame', String(currentFrame));
+    return url.toString();
+  };
+
+  storyLinks.forEach((link) => {
+    if (!link.dataset.storyBaseHref) {
+      link.dataset.storyBaseHref = link.getAttribute('href');
+    }
+
+    link.setAttribute('title', 'Opens in a new tab');
+
+    if (link.dataset.storyBound === 'true') return;
+    link.dataset.storyBound = 'true';
+
+    link.addEventListener('click', (event) => {
+      const storyUrl = buildStoryContextUrl(link.dataset.storyBaseHref || link.getAttribute('href'));
+      link.setAttribute('href', storyUrl);
+
+      if (event.defaultPrevented) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+
+      event.preventDefault();
+      window.open(storyUrl, '_blank', 'noopener,noreferrer');
+    });
+  });
+
+  const restoreFrameFromLocation = () => {
+    const params = new URLSearchParams(window.location.search);
+    const frameParam = Number.parseInt(params.get('storyFrame') || '', 10);
+    if (!Number.isFinite(frameParam)) return false;
+
+    const restoredFrame = clamp(frameParam, 0, numFrames - 1);
+
+    for (let frameIndex = 1; frameIndex <= restoredFrame; frameIndex += 1) {
+      exploredFrames.add(frameIndex);
+      revealedFrames.add(frameIndex);
+    }
+
+    goToFrame(restoredFrame, restoredFrame === 0 ? 'preplay' : 'revealed');
+    return true;
+  };
 
   document.addEventListener('keydown', (event) => {
     if (/input|textarea|select/i.test(event.target.tagName) || event.metaKey || event.ctrlKey || event.altKey) {
@@ -719,5 +823,7 @@ if (scrollSection && frames.length > 0) {
     }
   });
 
-  renderFrameState();
+  if (!restoreFrameFromLocation()) {
+    renderFrameState();
+  }
 }

@@ -185,7 +185,7 @@ footer{border-top:1px solid var(--border);padding:28px 32px;text-align:center;}
 <body>
 
 <header>
-  <a class="nav-back" href="https://eddiegarcia.org">← Portfolio</a>
+  <a class="nav-back" href="https://eddiegarcia.org" data-story-back>← <span data-story-back-label>Portfolio</span></a>
   <button class="theme-toggle" title="Toggle theme" onclick="toggleTheme()">☀</button>
 </header>
 
@@ -603,5 +603,6 @@ function toggleTheme() {
   document.querySelector('.theme-toggle').textContent = document.body.classList.contains('dark') ? '☽' : '☀';
 }
 </script>
+<script src="/story-return.js"></script>
 </body>
 </html>

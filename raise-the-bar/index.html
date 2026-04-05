@@ -467,9 +467,9 @@ Return ONLY JSON.`,
     <>
     {/* NAV */}
     <nav className="nav">
-      <a href="https://eddiegarcia.org" className="nav-back">
+      <a href="https://eddiegarcia.org" className="nav-back" data-story-back>
         <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 2L4 7l5 5"/></svg>
-        Portfolio
+        <span data-story-back-label>Portfolio</span>
       </a>
       <span className="nav-title">Raise the Bar</span>
       <div className="nav-right">
@@ -738,5 +738,6 @@ Return ONLY JSON.`,
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
 </script>
+<script src="/story-return.js"></script>
 </body>
 </html>
