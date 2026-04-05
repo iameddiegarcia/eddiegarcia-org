@@ -477,7 +477,7 @@ if (scrollSection && frames.length > 0) {
   const revealedFrames = new Set();
   const exploredFrames = new Set([0]);
   const storyBeatNotes = {
-    0: 'The story starts with faith, family, hard work, and principle, then expands into thought, systems, tools, people, and creative force.',
+    0: 'The story starts with faith, family, hard work, and principle, then expands into thought, systems, people, and creative force.',
     1: 'The foundation is Christian values, Mexican-American roots, hard work, and service.',
     2: 'From principle comes perspective: how leadership, systems, and institutions are interpreted.',
     3: 'Then the ideas become structure, operating design, and durable systems.',
@@ -488,8 +488,7 @@ if (scrollSection && frames.length > 0) {
     8: 'Then comes the ability to hold timing, energy, and trust in front of large audiences.',
     9: 'Underneath it all is artistry: writing, producing, and giving emotion its architecture.',
     10: 'This is the throughline: Christian values, Mexican-American roots, fatherhood, and one identity expressed in different rooms.',
-    11: 'The story becomes tangible in the systems, engines, and products already built.',
-    12: 'Everything converges here: strategy, systems, storytelling, and execution in one operator.'
+    11: 'Everything converges here: strategy, systems, storytelling, and execution in one operator.'
   };
 
   const clearRevealTimer = () => {

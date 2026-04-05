@@ -32,8 +32,7 @@ const ScrollVideo = (() => {
     8: { mode: 'chapter', src: 'videos/scroll/8.mp4', poster: 'images/scroll-video/frame-8/frame_0001.jpg' },
     9: { mode: 'chapter', src: 'videos/scroll/9.mp4', poster: 'images/scroll-video/frame-9/frame_0001.jpg' },
     10: { mode: 'chapter', src: 'videos/scroll/91.mp4', poster: 'images/scroll-video/frame-10/frame_0001.jpg' },
-    11: { mode: 'chapter', src: 'videos/scroll/92.mp4', poster: 'images/scroll-video/tools/frame_0001.jpg' },
-    12: { mode: 'chapter', src: 'videos/scroll/93.mp4', poster: 'images/scroll-video/contact/frame_0001.jpg' }
+    11: { mode: 'chapter', src: 'videos/scroll/93.mp4', poster: 'images/scroll-video/contact/frame_0001.jpg' }
   };
 
   const videoMap = new Map();
